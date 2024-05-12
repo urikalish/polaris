@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "version": "1.0.0",
+  "name": "PullPatrol",
+  "short_name": "PullPatrol",
+  "description": "PullPatrol Chrome extension",
+  "icons": {
+    "512": "img/pull-request.png"
+  },
+  "action": {
+    "default_popup": "index.html"
+  }
+}
