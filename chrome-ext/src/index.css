@@ -64,6 +64,14 @@ body {
     inset: 0;
 }
 
+.content-with-actions {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 32px;
+    gap: 8px;
+}
+
 .content-panel {
     position: relative;
     overflow: hidden;
@@ -73,9 +81,18 @@ body {
     position: absolute;
     inset: 0;
     background-color: #000;
-    opacity: 0.7;
+    opacity: 0.5;
 }
 
 .content-panel > div:nth-child(2) {
     position: relative;
+}
+
+.actions-panel {
+    display: flex;
+    justify-content: end;
+}
+.actions-panel button {
+    width: 100px;
+    height: 32px;
 }

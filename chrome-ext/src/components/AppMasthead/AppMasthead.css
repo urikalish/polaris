@@ -1,19 +1,18 @@
 .masthead {
-    margin: 8px;
+    height: 48px;
 }
 
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 4px;
-    height: 48px;
+    height: 100%;
     padding: 8px;
     user-select: none;
 }
 
 .header > div {
-    height: 48px;
+    height: 100%;
     display: flex;
     align-items: center;
 }

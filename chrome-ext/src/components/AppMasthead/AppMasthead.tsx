@@ -1,15 +1,10 @@
 import './AppMasthead.css';
 import { APP_NAME } from '../../services/constants.ts';
 import CloseIcon from '@mui/icons-material/Close';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { useCallback } from 'react';
 import { IconButton } from '@mui/material';
 
 export function AppMasthead() {
-    const handleSettings = useCallback(() => {
-        alert('Settings');
-    }, []);
-
     const handleClose = useCallback(() => {
         window.close();
     }, []);
@@ -23,9 +18,6 @@ export function AppMasthead() {
                     <span className="header-title">{APP_NAME}</span>
                 </div>
                 <div>
-                    <IconButton onClick={handleSettings}>
-                        <SettingsIcon />
-                    </IconButton>
                     <IconButton onClick={handleClose}>
                         <CloseIcon />
                     </IconButton>
