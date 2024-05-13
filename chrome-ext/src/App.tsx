@@ -6,6 +6,7 @@ import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import './App.css';
 import { Settings } from './views/Settings/Settings.tsx';
 import { ConfigObj, loadConfigValues, saveConfigValues } from './services/config.ts';
+import { PullRequests } from './views/PullRequests/PullRequests.tsx';
 
 function App() {
     const [config, setConfig] = useState<ConfigObj | null>(null);
@@ -37,7 +38,7 @@ function App() {
                     <Tab label="Settings" />
                 </Tabs>
 
-                {tabIndex === 0 && <div>Pull Requests</div>}
+                {tabIndex === 0 && <PullRequests config={config} />}
                 {tabIndex === 1 && <Settings config={config} onSaveConfig={handleSaveConfig} />}
             </div>
         </div>

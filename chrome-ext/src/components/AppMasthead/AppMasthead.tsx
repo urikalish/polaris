@@ -13,7 +13,7 @@ export function AppMasthead() {
         <div className="content-panel masthead">
             <div className="header">
                 <div>
-                    <img src="img/pull-request.png" className="header-image" alt="icon" />
+                    {/*<img src="img/star128.png" className="header-image" alt="icon" />*/}
                     <span className="header-title">{APP_NAME}</span>
                 </div>
                 <div>

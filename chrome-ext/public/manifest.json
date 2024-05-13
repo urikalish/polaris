@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "version": "1.0.0",
-  "name": "PullPatrol",
-  "short_name": "PullPatrol",
-  "description": "PullPatrol Chrome extension",
+  "name": "Polaris",
+  "short_name": "Polaris",
+  "description": "Polaris Chrome extension",
   "icons": {
-    "512": "img/pull-request.png"
+    "128": "img/star128.png"
   },
   "action": {
     "default_popup": "index.html"
