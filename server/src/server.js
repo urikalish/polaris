@@ -18,6 +18,7 @@ app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
         const prs = allPRs.filter((pr) => pr.owner === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
+        console.log(`${username} has ${prs.length} relevant PRs`);
         res.send({ type: 'pull-requests', data: { prs } });
     } catch (error) {
         res.status(500).send(error.toString());
