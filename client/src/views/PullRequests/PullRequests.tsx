@@ -13,11 +13,12 @@ export function PullRequests({ config }: PullRequestsProps) {
 
     const handleRefresh = useCallback(() => {
         setCanRefresh(false);
-        sendMsgToBgPage({ type: 'pull-requests', params: '' }, (response: any) => {
-            alert(response.data.username);
+        const params = config?.gitHubUserName ? `username=${config?.gitHubUserName}` : '';
+        sendMsgToBgPage({ type: 'pull-requests', params }, (response: any) => {
+            alert(JSON.stringify(response.data['prs']));
             setCanRefresh(true);
         });
-    }, []);
+    }, [config]);
 
     return (
         <div className="pull-requests content-with-actions">
