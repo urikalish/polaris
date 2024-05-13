@@ -15,7 +15,11 @@ export function PullRequests({ config }: PullRequestsProps) {
         setCanRefresh(false);
         const params = config?.gitHubUserName ? `username=${config?.gitHubUserName}` : '';
         sendMsgToBgPage({ type: 'pull-requests', params }, (response: any) => {
-            alert(JSON.stringify(response.data['prs']));
+            if (response.error) {
+                alert('Error: ' + response.error);
+            } else {
+                alert(JSON.stringify(response.data['prs']));
+            }
             setCanRefresh(true);
         });
     }, [config]);
