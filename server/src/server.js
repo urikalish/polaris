@@ -9,17 +9,16 @@ const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME;
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
 const PORT = 1948;
 
-let allPrs = [];
+let allPRs = [];
 
 const app = express();
 app.use(cors());
 
 app.get('/pull-requests', async (req, res) => {
     try {
-        //const response = await axios.get('https://api.example.com/data');
-        //res.send(response.data);
-        console.log('pull-requests');
-        res.send({ type: 'pull-requests', data: { username: 'uri-kalish' } });
+        const username = req.query.username;
+        const prs = allPRs.filter((pr) => pr.owner === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
+        res.send({ type: 'pull-requests', data: { prs } });
     } catch (error) {
         res.status(500).send(error.toString());
     }
@@ -55,7 +54,7 @@ async function refreshGitHubData() {
                     assignees: pr['assignees'] ? pr['assignees'].map((rr) => rr['login']) : [],
                 };
                 console.log(prRecord);
-                allPrs.push(prRecord);
+                allPRs.push(prRecord);
             });
         } catch (error) {
             console.log(error);
