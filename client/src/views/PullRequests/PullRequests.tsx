@@ -2,6 +2,7 @@ import './PullRequests.css';
 import { useCallback, useState } from 'react';
 import { Button } from '@mui/material';
 import { ConfigObj } from '../../services/config.ts';
+import { sendMsgToBgPage } from '../../services/msg-handler.ts';
 
 type PullRequestsProps = {
     config: ConfigObj | null;
@@ -12,8 +13,8 @@ export function PullRequests({ config }: PullRequestsProps) {
 
     const handleRefresh = useCallback(() => {
         setCanRefresh(false);
-        chrome.runtime.sendMessage({ action: 'get-pull-requests' }, (response) => {
-            alert(response.msg);
+        sendMsgToBgPage({ type: 'pull-requests', params: '' }, (response: any) => {
+            alert(response.data.username);
             setCanRefresh(true);
         });
     }, []);
