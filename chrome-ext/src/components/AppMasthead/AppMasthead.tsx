@@ -11,7 +11,6 @@ export function AppMasthead() {
 
     return (
         <div className="content-panel masthead">
-            <div />
             <div className="header">
                 <div>
                     <img src="img/pull-request.png" className="header-image" alt="icon" />

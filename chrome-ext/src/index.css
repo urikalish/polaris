@@ -77,14 +77,15 @@ body {
     overflow: hidden;
 }
 
-.content-panel > div:nth-child(1) {
+.content-panel::before {
+    content: '';
     position: absolute;
     inset: 0;
     background-color: #000;
     opacity: 0.5;
 }
 
-.content-panel > div:nth-child(2) {
+.content-panel > div {
     position: relative;
 }
 

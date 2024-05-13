@@ -24,7 +24,6 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
     return (
         <div className="settings content-with-actions">
             <div className="content-panel">
-                <div />
                 <div className="settings-form">
                     <TextField id="github-username" label="GitHub UserName" variant="outlined" value={gitHubUserName} onChange={handleChangeGitHubUserName} />
                 </div>
