@@ -31,12 +31,6 @@
     border-bottom: 1px solid #444;
 }
 
-.pr-link {
-    position: relative;
-    top: 2px;
-    font-size: 15px;
-}
-
 .pr-state {
     position: relative;
     top: 2px;
@@ -57,6 +51,13 @@
 }
 .pr-state--closed {
     background-color: #cf222e;
+}
+
+.pr-link {
+    position: relative;
+    top: 1px;
+    font-size: 16px;
+    color: #999 !important;
 }
 
 .pr-title {

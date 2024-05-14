@@ -41,15 +41,15 @@ export function PullRequests({ config }: PullRequestsProps) {
 
     return (
         <div className="pull-requests content-with-actions overflow--hidden">
-            <div className="content-panel overflow--auto prs-container">
+            <div className="prs-container position--relative overflow--auto">
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.map((pr) => (
-                    <div key={pr.number} className="pr-container">
+                    <div key={pr.number} className="pr-container content-panel">
                         <div className="pr-line">
+                            <span className={`pr-state pr-state--${pr.state}`}>{pr.state}</span>
                             <a href={pr.htmlUrl} target="_blank" className="pr-link">
                                 {pr.number}
                             </a>
-                            <span className={`pr-state pr-state--${pr.state}`}>{pr.state}</span>
                             <span className="pr-title ellipsis" title={pr.title}>
                                 {pr.title}
                             </span>
