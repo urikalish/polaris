@@ -50,10 +50,6 @@ async function refreshGitHubData() {
                     reviewers: pr['requested_reviewers'] ? pr['requested_reviewers'].map((rr) => rr['login']) : [],
                     assignees: pr['assignees'] ? pr['assignees'].map((rr) => rr['login']) : [],
                 };
-
-                if (pr.number === 17759) {
-                    console.log(pr);
-                }
                 allPRs.push(prRecord);
             });
         } catch (error) {
