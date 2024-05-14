@@ -44,7 +44,12 @@ export function PullRequests({ config }: PullRequestsProps) {
             <div className="content-panel">
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.map((pr) => (
-                    <div key={pr.number}>{pr.title}</div>
+                    <div key={pr.number}>
+                        <a href={pr.htmlUrl} target="_blank">
+                            {pr.number}
+                        </a>
+                        {pr.title}
+                    </div>
                 ))}
             </div>
             <div className="actions-panel">

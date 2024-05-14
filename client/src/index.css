@@ -2,12 +2,14 @@
     font-family: Play;
     font-style: normal;
     font-weight: 400;
+    /*noinspection CssUnknownTarget*/
     src: url('../font/play-regular.ttf') format('truetype');
 }
 @font-face {
     font-family: Play;
     font-style: normal;
     font-weight: 700;
+    /*noinspection CssUnknownTarget*/
     src: url('../font/play-bold.ttf') format('truetype');
 }
 
@@ -15,6 +17,14 @@
 ::before,
 ::after {
     box-sizing: border-box;
+}
+
+a,
+a:focus,
+a:active,
+a:visited {
+    color: #f55;
+    text-decoration: none;
 }
 
 :root {
