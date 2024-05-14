@@ -24,16 +24,15 @@
 }
 
 .pr-line {
-    display: grid;
-    grid-template-columns: auto auto 1fr;
+    display: flex;
+    align-items: center;
     gap: 4px;
     padding: 4px;
     border-bottom: 1px solid #444;
 }
 
 .pr-state {
-    position: relative;
-    top: 2px;
+    flex: 0 0 auto;
     width: 62px;
     height: 20px;
     line-height: 20px;
@@ -56,12 +55,14 @@
 .pr-link {
     position: relative;
     top: 1px;
-    font-size: 16px;
+    flex: 0 0 auto;
+    font-size: 15px;
     color: #999 !important;
 }
 
 .pr-title {
     position: relative;
     top: 1px;
-    font-size: 16px;
+    flex: 1 1 auto;
+    font-size: 15px;
 }
