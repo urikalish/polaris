@@ -6,7 +6,7 @@ import { sendMsgToBgPage } from '../../services/msg-handler.ts';
 import loadingImage from './loading.svg';
 
 type PullRequestRec = {
-    id: string;
+    number: number;
     htmlUrl: string;
     state: string;
     title: string;
@@ -44,7 +44,7 @@ export function PullRequests({ config }: PullRequestsProps) {
             <div className="content-panel">
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.map((pr) => (
-                    <div key={pr.id}>{pr.title}</div>
+                    <div key={pr.number}>{pr.title}</div>
                 ))}
             </div>
             <div className="actions-panel">
