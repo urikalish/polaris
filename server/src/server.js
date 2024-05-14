@@ -33,7 +33,7 @@ async function refreshGitHubData() {
         Authorization: `token ${GITHUB_AUTH_TOKEN}`,
     };
 
-    for (let page = 1; page <= 3; page++) {
+    for (let page = 1; page <= 5; page++) {
         let prs;
         const url = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/pulls?state=all&per_page=100&page=${page}`;
         try {
