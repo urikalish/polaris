@@ -25,11 +25,6 @@ app.get('/pull-requests', async (req, res) => {
     }
 });
 
-function getLastPartOfUrl(url) {
-    const urlParts = url.split('/');
-    return urlParts[urlParts.length - 1];
-}
-
 async function refreshGitHubData() {
     const allPrs = [];
 
@@ -37,6 +32,7 @@ async function refreshGitHubData() {
         Accept: 'application/vnd.github.text+json',
         Authorization: `token ${GITHUB_AUTH_TOKEN}`,
     };
+
     for (let page = 1; page <= 3; page++) {
         let prs;
         const url = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/pulls?state=all&per_page=100&page=${page}`;
@@ -45,16 +41,19 @@ async function refreshGitHubData() {
             prs = await res.data;
             prs.forEach((pr) => {
                 const prRecord = {
-                    id: pr.id,
+                    number: pr.number,
                     htmlUrl: pr['html_url'],
-                    state: pr.state,
+                    state: pr['merged_at'] ? 'merged' : pr['closed_at'] ? 'closed' : 'open',
                     title: pr.title,
                     branch: pr.head.ref,
-                    owner: getLastPartOfUrl(pr.user.url),
+                    owner: pr.user['login'],
                     reviewers: pr['requested_reviewers'] ? pr['requested_reviewers'].map((rr) => rr['login']) : [],
                     assignees: pr['assignees'] ? pr['assignees'].map((rr) => rr['login']) : [],
                 };
-                console.log(prRecord);
+
+                if (pr.number === 17759) {
+                    console.log(pr);
+                }
                 allPRs.push(prRecord);
             });
         } catch (error) {
