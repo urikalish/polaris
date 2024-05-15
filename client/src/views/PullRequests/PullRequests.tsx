@@ -41,7 +41,7 @@ export function PullRequests({ config }: PullRequestsProps) {
 
     return (
         <div className="pull-requests content-with-actions overflow--hidden">
-            <div className="prs-container position--relative overflow--auto">
+            <div className="prs-container position--relative overflow--auto custom-scroll">
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.map((pr) => (
                     <div key={pr.number} className="pr-container content-panel">

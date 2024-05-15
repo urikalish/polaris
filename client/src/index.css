@@ -55,6 +55,16 @@ body {
     overflow: hidden;
 }
 
+.custom-scroll::-webkit-scrollbar {
+    width: 10px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: #444;
+}
+
 .content-with-actions {
     height: 100%;
     display: grid;
