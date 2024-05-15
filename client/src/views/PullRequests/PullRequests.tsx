@@ -57,6 +57,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     return (
         <div className="pull-requests content-with-actions overflow--hidden">
             <div className={`prs-wrapper height--100 overflow--hidden ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${closed ? 'closed' : ''}`}>
+                {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.length && (
                     <div className="prs-filter position--relative display--flex align-items--center">
                         <Button className="filter-btn filter-btn--open" onClick={handleToggleOpen}>
@@ -71,7 +72,6 @@ export function PullRequests({ config }: PullRequestsProps) {
                     </div>
                 )}
                 <div className="prs-container position--relative overflow--auto custom-scroll">
-                    {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                     {prs.map((pr) => (
                         <div key={pr.number} className={`pr-container content-panel ${pr.state}`}>
                             <div className="pr-line">
