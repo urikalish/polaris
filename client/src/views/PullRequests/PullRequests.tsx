@@ -22,6 +22,9 @@ type PullRequestsProps = {
 
 export function PullRequests({ config }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(true);
+    const [merged, setMerged] = useState(true);
+    const [closed, setClosed] = useState(false);
     const [prs, setPrs] = useState<PullRequestRec[]>([]);
 
     const handleRefresh = useCallback(() => {
@@ -39,23 +42,50 @@ export function PullRequests({ config }: PullRequestsProps) {
         });
     }, [config]);
 
+    const handleToggleOpen = useCallback(() => {
+        setOpen((val) => !val);
+    }, []);
+
+    const handleToggleMerged = useCallback(() => {
+        setMerged((val) => !val);
+    }, []);
+
+    const handleToggleClosed = useCallback(() => {
+        setClosed((val) => !val);
+    }, []);
+
     return (
         <div className="pull-requests content-with-actions overflow--hidden">
-            <div className="prs-container position--relative overflow--auto custom-scroll">
-                {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
-                {prs.map((pr) => (
-                    <div key={pr.number} className="pr-container content-panel">
-                        <div className="pr-line">
-                            <span className={`pr-state pr-state--${pr.state}`}>{pr.state}</span>
-                            <a href={pr.htmlUrl} target="_blank" className="pr-link">
-                                {pr.number}
-                            </a>
-                            <span className="pr-title ellipsis" title={pr.title}>
-                                {pr.title}
-                            </span>
-                        </div>
+            <div className={`prs-wrapper height--100 overflow--hidden ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${closed ? 'closed' : ''}`}>
+                {prs.length && (
+                    <div className="prs-filter position--relative display--flex align-items--center">
+                        <Button className="filter-btn filter-btn--open" onClick={handleToggleOpen}>
+                            open
+                        </Button>
+                        <Button className="filter-btn filter-btn--merged" onClick={handleToggleMerged}>
+                            merged
+                        </Button>
+                        <Button className="filter-btn filter-btn--closed" onClick={handleToggleClosed}>
+                            closed
+                        </Button>
                     </div>
-                ))}
+                )}
+                <div className="prs-container position--relative overflow--auto custom-scroll">
+                    {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
+                    {prs.map((pr) => (
+                        <div key={pr.number} className={`pr-container content-panel ${pr.state}`}>
+                            <div className="pr-line">
+                                <span className={`pr-state pr-state--${pr.state}`}>{pr.state}</span>
+                                <a href={pr.htmlUrl} target="_blank" className="pr-link">
+                                    {pr.number}
+                                </a>
+                                <span className="pr-title ellipsis" title={pr.title}>
+                                    {pr.title}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
             <div className="actions-panel">
                 <Button variant="contained" onClick={handleRefresh} disabled={loading}>

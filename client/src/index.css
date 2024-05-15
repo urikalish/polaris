@@ -126,3 +126,11 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.display--flex {
+    display: flex;
+}
+
+.align-items--center {
+    align-items: center;
+}
