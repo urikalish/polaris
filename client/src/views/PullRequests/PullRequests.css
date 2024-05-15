@@ -28,7 +28,7 @@
 }
 
 .filter-btn {
-    width: 62px;
+    width: 70px;
     height: 20px;
     margin-left: 4px !important;
     border: 1px solid #fff !important;
@@ -37,18 +37,30 @@
     font-size: 15px !important;
     text-transform: none !important;
 }
+.filter-btn:nth-child(4) {
+    margin-left: 32px !important;
+}
 .prs-wrapper.open .filter-btn--open,
 .prs-wrapper.merged .filter-btn--merged,
-.prs-wrapper.closed .filter-btn--closed {
+.prs-wrapper.closed .filter-btn--closed,
+.prs-wrapper.owner .filter-btn--owner,
+.prs-wrapper.reviewer .filter-btn--reviewer,
+.prs-wrapper.assignee .filter-btn--assignee {
     background-color: #888 !important;
 }
 
 .pr-container {
     display: none;
 }
-.prs-wrapper.open .pr-container.open,
-.prs-wrapper.merged .pr-container.merged,
-.prs-wrapper.closed .pr-container.closed {
+.prs-wrapper.open.owner .pr-container.open.owner,
+.prs-wrapper.open.reviewer .pr-container.open.reviewer,
+.prs-wrapper.open.assignee .pr-container.open.assignee,
+.prs-wrapper.merged.owner .pr-container.merged.owner,
+.prs-wrapper.merged.reviewer .pr-container.merged.reviewer,
+.prs-wrapper.merged.assignee .pr-container.merged.assignee,
+.prs-wrapper.closed.owner .pr-container.closed.owner,
+.prs-wrapper.closed.reviewer .pr-container.closed.reviewer,
+.prs-wrapper.closed.assignee .pr-container.closed.assignee {
     display: block;
 }
 
@@ -75,7 +87,7 @@
 
 .pr-state {
     flex: 0 0 auto;
-    width: 62px;
+    width: 70px;
     height: 20px;
     line-height: 20px;
     text-align: center;
