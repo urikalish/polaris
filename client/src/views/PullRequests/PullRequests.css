@@ -72,6 +72,10 @@
     background-color: #888 !important;
 }
 
+.prs-filters .MuiFormControlLabel-label {
+    font-size: 15px;
+}
+
 .prs-container {
     position: relative;
     overflow: auto;

@@ -9,35 +9,53 @@ import prMergedImage from './pr-merged.svg';
 import prDraftImage from './pr-draft.svg';
 import prClosedImage from './pr-closed.svg';
 
+enum PrState {
+    OPEN = 'open',
+    MERGED = 'merged',
+    DRAFT = 'draft',
+    CLOSED = 'closed',
+}
+
+enum ReviewState {
+    COMMENTED = 'commented',
+    CHANGES_REQUESTED = 'changes_requested',
+    APPROVED = 'approved',
+}
+
+enum MyRole {
+    CREATOR = 'creator',
+    REVIEWER = 'reviewer',
+    ASSIGNEE = 'assignee',
+}
+
 type PullRequestRec = {
     number: number;
     htmlUrl: string;
-    state: 'open' | 'merged' | 'draft' | 'closed';
+    state: PrState;
     title: string;
     branch: string;
     creator: string;
     assignees: string[];
     reviewers: string[];
-    reviews: { user: string; state: 'commented' | 'changes_requested' | 'approved' }[];
-    type?: 'creator' | 'reviewer' | 'assignee';
+    reviews: { user: string; state: ReviewState }[];
+    myRole: MyRole;
 };
 
-const stateFilters = ['open', 'merged', 'draft', 'closed'];
-//const roleFilters = ['creator', 'reviewer', 'assignee'];
+const stateFilters = [PrState.OPEN, PrState.MERGED, PrState.DRAFT, PrState.CLOSED];
 
-function getImgSrcByState(state: string): string {
+function getImgSrcByState(state: PrState): string {
     let img = '';
     switch (state) {
-        case 'open':
+        case PrState.OPEN:
             img = prOpenImage;
             break;
-        case 'merged':
+        case PrState.MERGED:
             img = prMergedImage;
             break;
-        case 'draft':
+        case PrState.DRAFT:
             img = prDraftImage;
             break;
-        case 'closed':
+        case PrState.CLOSED:
             img = prClosedImage;
             break;
     }
@@ -52,9 +70,9 @@ export function PullRequests({ config }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(true);
-    const [draft, setDraft] = useState(true);
+    const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
-    const [role, setRole] = useState('creator');
+    const [role, setRole] = useState<MyRole>(MyRole.CREATOR);
     const [prs, setPrs] = useState<PullRequestRec[]>([]);
 
     const handleRefresh = useCallback(() => {
@@ -74,11 +92,11 @@ export function PullRequests({ config }: PullRequestsProps) {
                 const prs: PullRequestRec[] = response.data['prs'];
                 prs.forEach((pr) => {
                     if (pr.creator === username) {
-                        pr.type = 'creator';
+                        pr.myRole = MyRole.CREATOR;
                     } else if (pr.reviewers.includes(username)) {
-                        pr.type = 'reviewer';
+                        pr.myRole = MyRole.REVIEWER;
                     } else if (pr.assignees.includes(username)) {
-                        pr.type = 'assignee';
+                        pr.myRole = MyRole.ASSIGNEE;
                     }
                 });
                 setPrs(response.data['prs']);
@@ -89,22 +107,22 @@ export function PullRequests({ config }: PullRequestsProps) {
 
     const handleToggleStateFilter = useCallback((e: any) => {
         switch (e.target.dataset.toggle) {
-            case 'open':
+            case PrState.OPEN:
                 setOpen((val) => !val);
                 break;
-            case 'merged':
+            case PrState.MERGED:
                 setMerged((val) => !val);
                 break;
-            case 'draft':
+            case PrState.DRAFT:
                 setDraft((val) => !val);
                 break;
-            case 'closed':
+            case PrState.CLOSED:
                 setClosed((val) => !val);
                 break;
         }
     }, []);
 
-    const handleChangeRoleFilter = useCallback((_event: any, value: string) => {
+    const handleChangeRoleFilter = useCallback((_event: any, value: any) => {
         setRole(value);
     }, []);
 
@@ -121,23 +139,18 @@ export function PullRequests({ config }: PullRequestsProps) {
                                 </Button>
                             ))}
                         </div>
-                        {/*{roleFilters.map((f) => (*/}
-                        {/*    <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleFilterToggle}>*/}
-                        {/*        {f}*/}
-                        {/*    </Button>*/}
-                        {/*))}*/}
                         <FormControl>
                             <RadioGroup row value={role} onChange={handleChangeRoleFilter}>
-                                <FormControlLabel value="creator" control={<Radio size="small" />} label="creator" />
-                                <FormControlLabel value="reviewer" control={<Radio size="small" />} label="reviewer" />
-                                <FormControlLabel value="assignee" control={<Radio size="small" />} label="assignee" />
+                                <FormControlLabel value={MyRole.CREATOR} control={<Radio size="small" />} label={MyRole.CREATOR} />
+                                <FormControlLabel value={MyRole.REVIEWER} control={<Radio size="small" />} label={MyRole.REVIEWER} />
+                                <FormControlLabel value={MyRole.ASSIGNEE} control={<Radio size="small" />} label={MyRole.ASSIGNEE} />
                             </RadioGroup>
                         </FormControl>
                     </div>
                 )}
                 <div className="prs-container custom-scroll">
                     {prs.map((pr) => (
-                        <div key={pr.number} className={`pr-container content-panel ${pr.state} ${pr.type}`}>
+                        <div key={pr.number} className={`pr-container content-panel ${pr.state} ${pr.myRole}`}>
                             <div className="pr-line">
                                 <div className={`pr-state pr-state--${pr.state}`}>
                                     <img src={getImgSrcByState(pr.state)} className="pr-state-img" title={pr.state} alt="state image" />
@@ -149,11 +162,7 @@ export function PullRequests({ config }: PullRequestsProps) {
                                     {pr.title}
                                 </span>
                             </div>
-                            <div className="pr-line">
-                                <span>(C) {pr.creator.toLowerCase()}</span>
-                                <span>(R) {pr.reviewers.toString().toLowerCase()}</span>
-                                <span>(A) {pr.assignees.toString().toLowerCase()}</span>
-                            </div>
+                            <div className="pr-line">{pr.reviewers.length > 0 && <span>(R) {pr.reviewers.toString().toLowerCase()}</span>}</div>
                         </div>
                     ))}
                 </div>
