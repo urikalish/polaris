@@ -1,6 +1,6 @@
 import './PullRequests.css';
 import { useCallback, useState } from 'react';
-import { Button } from '@mui/material';
+import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { ConfigObj } from '../../services/config.ts';
 import { sendMsgToBgPage } from '../../services/msg-handler.ts';
 import loadingImage from './loading.svg';
@@ -23,7 +23,7 @@ type PullRequestRec = {
 };
 
 const stateFilters = ['open', 'merged', 'draft', 'closed'];
-const roleFilters = ['creator', 'reviewer', 'assignee'];
+//const roleFilters = ['creator', 'reviewer', 'assignee'];
 
 function getImgSrcByState(state: string): string {
     let img = '';
@@ -54,9 +54,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     const [merged, setMerged] = useState(true);
     const [draft, setDraft] = useState(true);
     const [closed, setClosed] = useState(false);
-    const [creator, setCreator] = useState(true);
-    const [reviewer, setReviewer] = useState(false);
-    const [assignee, setAssignee] = useState(false);
+    const [role, setRole] = useState('creator');
     const [prs, setPrs] = useState<PullRequestRec[]>([]);
 
     const handleRefresh = useCallback(() => {
@@ -89,7 +87,7 @@ export function PullRequests({ config }: PullRequestsProps) {
         });
     }, [config]);
 
-    const handleFilterToggle = useCallback((e: any) => {
+    const handleToggleStateFilter = useCallback((e: any) => {
         switch (e.target.dataset.toggle) {
             case 'open':
                 setOpen((val) => !val);
@@ -103,36 +101,38 @@ export function PullRequests({ config }: PullRequestsProps) {
             case 'closed':
                 setClosed((val) => !val);
                 break;
-            case 'creator':
-                setCreator((val) => !val);
-                break;
-            case 'reviewer':
-                setReviewer((val) => !val);
-                break;
-            case 'assignee':
-                setAssignee((val) => !val);
-                break;
         }
+    }, []);
+
+    const handleChangeRoleFilter = useCallback((_event: any, value: string) => {
+        setRole(value);
     }, []);
 
     return (
         <div className="pull-requests content-with-actions">
-            <div
-                className={`prs-wrapper ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${creator ? 'creator' : ''} ${reviewer ? 'reviewer' : ''} ${assignee ? 'assignee' : ''}`}
-            >
+            <div className={`prs-wrapper ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${role}`}>
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.length && (
-                    <div className="prs-filter">
-                        {stateFilters.map((f) => (
-                            <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleFilterToggle}>
-                                {f}
-                            </Button>
-                        ))}
-                        {roleFilters.map((f) => (
-                            <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleFilterToggle}>
-                                {f}
-                            </Button>
-                        ))}
+                    <div className="prs-filters">
+                        <div>
+                            {stateFilters.map((f) => (
+                                <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleToggleStateFilter}>
+                                    {f}
+                                </Button>
+                            ))}
+                        </div>
+                        {/*{roleFilters.map((f) => (*/}
+                        {/*    <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleFilterToggle}>*/}
+                        {/*        {f}*/}
+                        {/*    </Button>*/}
+                        {/*))}*/}
+                        <FormControl>
+                            <RadioGroup row value={role} onChange={handleChangeRoleFilter}>
+                                <FormControlLabel value="creator" control={<Radio size="small" />} label="creator" />
+                                <FormControlLabel value="reviewer" control={<Radio size="small" />} label="reviewer" />
+                                <FormControlLabel value="assignee" control={<Radio size="small" />} label="assignee" />
+                            </RadioGroup>
+                        </FormControl>
                     </div>
                 )}
                 <div className="prs-container custom-scroll">
