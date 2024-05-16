@@ -11,6 +11,7 @@ import prClosedImage from './img/pr-closed.svg';
 import rvApprovedImage from './img/rv-approved.svg';
 import rvAwaitingImage from './img/rv-awaiting.svg';
 import rvChangesImage from './img/rv-changes.svg';
+import rvDismissedImage from './img/rv-dismissed.svg';
 
 enum PrState {
     OPEN = 'open',
@@ -20,9 +21,11 @@ enum PrState {
 }
 
 enum ReviewState {
+    AWAITING = 'awaiting',
     COMMENTED = 'commented',
     CHANGES_REQUESTED = 'changes_requested',
     APPROVED = 'approved',
+    DISMMISED = 'dismissed',
 }
 
 enum MyRole {
@@ -65,18 +68,28 @@ function getImgSrcByState(state: PrState): string {
     return img;
 }
 
+function getReviewStateForReviewer(pr: PullRequestRec, reviewerName: string): ReviewState {
+    const review = pr.reviews.find((r) => r.user === reviewerName);
+    return review ? review.state : ReviewState.AWAITING;
+}
+
 function getImgSrcForReviewState(pr: PullRequestRec, reviewerName: string): string {
     let img = rvAwaitingImage;
-    const review = pr.reviews.find((r) => r.user === reviewerName);
-    if (review) {
-        switch (review.state) {
-            case ReviewState.APPROVED:
-                img = rvApprovedImage;
-                break;
-            case ReviewState.CHANGES_REQUESTED:
-                img = rvChangesImage;
-                break;
-        }
+    const reviewState = getReviewStateForReviewer(pr, reviewerName);
+    switch (reviewState) {
+        case ReviewState.AWAITING:
+        case ReviewState.COMMENTED:
+            img = rvAwaitingImage;
+            break;
+        case ReviewState.APPROVED:
+            img = rvApprovedImage;
+            break;
+        case ReviewState.CHANGES_REQUESTED:
+            img = rvChangesImage;
+            break;
+        case ReviewState.DISMMISED:
+            img = rvDismissedImage;
+            break;
     }
     return img;
 }
@@ -183,9 +196,9 @@ export function PullRequests({ config }: PullRequestsProps) {
                             </div>
                             <div className="pr-line">
                                 {pr.reviewers.map((reviewerName) => (
-                                    <div key={reviewerName} className="pr-reviewer">
+                                    <div key={reviewerName} className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}>
                                         <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
-                                        <span className="pr-reviewer-name">{reviewerName}</span>
+                                        <span className="pr-reviewer-name">{reviewerName.toLowerCase()}</span>
                                     </div>
                                 ))}
                             </div>

@@ -12,6 +12,11 @@
     --color--pr--merged: #8250df;
     --color--pr--draft: #6e7781;
     --color--pr--closed: #cf222e;
+    --color--rv--awaiting: #bf8700;
+    --color--rv--commented: #bf8700;
+    --color--rv--approved: #2da44e;
+    --color--rv--changes-requested: #cf222e;
+    --color--rv--dismissed: #6e7781;
     display: grid;
     grid-template-columns: 32px;
     grid-template-rows: auto 1fr;
@@ -79,6 +84,7 @@
 .prs-container {
     position: relative;
     overflow: auto;
+    user-select: none;
 }
 
 .pr-container {
@@ -159,16 +165,46 @@
 .pr-reviewer {
     display: flex;
     align-items: center;
-    margin-right: 8px;
+    margin-right: 4px;
 }
 
 .pr-review-state-img {
     width: 20px;
     height: 20px;
+    margin-right: 1px;
+}
+.pr-review-state--awaiting > .pr-review-state-img,
+.pr-review-state--commented > .pr-review-state-img,
+.pr-review-state--dismissed > .pr-review-state-img {
+    margin-right: -3px;
+}
+.pr-review-state--approved > .pr-review-state-img {
+    position: relative;
+    top: -1px;
+    margin-right: -1px;
+}
+.pr-review-state--changes_requested > .pr-review-state-img {
+    width: 14px;
+    height: 14px;
+    margin-right: 2px;
 }
 
 .pr-reviewer-name {
     font-size: 14px;
-    color: #ccc;
-    margin-left: 2px;
+    color: #fff;
+}
+.pr-review-state--awaiting > .pr-reviewer-name {
+    color: var(--color--rv--awaiting);
+}
+.pr-review-state--commented > .pr-reviewer-name {
+    color: var(--color--rv--commented);
+}
+.pr-review-state--approved > .pr-reviewer-name {
+    color: var(--color--rv--approved);
+}
+.pr-review-state--changes_requested > .pr-reviewer-name {
+    color: var(--color--rv--changes-requested);
+}
+.pr-review-state--dismissed > .pr-reviewer-name {
+    color: var(--color--rv--dismissed);
 }
