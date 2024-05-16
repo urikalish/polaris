@@ -22,7 +22,8 @@ type PullRequestRec = {
     type?: 'creator' | 'reviewer' | 'assignee';
 };
 
-const filters = ['open', 'merged', 'draft', 'closed', 'creator', 'reviewer', 'assignee'];
+const stateFilters = ['open', 'merged', 'draft', 'closed'];
+const roleFilters = ['creator', 'reviewer', 'assignee'];
 
 function getImgSrcByState(state: string): string {
     let img = '';
@@ -122,7 +123,12 @@ export function PullRequests({ config }: PullRequestsProps) {
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.length && (
                     <div className="prs-filter">
-                        {filters.map((f) => (
+                        {stateFilters.map((f) => (
+                            <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleFilterToggle}>
+                                {f}
+                            </Button>
+                        ))}
+                        {roleFilters.map((f) => (
                             <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleFilterToggle}>
                                 {f}
                             </Button>

@@ -48,10 +48,23 @@
 .filter-btn:nth-child(5) {
     margin-left: 32px !important;
 }
-.prs-wrapper.open .filter-btn--open,
-.prs-wrapper.merged .filter-btn--merged,
-.prs-wrapper.draft .filter-btn--draft,
-.prs-wrapper.closed .filter-btn--closed,
+
+.prs-wrapper.open .filter-btn--open {
+    background-color: var(--color--pr--open) !important;
+    border: none !important;
+}
+.prs-wrapper.merged .filter-btn--merged {
+    background-color: var(--color--pr--merged) !important;
+    border: none !important;
+}
+.prs-wrapper.draft .filter-btn--draft {
+    background-color: var(--color--pr--draft) !important;
+    border: none !important;
+}
+.prs-wrapper.closed .filter-btn--closed {
+    background-color: var(--color--pr--closed) !important;
+    border: none !important;
+}
 .prs-wrapper.creator .filter-btn--creator,
 .prs-wrapper.reviewer .filter-btn--reviewer,
 .prs-wrapper.assignee .filter-btn--assignee {
