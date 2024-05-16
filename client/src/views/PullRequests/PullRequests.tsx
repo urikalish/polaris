@@ -11,7 +11,7 @@ type PullRequestRec = {
     state: string;
     title: string;
     branch: string;
-    owner: string;
+    creator: string;
     reviewers: string[];
     assignees: string[];
     type?: string;
@@ -26,9 +26,9 @@ export function PullRequests({ config }: PullRequestsProps) {
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(true);
     const [closed, setClosed] = useState(false);
-    const [owner, setOwner] = useState(true);
+    const [creator, setCreator] = useState(true);
     const [reviewer, setReviewer] = useState(true);
-    const [assignee, setAssignee] = useState(false);
+    const [assignee, setAssignee] = useState(true);
     const [prs, setPrs] = useState<PullRequestRec[]>([]);
 
     const handleRefresh = useCallback(() => {
@@ -47,8 +47,8 @@ export function PullRequests({ config }: PullRequestsProps) {
             } else {
                 const prs: PullRequestRec[] = response.data['prs'];
                 prs.forEach((pr) => {
-                    if (pr.owner === username) {
-                        pr.type = 'owner';
+                    if (pr.creator === username) {
+                        pr.type = 'creator';
                     } else if (pr.reviewers.includes(username)) {
                         pr.type = 'reviewer';
                     } else if (pr.assignees.includes(username)) {
@@ -72,8 +72,8 @@ export function PullRequests({ config }: PullRequestsProps) {
     const handleToggleClosed = useCallback(() => {
         setClosed((val) => !val);
     }, []);
-    const handleToggleOwner = useCallback(() => {
-        setOwner((val) => !val);
+    const handleToggleCreator = useCallback(() => {
+        setCreator((val) => !val);
     }, []);
 
     const handleToggleReviewer = useCallback(() => {
@@ -87,7 +87,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     return (
         <div className="pull-requests content-with-actions overflow--hidden">
             <div
-                className={`prs-wrapper height--100 overflow--hidden ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${closed ? 'closed' : ''} ${owner ? 'owner' : ''} ${reviewer ? 'reviewer' : ''} ${assignee ? 'assignee' : ''}`}
+                className={`prs-wrapper height--100 overflow--hidden ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${closed ? 'closed' : ''} ${creator ? 'creator' : ''} ${reviewer ? 'reviewer' : ''} ${assignee ? 'assignee' : ''}`}
             >
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.length && (
@@ -101,8 +101,8 @@ export function PullRequests({ config }: PullRequestsProps) {
                         <Button className="filter-btn filter-btn--closed" onClick={handleToggleClosed}>
                             closed
                         </Button>
-                        <Button className="filter-btn filter-btn--owner" onClick={handleToggleOwner}>
-                            owner
+                        <Button className="filter-btn filter-btn--creator" onClick={handleToggleCreator}>
+                            creator
                         </Button>
                         <Button className="filter-btn filter-btn--reviewer" onClick={handleToggleReviewer}>
                             reviewer
