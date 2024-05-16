@@ -17,7 +17,7 @@ app.use(cors());
 app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
-        const prs = allPRs.filter((pr) => pr.owner === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
+        const prs = allPRs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
         console.log(`${username} has ${prs.length} relevant PRs`);
         res.send({ data: { prs } });
     } catch (error) {
@@ -46,7 +46,7 @@ async function refreshGitHubData() {
                     state: pr['merged_at'] ? 'merged' : pr['closed_at'] ? 'closed' : 'open',
                     title: pr.title,
                     branch: pr.head.ref,
-                    owner: pr.user['login'],
+                    creator: pr.user['login'],
                     reviewers: pr['requested_reviewers'] ? pr['requested_reviewers'].map((rr) => rr['login']) : [],
                     assignees: pr['assignees'] ? pr['assignees'].map((rr) => rr['login']) : [],
                 };
