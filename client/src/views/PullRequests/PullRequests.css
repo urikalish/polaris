@@ -15,16 +15,23 @@
     display: grid;
     grid-template-columns: 32px;
     grid-template-rows: auto 1fr;
+    font-size: 15px;
+    overflow: hidden;
 }
 
 .prs-wrapper {
+    height: 100%;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 32px 1fr;
     gap: 4px;
+    overflow: hidden;
 }
 
 .prs-filter {
+    position: relative;
+    display: flex;
+    align-items: center;
     padding-top: 6px;
 }
 
@@ -49,6 +56,11 @@
 .prs-wrapper.reviewer .filter-btn--reviewer,
 .prs-wrapper.assignee .filter-btn--assignee {
     background-color: #888 !important;
+}
+
+.prs-container {
+    position: relative;
+    overflow: auto;
 }
 
 .pr-container {
@@ -80,27 +92,21 @@
 }
 
 .pr-container {
+    border-top: 1px solid #444;
+    padding: 4px;
 }
 
 .pr-line {
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 4px;
-    border-top: 1px solid #444;
 }
 
 .pr-state {
-    flex: 0 0 auto;
-    width: 80px;
+    width: 20px;
     height: 20px;
-    line-height: 20px;
-    text-align: center;
-    font-size: 15px;
-    color: #fff;
-    border-radius: 4px;
-    filter: grayscale(0.5);
-    user-select: none;
+    border-radius: 2px;
+    padding: 2px;
 }
 .pr-state--open {
     background-color: var(--color--pr--open);
@@ -114,12 +120,15 @@
 .pr-state--closed {
     background-color: var(--color--pr--closed);
 }
+.pr-state-img {
+    height: 16px;
+    width: 16px;
+}
 
 .pr-link {
     position: relative;
     top: 1px;
     flex: 0 0 auto;
-    font-size: 15px;
     color: #999 !important;
 }
 
@@ -127,5 +136,4 @@
     position: relative;
     top: 1px;
     flex: 1 1 auto;
-    font-size: 15px;
 }

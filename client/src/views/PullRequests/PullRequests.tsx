@@ -4,6 +4,10 @@ import { Button } from '@mui/material';
 import { ConfigObj } from '../../services/config.ts';
 import { sendMsgToBgPage } from '../../services/msg-handler.ts';
 import loadingImage from './loading.svg';
+import prOpenImage from './pr-open.svg';
+import prMergedImage from './pr-merged.svg';
+import prDraftImage from './pr-draft.svg';
+import prClosedImage from './pr-closed.svg';
 
 type PullRequestRec = {
     number: number;
@@ -18,6 +22,27 @@ type PullRequestRec = {
     type?: 'creator' | 'reviewer' | 'assignee';
 };
 
+const filters = ['open', 'merged', 'draft', 'closed', 'creator', 'reviewer', 'assignee'];
+
+function getImgSrcByState(state: string): string {
+    let img = '';
+    switch (state) {
+        case 'open':
+            img = prOpenImage;
+            break;
+        case 'merged':
+            img = prMergedImage;
+            break;
+        case 'draft':
+            img = prDraftImage;
+            break;
+        case 'closed':
+            img = prClosedImage;
+            break;
+    }
+    return img;
+}
+
 type PullRequestsProps = {
     config: ConfigObj | null;
 };
@@ -29,8 +54,8 @@ export function PullRequests({ config }: PullRequestsProps) {
     const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
     const [creator, setCreator] = useState(true);
-    const [reviewer, setReviewer] = useState(true);
-    const [assignee, setAssignee] = useState(true);
+    const [reviewer, setReviewer] = useState(false);
+    const [assignee, setAssignee] = useState(false);
     const [prs, setPrs] = useState<PullRequestRec[]>([]);
 
     const handleRefresh = useCallback(() => {
@@ -63,70 +88,65 @@ export function PullRequests({ config }: PullRequestsProps) {
         });
     }, [config]);
 
-    const handleToggleOpen = useCallback(() => {
-        setOpen((val) => !val);
-    }, []);
-    const handleToggleMerged = useCallback(() => {
-        setMerged((val) => !val);
-    }, []);
-    const handleToggleDraft = useCallback(() => {
-        setDraft((val) => !val);
-    }, []);
-    const handleToggleClosed = useCallback(() => {
-        setClosed((val) => !val);
-    }, []);
-    const handleToggleCreator = useCallback(() => {
-        setCreator((val) => !val);
-    }, []);
-    const handleToggleReviewer = useCallback(() => {
-        setReviewer((val) => !val);
-    }, []);
-    const handleToggleAssignee = useCallback(() => {
-        setAssignee((val) => !val);
+    const handleFilterToggle = useCallback((e: any) => {
+        switch (e.target.dataset.toggle) {
+            case 'open':
+                setOpen((val) => !val);
+                break;
+            case 'merged':
+                setMerged((val) => !val);
+                break;
+            case 'draft':
+                setDraft((val) => !val);
+                break;
+            case 'closed':
+                setClosed((val) => !val);
+                break;
+            case 'creator':
+                setCreator((val) => !val);
+                break;
+            case 'reviewer':
+                setReviewer((val) => !val);
+                break;
+            case 'assignee':
+                setAssignee((val) => !val);
+                break;
+        }
     }, []);
 
     return (
-        <div className="pull-requests content-with-actions overflow--hidden">
+        <div className="pull-requests content-with-actions">
             <div
-                className={`prs-wrapper height--100 overflow--hidden ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${creator ? 'creator' : ''} ${reviewer ? 'reviewer' : ''} ${assignee ? 'assignee' : ''}`}
+                className={`prs-wrapper ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${creator ? 'creator' : ''} ${reviewer ? 'reviewer' : ''} ${assignee ? 'assignee' : ''}`}
             >
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.length && (
-                    <div className="prs-filter position--relative display--flex align-items--center">
-                        <Button className="filter-btn filter-btn--open" onClick={handleToggleOpen}>
-                            open
-                        </Button>
-                        <Button className="filter-btn filter-btn--merged" onClick={handleToggleMerged}>
-                            merged
-                        </Button>
-                        <Button className="filter-btn filter-btn--draft" onClick={handleToggleDraft}>
-                            draft
-                        </Button>
-                        <Button className="filter-btn filter-btn--closed" onClick={handleToggleClosed}>
-                            closed
-                        </Button>
-                        <Button className="filter-btn filter-btn--creator" onClick={handleToggleCreator}>
-                            creator
-                        </Button>
-                        <Button className="filter-btn filter-btn--reviewer" onClick={handleToggleReviewer}>
-                            reviewer
-                        </Button>
-                        <Button className="filter-btn filter-btn--assignee" onClick={handleToggleAssignee}>
-                            assignee
-                        </Button>
+                    <div className="prs-filter">
+                        {filters.map((f) => (
+                            <Button className={`filter-btn filter-btn--${f}`} data-toggle={f} onClick={handleFilterToggle}>
+                                {f}
+                            </Button>
+                        ))}
                     </div>
                 )}
-                <div className="prs-container position--relative overflow--auto custom-scroll">
+                <div className="prs-container custom-scroll">
                     {prs.map((pr) => (
                         <div key={pr.number} className={`pr-container content-panel ${pr.state} ${pr.type}`}>
                             <div className="pr-line">
-                                <span className={`pr-state pr-state--${pr.state}`}>{pr.state}</span>
+                                <div className={`pr-state pr-state--${pr.state}`}>
+                                    <img src={getImgSrcByState(pr.state)} className="pr-state-img" title={pr.state} alt="state image" />
+                                </div>
                                 <a href={pr.htmlUrl} target="_blank" className="pr-link">
                                     {pr.number}
                                 </a>
                                 <span className="pr-title ellipsis" title={pr.title}>
                                     {pr.title}
                                 </span>
+                            </div>
+                            <div className="pr-line">
+                                <span>(C) {pr.creator.toLowerCase()}</span>
+                                <span>(R) {pr.reviewers.toString().toLowerCase()}</span>
+                                <span>(A) {pr.assignees.toString().toLowerCase()}</span>
                             </div>
                         </div>
                     ))}

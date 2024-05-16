@@ -15,7 +15,7 @@ async function getPRs() {
         Authorization: `token ${GITHUB_AUTH_TOKEN}`,
     };
 
-    const NUMBER_OF_PAGES = 1;
+    const NUMBER_OF_PAGES = 3;
     const PRS_PER_PAGE = 100;
 
     for (let page = 1; page <= NUMBER_OF_PAGES; page++) {
@@ -74,7 +74,7 @@ async function getPRs() {
     return allPRs;
 }
 
-parentPort.on('message', async (message) => {
+parentPort.on('message', async (/*message*/) => {
     const result = await getPRs();
     parentPort.postMessage(result);
 });
