@@ -52,7 +52,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(true);
-    const [draft, setDraft] = useState(false);
+    const [draft, setDraft] = useState(true);
     const [closed, setClosed] = useState(false);
     const [creator, setCreator] = useState(true);
     const [reviewer, setReviewer] = useState(false);
