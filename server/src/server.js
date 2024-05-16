@@ -28,12 +28,11 @@ app.get('/pull-requests', async (req, res) => {
 async function refreshGitHubData() {
     const allPrs = [];
 
+    const apiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}`;
     const headers = {
         Accept: 'application/vnd.github.text+json',
         Authorization: `token ${GITHUB_AUTH_TOKEN}`,
     };
-
-    const apiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}`;
 
     for (let page = 1; page <= 1; page++) {
         const url = `${apiUrlBase}/pulls?state=all&per_page=100&page=${page}`;
