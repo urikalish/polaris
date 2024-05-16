@@ -155,3 +155,20 @@
     top: 1px;
     flex: 1 1 auto;
 }
+
+.pr-reviewer {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.pr-review-state-img {
+    width: 20px;
+    height: 20px;
+}
+
+.pr-reviewer-name {
+    font-size: 14px;
+    color: #ccc;
+    margin-left: 2px;
+}
