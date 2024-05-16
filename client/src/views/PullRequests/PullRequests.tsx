@@ -12,9 +12,10 @@ type PullRequestRec = {
     title: string;
     branch: string;
     creator: string;
-    reviewers: string[];
     assignees: string[];
-    type?: string;
+    reviewers: string[];
+    reviews: { user: string; state: 'commented' | 'changes_requested' | 'approved' }[];
+    type?: 'creator' | 'reviewer' | 'assignee';
 };
 
 type PullRequestsProps = {
