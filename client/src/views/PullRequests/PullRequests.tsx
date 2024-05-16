@@ -8,7 +8,7 @@ import loadingImage from './loading.svg';
 type PullRequestRec = {
     number: number;
     htmlUrl: string;
-    state: string;
+    state: 'open' | 'merged' | 'draft' | 'closed';
     title: string;
     branch: string;
     creator: string;
@@ -26,6 +26,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(true);
+    const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
     const [creator, setCreator] = useState(true);
     const [reviewer, setReviewer] = useState(true);
@@ -65,22 +66,21 @@ export function PullRequests({ config }: PullRequestsProps) {
     const handleToggleOpen = useCallback(() => {
         setOpen((val) => !val);
     }, []);
-
     const handleToggleMerged = useCallback(() => {
         setMerged((val) => !val);
     }, []);
-
+    const handleToggleDraft = useCallback(() => {
+        setDraft((val) => !val);
+    }, []);
     const handleToggleClosed = useCallback(() => {
         setClosed((val) => !val);
     }, []);
     const handleToggleCreator = useCallback(() => {
         setCreator((val) => !val);
     }, []);
-
     const handleToggleReviewer = useCallback(() => {
         setReviewer((val) => !val);
     }, []);
-
     const handleToggleAssignee = useCallback(() => {
         setAssignee((val) => !val);
     }, []);
@@ -88,7 +88,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     return (
         <div className="pull-requests content-with-actions overflow--hidden">
             <div
-                className={`prs-wrapper height--100 overflow--hidden ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${closed ? 'closed' : ''} ${creator ? 'creator' : ''} ${reviewer ? 'reviewer' : ''} ${assignee ? 'assignee' : ''}`}
+                className={`prs-wrapper height--100 overflow--hidden ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${creator ? 'creator' : ''} ${reviewer ? 'reviewer' : ''} ${assignee ? 'assignee' : ''}`}
             >
                 {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
                 {prs.length && (
@@ -98,6 +98,9 @@ export function PullRequests({ config }: PullRequestsProps) {
                         </Button>
                         <Button className="filter-btn filter-btn--merged" onClick={handleToggleMerged}>
                             merged
+                        </Button>
+                        <Button className="filter-btn filter-btn--draft" onClick={handleToggleDraft}>
+                            draft
                         </Button>
                         <Button className="filter-btn filter-btn--closed" onClick={handleToggleClosed}>
                             closed

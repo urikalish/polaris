@@ -10,6 +10,7 @@
 .pull-requests {
     --color--pr--open: #2da44e;
     --color--pr--merged: #8250df;
+    --color--pr--draft: #6e7781;
     --color--pr--closed: #cf222e;
     display: grid;
     grid-template-columns: 32px;
@@ -37,11 +38,12 @@
     font-size: 15px !important;
     text-transform: none !important;
 }
-.filter-btn:nth-child(4) {
+.filter-btn:nth-child(5) {
     margin-left: 32px !important;
 }
 .prs-wrapper.open .filter-btn--open,
 .prs-wrapper.merged .filter-btn--merged,
+.prs-wrapper.draft .filter-btn--draft,
 .prs-wrapper.closed .filter-btn--closed,
 .prs-wrapper.creator .filter-btn--creator,
 .prs-wrapper.reviewer .filter-btn--reviewer,
@@ -58,6 +60,9 @@
 .prs-wrapper.merged.creator .pr-container.merged.creator,
 .prs-wrapper.merged.reviewer .pr-container.merged.reviewer,
 .prs-wrapper.merged.assignee .pr-container.merged.assignee,
+.prs-wrapper.draft.creator .pr-container.draft.creator,
+.prs-wrapper.draft.reviewer .pr-container.draft.reviewer,
+.prs-wrapper.draft.assignee .pr-container.draft.assignee,
 .prs-wrapper.closed.creator .pr-container.closed.creator,
 .prs-wrapper.closed.reviewer .pr-container.closed.reviewer,
 .prs-wrapper.closed.assignee .pr-container.closed.assignee {
@@ -102,6 +107,9 @@
 }
 .pr-state--merged {
     background-color: var(--color--pr--merged);
+}
+.pr-state--draft {
+    background-color: var(--color--pr--draft);
 }
 .pr-state--closed {
     background-color: var(--color--pr--closed);
