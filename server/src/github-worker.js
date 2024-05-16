@@ -7,7 +7,7 @@ const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME;
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
 
 async function getPRs() {
-    const allPRs = [];
+    const allPrs = [];
 
     const apiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}`;
     const headers = {
@@ -64,14 +64,14 @@ async function getPRs() {
                     }
                 });
 
-                allPRs.push(prRecord);
+                allPrs.push(prRecord);
             }
         } catch (error) {
             console.log(error);
         }
     }
 
-    return allPRs;
+    return allPrs;
 }
 
 parentPort.on('message', async (/*message*/) => {

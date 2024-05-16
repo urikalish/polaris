@@ -8,11 +8,11 @@ const PORT = 1948;
 const app = express();
 app.use(cors());
 
-let allPRs = [];
+let allPrs = [];
 
 const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (result) => {
-    allPRs = result;
+    allPrs = result;
 });
 function refreshGitHubData() {
     gitHubWorker.postMessage({});
@@ -21,7 +21,7 @@ function refreshGitHubData() {
 app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
-        const prs = allPRs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
+        const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
         res.send({ data: { prs } });
     } catch (error) {
         res.send({ error: error.toString() });
