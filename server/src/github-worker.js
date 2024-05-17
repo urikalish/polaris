@@ -1,15 +1,36 @@
+const fs = require('fs');
 const { parentPort } = require('worker_threads');
 const axios = require('axios');
+
 const GITHUB_BASE_URL = process.env.GITHUB_BASE_URL;
 const GITHUB_ORG_NAME = process.env.GITHUB_ORG_NAME;
 const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME;
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
 const GITHUB_MAX_NUM_OF_PRS = parseInt(process.env.GITHUB_MAX_NUM_OF_PRS);
+const PRS_PERSISTENT_FILE = process.env.PRS_PERSISTENT_FILE;
+
 const gitHubRepoApiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}`;
 const gitHubApiHeaders = {
     Accept: 'application/vnd.github.text+json',
     Authorization: `token ${GITHUB_AUTH_TOKEN}`,
 };
+
+function loadPrsFromFile() {
+    if (!fs.existsSync(PRS_PERSISTENT_FILE)) {
+        return [];
+    }
+    const jsonData = fs.readFileSync(PRS_PERSISTENT_FILE, 'utf8');
+    return JSON.parse(jsonData);
+}
+
+function savePrsToFile(prs) {
+    const prsJsonStr = JSON.stringify(prs, null, 2);
+    fs.writeFile(PRS_PERSISTENT_FILE, prsJsonStr, (err) => {
+        if (err) {
+            console.error(`Error writing to ${PRS_PERSISTENT_FILE}`, err);
+        }
+    });
+}
 
 async function getPrRecord(pr) {
     const prRecord = {
@@ -105,7 +126,9 @@ async function getPrs(outdatedPrs) {
     return updatedPrs;
 }
 
-parentPort.on('message', async (outdatedPrs) => {
+parentPort.on('message', async () => {
+    const outdatedPrs = loadPrsFromFile();
     const updatedPrs = await getPrs(outdatedPrs);
+    savePrsToFile(updatedPrs);
     parentPort.postMessage(updatedPrs);
 });
