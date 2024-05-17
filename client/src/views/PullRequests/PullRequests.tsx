@@ -50,24 +50,20 @@ type PullRequestRec = {
 
 const stateFilters = [PrState.OPEN, PrState.MERGED, PrState.DRAFT, PrState.CLOSED];
 
-function getImgSrcByState(state: PrState): string {
-    let img = '';
-    switch (state) {
-        case PrState.OPEN:
-            img = prOpenImg;
-            break;
-        case PrState.MERGED:
-            img = prMergedImg;
-            break;
-        case PrState.DRAFT:
-            img = prDraftImg;
-            break;
-        case PrState.CLOSED:
-            img = prClosedImg;
-            break;
-    }
-    return img;
-}
+const stateToImg = {
+    [PrState.OPEN]: prOpenImg,
+    [PrState.MERGED]: prMergedImg,
+    [PrState.DRAFT]: prDraftImg,
+    [PrState.CLOSED]: prClosedImg,
+};
+
+const reviewStateToImg = {
+    [ReviewState.AWAITING]: rvAwaitingImg,
+    [ReviewState.COMMENTED]: rvCommentedImg,
+    [ReviewState.CHANGES_REQUESTED]: rvChangesImg,
+    [ReviewState.APPROVED]: rvApprovedImg,
+    [ReviewState.DISMISSED]: rvDismissedImg,
+};
 
 function getReviewStateForReviewer(pr: PullRequestRec, reviewerName: string): ReviewState {
     const review = pr.reviews.find((r) => r.user === reviewerName);
@@ -75,26 +71,8 @@ function getReviewStateForReviewer(pr: PullRequestRec, reviewerName: string): Re
 }
 
 function getImgSrcForReviewState(pr: PullRequestRec, reviewerName: string): string {
-    let img = rvAwaitingImg;
     const reviewState = getReviewStateForReviewer(pr, reviewerName);
-    switch (reviewState) {
-        case ReviewState.AWAITING:
-            img = rvAwaitingImg;
-            break;
-        case ReviewState.COMMENTED:
-            img = rvCommentedImg;
-            break;
-        case ReviewState.APPROVED:
-            img = rvApprovedImg;
-            break;
-        case ReviewState.CHANGES_REQUESTED:
-            img = rvChangesImg;
-            break;
-        case ReviewState.DISMISSED:
-            img = rvDismissedImg;
-            break;
-    }
-    return img;
+    return reviewStateToImg[reviewState];
 }
 
 type PullRequestsProps = {
@@ -188,7 +166,7 @@ export function PullRequests({ config }: PullRequestsProps) {
                         <div key={pr.number} className={`pr-container content-panel ${pr.state} ${pr.myRole}`}>
                             <div className="pr-line">
                                 <div className={`pr-state pr-state--${pr.state}`}>
-                                    <img src={getImgSrcByState(pr.state)} className="pr-state-img" title={pr.state} alt="state image" />
+                                    <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
                                 </div>
                                 <a href={pr.htmlUrl} target="_blank" className="pr-link">
                                     {pr.number}
