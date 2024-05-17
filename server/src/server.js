@@ -1,3 +1,6 @@
+const fs = require('fs');
+const prsFilePath = 'prs.json';
+
 require('dotenv').config();
 const GITHUB_MINUTES_BETWEEN_UPDATES = process.env.GITHUB_MINUTES_BETWEEN_UPDATES;
 
@@ -15,6 +18,7 @@ let allPrs = [];
 const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
+    savePrsToFile(allPrs);
     setTimeout(
         () => {
             updatePrs(allPrs);
@@ -22,6 +26,25 @@ gitHubWorker.on('message', (updatedPrs) => {
         GITHUB_MINUTES_BETWEEN_UPDATES * 60 * 1000,
     );
 });
+
+function loadPrsFromFile() {
+    if (fs.existsSync(prsFilePath)) {
+        const jsonData = fs.readFileSync(prsFilePath, 'utf8');
+        return JSON.parse(jsonData);
+    } else {
+        return [];
+    }
+}
+
+function savePrsToFile(prs) {
+    const prsJsonStr = JSON.stringify(prs, null, 2);
+    fs.writeFile(prsFilePath, prsJsonStr, (err) => {
+        if (err) {
+            console.error(`Error writing file ${prsJsonStr}`, err);
+        }
+    });
+}
+
 function updatePrs(outdatedPrs) {
     gitHubWorker.postMessage(outdatedPrs);
 }
@@ -38,8 +61,9 @@ app.get('/pull-requests', async (req, res) => {
 
 function init() {
     console.log('Server starting...');
-    app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`));
+    allPrs = loadPrsFromFile();
     updatePrs(allPrs);
+    app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`));
 }
 
 init();

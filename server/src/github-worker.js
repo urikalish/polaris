@@ -79,10 +79,13 @@ async function getPrs(outdatedPrs) {
             let res = await axios.get(url, { headers: gitHubApiHeaders });
             const prs = await res.data;
             for (let pr of prs) {
-                const outdatedPr = outdatedPrs.find((p) => p.number === pr.number);
-                const prRecord = outdatedPr && !isPrActive(outdatedPr) ? outdatedPr : await getPrRecord(pr);
-                updatedPrs.push(prRecord);
-
+                try {
+                    const outdatedPr = outdatedPrs.find((p) => p.number === pr.number);
+                    const prRecord = outdatedPr && !isPrActive(outdatedPr) ? outdatedPr : await getPrRecord(pr);
+                    updatedPrs.push(prRecord);
+                } catch (error) {
+                    console.error(`error on pr ${pr.number}`, error);
+                }
                 count++;
                 const percentage = Math.trunc((count / totalCount) * 100);
                 if (percentage % 10 === 0 && percentage !== lastReportedPercentage) {
@@ -94,8 +97,6 @@ async function getPrs(outdatedPrs) {
             console.error(error);
         }
     }
-
-    updatedPrs.length = Math.min(updatedPrs.length, GITHUB_MAX_NUM_OF_PRS);
 
     console.log('get PRs - DONE');
     return updatedPrs;
