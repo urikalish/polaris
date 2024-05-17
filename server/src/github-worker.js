@@ -39,7 +39,10 @@ async function getPrRecord(pr) {
     const url = `${gitHubRepoApiUrlBase}/pulls/${prRecord.number}/reviews`;
     const res = await axios.get(url, { headers: gitHubApiHeaders });
     const reviews = await res.data;
-    reviews.forEach((review) => {
+    for (let review of reviews) {
+        if (!review.user) {
+            continue;
+        }
         const reviewerName = review.user.login;
         if (!prRecord.reviewers.includes(reviewerName)) {
             prRecord.reviewers.push(reviewerName);
@@ -50,7 +53,7 @@ async function getPrRecord(pr) {
         } else {
             prRecord.reviews.push({ user: reviewerName, state: review.state.toLowerCase() });
         }
-    });
+    }
 
     //sort
     prRecord.assignees.sort();
