@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { parentPort } = require('worker_threads');
 const axios = require('axios');
+require('dotenv').config();
 
 const GITHUB_BASE_URL = process.env.GITHUB_BASE_URL;
 const GITHUB_ORG_NAME = process.env.GITHUB_ORG_NAME;
