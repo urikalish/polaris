@@ -2,7 +2,6 @@ import './PullRequests.css';
 import { useCallback, useState } from 'react';
 import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { ConfigObj } from '../../services/config.ts';
-import { sendMsgToBgPage } from '../../services/msg-handler.ts';
 import loadingImg from './img/loading.svg';
 import prOpenImg from './img/pr-open.svg';
 import prMergedImg from './img/pr-merged.svg';
@@ -98,7 +97,7 @@ export function PullRequests({ config }: PullRequestsProps) {
             return;
         }
         const params = `username=${username}`;
-        sendMsgToBgPage({ type: 'pull-requests', params }, (response: any) => {
+        chrome.runtime.sendMessage({ type: 'pull-requests', params }, (response: any) => {
             if (response.error) {
                 alert('Error: ' + response.error);
             } else {
