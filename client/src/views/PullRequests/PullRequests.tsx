@@ -115,7 +115,7 @@ export function PullRequests({ config }: PullRequestsProps) {
         setLoading(true);
         const username = config?.gitHubUserName;
         if (!username) {
-            alert('Username is undefined');
+            alert('Username is undefined, please check the settings tab');
             setLoading(false);
             return;
         }
@@ -126,6 +126,8 @@ export function PullRequests({ config }: PullRequestsProps) {
             } else {
                 const prs: PullRequestRec[] = response.data['prs'];
                 prs.forEach((pr) => {
+                    pr.reviewers.sort();
+                    pr.assignees.sort();
                     if (pr.creator === username) {
                         pr.myRole = MyRole.CREATOR;
                     } else if (pr.reviewers.includes(username)) {
