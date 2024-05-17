@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
+    "server": "cd server && yarn server",
     "full": "cd server && yarn full && cd ../client && yarn full"
   },
   "pre-commit": "full",
