@@ -1,4 +1,6 @@
 require('dotenv').config();
+const GITHUB_MINUTES_BETWEEN_UPDATES = process.env.GITHUB_MINUTES_BETWEEN_UPDATES;
+
 const { Worker } = require('worker_threads');
 const cors = require('cors');
 const express = require('express');
@@ -11,11 +13,17 @@ app.use(cors());
 let allPrs = [];
 
 const gitHubWorker = new Worker('./github-worker.js');
-gitHubWorker.on('message', (result) => {
-    allPrs = result;
+gitHubWorker.on('message', (updatedPrs) => {
+    allPrs = updatedPrs;
+    setTimeout(
+        () => {
+            updatePrs(allPrs);
+        },
+        GITHUB_MINUTES_BETWEEN_UPDATES * 60 * 1000,
+    );
 });
-function refreshGitHubData() {
-    gitHubWorker.postMessage({});
+function updatePrs(outdatedPrs) {
+    gitHubWorker.postMessage(outdatedPrs);
 }
 
 app.get('/pull-requests', async (req, res) => {
@@ -31,7 +39,7 @@ app.get('/pull-requests', async (req, res) => {
 function init() {
     console.log('Server starting...');
     app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`));
-    refreshGitHubData();
+    updatePrs(allPrs);
 }
 
 init();
