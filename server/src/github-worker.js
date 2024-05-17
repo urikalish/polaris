@@ -17,6 +17,9 @@ async function getPRs() {
 
     const NUMBER_OF_PAGES = 3;
     const PRS_PER_PAGE = 100;
+    const totalCount = NUMBER_OF_PAGES * PRS_PER_PAGE;
+    let count = 0;
+    let lastReportedPercentage = 0;
 
     for (let page = 1; page <= NUMBER_OF_PAGES; page++) {
         const url = `${apiUrlBase}/pulls?state=all&per_page=${PRS_PER_PAGE}&page=${page}`;
@@ -65,6 +68,13 @@ async function getPRs() {
                 });
 
                 allPrs.push(prRecord);
+
+                count++;
+                const percentage = Math.trunc((count / totalCount) * 100);
+                if (percentage !== lastReportedPercentage) {
+                    console.log(`${percentage}%`);
+                    lastReportedPercentage = percentage;
+                }
             }
         } catch (error) {
             console.log(error);
