@@ -52,7 +52,7 @@ async function getPrRecord(pr) {
         }
     });
 
-    //sorting
+    //sort
     prRecord.assignees.sort();
     prRecord.reviewers.sort();
     prRecord.reviews.sort((a, b) => a.user.localeCompare(b.user));
