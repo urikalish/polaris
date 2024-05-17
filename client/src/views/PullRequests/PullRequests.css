@@ -12,7 +12,7 @@
     --color--pr--merged: #8250df;
     --color--pr--draft: #6e7781;
     --color--pr--closed: #cf222e;
-    --color--rv--awaiting: #bf8700;
+    --color--rv--awaiting: #bbbbbb;
     --color--rv--commented: #bf8700;
     --color--rv--approved: #2da44e;
     --color--rv--changes-requested: #cf222e;
@@ -124,6 +124,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    flex-wrap: wrap;
 }
 
 .pr-state {
@@ -153,7 +154,7 @@
     position: relative;
     top: 1px;
     flex: 0 0 auto;
-    color: #999 !important;
+    color: #99f !important;
 }
 
 .pr-title {
@@ -192,6 +193,7 @@
 .pr-reviewer-name {
     font-size: 14px;
     color: #fff;
+    white-space: nowrap;
 }
 .pr-review-state--awaiting > .pr-reviewer-name {
     color: var(--color--rv--awaiting);

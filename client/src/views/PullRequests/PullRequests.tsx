@@ -10,6 +10,7 @@ import prDraftImage from './img/pr-draft.svg';
 import prClosedImage from './img/pr-closed.svg';
 import rvApprovedImage from './img/rv-approved.svg';
 import rvAwaitingImage from './img/rv-awaiting.svg';
+import rvCommentedImage from './img/rv-commented.svg';
 import rvChangesImage from './img/rv-changes.svg';
 import rvDismissedImage from './img/rv-dismissed.svg';
 
@@ -78,8 +79,10 @@ function getImgSrcForReviewState(pr: PullRequestRec, reviewerName: string): stri
     const reviewState = getReviewStateForReviewer(pr, reviewerName);
     switch (reviewState) {
         case ReviewState.AWAITING:
-        case ReviewState.COMMENTED:
             img = rvAwaitingImage;
+            break;
+        case ReviewState.COMMENTED:
+            img = rvCommentedImage;
             break;
         case ReviewState.APPROVED:
             img = rvApprovedImage;
