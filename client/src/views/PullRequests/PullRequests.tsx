@@ -3,16 +3,16 @@ import { useCallback, useState } from 'react';
 import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { ConfigObj } from '../../services/config.ts';
 import { sendMsgToBgPage } from '../../services/msg-handler.ts';
-import loadingImage from './img/loading.svg';
-import prOpenImage from './img/pr-open.svg';
-import prMergedImage from './img/pr-merged.svg';
-import prDraftImage from './img/pr-draft.svg';
-import prClosedImage from './img/pr-closed.svg';
-import rvApprovedImage from './img/rv-approved.svg';
-import rvAwaitingImage from './img/rv-awaiting.svg';
-import rvCommentedImage from './img/rv-commented.svg';
-import rvChangesImage from './img/rv-changes.svg';
-import rvDismissedImage from './img/rv-dismissed.svg';
+import loadingImg from './img/loading.svg';
+import prOpenImg from './img/pr-open.svg';
+import prMergedImg from './img/pr-merged.svg';
+import prDraftImg from './img/pr-draft.svg';
+import prClosedImg from './img/pr-closed.svg';
+import rvApprovedImg from './img/rv-approved.svg';
+import rvAwaitingImg from './img/rv-awaiting.svg';
+import rvCommentedImg from './img/rv-commented.svg';
+import rvChangesImg from './img/rv-changes.svg';
+import rvDismissedImg from './img/rv-dismissed.svg';
 
 enum PrState {
     OPEN = 'open',
@@ -26,7 +26,7 @@ enum ReviewState {
     COMMENTED = 'commented',
     CHANGES_REQUESTED = 'changes_requested',
     APPROVED = 'approved',
-    DISMMISED = 'dismissed',
+    DISMISSED = 'dismissed',
 }
 
 enum MyRole {
@@ -54,16 +54,16 @@ function getImgSrcByState(state: PrState): string {
     let img = '';
     switch (state) {
         case PrState.OPEN:
-            img = prOpenImage;
+            img = prOpenImg;
             break;
         case PrState.MERGED:
-            img = prMergedImage;
+            img = prMergedImg;
             break;
         case PrState.DRAFT:
-            img = prDraftImage;
+            img = prDraftImg;
             break;
         case PrState.CLOSED:
-            img = prClosedImage;
+            img = prClosedImg;
             break;
     }
     return img;
@@ -75,23 +75,23 @@ function getReviewStateForReviewer(pr: PullRequestRec, reviewerName: string): Re
 }
 
 function getImgSrcForReviewState(pr: PullRequestRec, reviewerName: string): string {
-    let img = rvAwaitingImage;
+    let img = rvAwaitingImg;
     const reviewState = getReviewStateForReviewer(pr, reviewerName);
     switch (reviewState) {
         case ReviewState.AWAITING:
-            img = rvAwaitingImage;
+            img = rvAwaitingImg;
             break;
         case ReviewState.COMMENTED:
-            img = rvCommentedImage;
+            img = rvCommentedImg;
             break;
         case ReviewState.APPROVED:
-            img = rvApprovedImage;
+            img = rvApprovedImg;
             break;
         case ReviewState.CHANGES_REQUESTED:
-            img = rvChangesImage;
+            img = rvChangesImg;
             break;
-        case ReviewState.DISMMISED:
-            img = rvDismissedImage;
+        case ReviewState.DISMISSED:
+            img = rvDismissedImg;
             break;
     }
     return img;
@@ -126,8 +126,6 @@ export function PullRequests({ config }: PullRequestsProps) {
             } else {
                 const prs: PullRequestRec[] = response.data['prs'];
                 prs.forEach((pr) => {
-                    pr.reviewers.sort();
-                    pr.assignees.sort();
                     if (pr.creator === username) {
                         pr.myRole = MyRole.CREATOR;
                     } else if (pr.reviewers.includes(username)) {
@@ -166,7 +164,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     return (
         <div className="pull-requests content-with-actions">
             <div className={`prs-wrapper ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${role}`}>
-                {loading && <img src={loadingImage} className="loading-spinner" alt="Loading..." />}
+                {loading && <img src={loadingImg} className="loading-spinner" alt="Loading..." />}
                 {prs.length && (
                     <div className="prs-filters">
                         <div>
