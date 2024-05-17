@@ -60,6 +60,10 @@ async function getPrRecord(pr) {
     return prRecord;
 }
 
+function isPrActive(pr) {
+    return ['open', 'draft'].includes(pr.state);
+}
+
 async function getPrs(outdatedPrs) {
     console.log('get PRs...');
     const updatedPrs = [];
@@ -76,7 +80,7 @@ async function getPrs(outdatedPrs) {
             const prs = await res.data;
             for (let pr of prs) {
                 const outdatedPr = outdatedPrs.find((p) => p.number === pr.number);
-                const prRecord = outdatedPr && ['merged', 'closed'].includes(outdatedPr.state) ? outdatedPr : await getPrRecord(pr);
+                const prRecord = outdatedPr && !isPrActive(outdatedPr) ? outdatedPr : await getPrRecord(pr);
                 updatedPrs.push(prRecord);
 
                 count++;
