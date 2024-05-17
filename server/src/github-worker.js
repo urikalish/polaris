@@ -11,9 +11,11 @@ const GITHUB_MAX_NUM_OF_PRS = parseInt(process.env.GITHUB_MAX_NUM_OF_PRS);
 const PRS_PERSISTENT_FILE = process.env.PRS_PERSISTENT_FILE;
 
 const gitHubRepoApiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}`;
-const gitHubApiHeaders = {
-    Accept: 'application/vnd.github.text+json',
-    Authorization: `token ${GITHUB_AUTH_TOKEN}`,
+const gitHubApiConfig = {
+    headers: {
+        Accept: 'application/vnd.github.text+json',
+        Authorization: `token ${GITHUB_AUTH_TOKEN}`,
+    },
 };
 
 function loadPrsFromFile() {
@@ -59,7 +61,7 @@ async function getPrRecord(pr) {
 
     //handle reviews
     const url = `${gitHubRepoApiUrlBase}/pulls/${prRecord.number}/reviews`;
-    const res = await axios.get(url, { headers: gitHubApiHeaders });
+    const res = await axios.get(url, gitHubApiConfig);
     const reviews = await res.data;
     for (let review of reviews) {
         if (!review.user) {
@@ -101,7 +103,7 @@ async function getPrs(outdatedPrs) {
     for (let page = 1; page <= numberOfPages; page++) {
         const url = `${gitHubRepoApiUrlBase}/pulls?state=all&per_page=100&page=${page}`;
         try {
-            let res = await axios.get(url, { headers: gitHubApiHeaders });
+            let res = await axios.get(url, gitHubApiConfig);
             const prs = await res.data;
             for (let pr of prs) {
                 try {
