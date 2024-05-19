@@ -16,7 +16,7 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
 
     const handleSave = useCallback(() => {
         const configOj: ConfigObj = {
-            gitHubUserName: gitHubUserName || '',
+            gitHubUserName: gitHubUserName.trim() || '',
         };
         onSaveConfig(configOj);
     }, [gitHubUserName, onSaveConfig]);
