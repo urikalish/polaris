@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 src/.env
-src/prs.json
+src/persistence
