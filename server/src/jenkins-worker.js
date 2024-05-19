@@ -89,6 +89,7 @@ async function getBuildRecord(jobType, jobName, buildNumber, buildUrl) {
 
 async function getBuilds(outdatedBuilds) {
     console.log('get builds...');
+    const startTime = Date.now();
     const updatedBuilds = [];
 
     const totalCount = jobToUrlMap.length;
@@ -117,7 +118,8 @@ async function getBuilds(outdatedBuilds) {
         }
     }
 
-    console.log('get builds - DONE');
+    const endTime = Date.now();
+    console.log(`get builds - DONE in ${Math.trunc((endTime - startTime) / 1000)} seconds`);
     return updatedBuilds;
 }
 
