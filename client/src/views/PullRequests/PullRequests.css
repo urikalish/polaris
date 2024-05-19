@@ -209,3 +209,56 @@
 .pr-review-state--dismissed > .pr-reviewer-name {
     color: var(--color--rv--dismissed);
 }
+
+.custom-build {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+@keyframes led-running-animation {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.25;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.build-led {
+    width: 12px;
+    height: 12px;
+    margin: 0 0 0 4px;
+    border-radius: 50%;
+    transition: all 0.5s ease-in-out 0s;
+}
+.custom-build--running > .build-led {
+    background-color: rgb(68, 110, 217);
+    box-shadow: rgb(68, 110, 217) 0 0 10px;
+    animation: led-running-animation 2s linear infinite;
+}
+.custom-build--success > .build-led {
+    background-color: rgb(0, 204, 0);
+    box-shadow: rgb(0, 204, 0) 0 0 10px;
+}
+.custom-build--failure > .build-led {
+    background-color: rgb(204, 0, 0);
+    box-shadow: rgb(204, 0, 0) 0 0 10px;
+}
+.custom-build--unstable > .build-led {
+    background-color: rgb(239, 183, 42);
+    box-shadow: rgb(239, 183, 42) 0 0 10px;
+}
+.custom-build--aborted > .build-led {
+    background-color: rgb(104, 104, 104);
+    box-shadow: rgb(104, 104, 104) 0 0 10px;
+}
+
+.custom-build-title {
+    margin-right: 8px;
+    color: #bbb;
+}

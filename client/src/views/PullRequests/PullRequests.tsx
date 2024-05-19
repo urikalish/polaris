@@ -42,6 +42,19 @@ enum JobType {
 
 const customJobTypes: JobType[] = [JobType.CUSTOM_QUICK_DEV, JobType.CUSTOM_QUICK_PROD, JobType.CUSTOM_FULL];
 
+function getBuildShortName(jt: JobType) {
+    if (jt === JobType.CUSTOM_QUICK_DEV) {
+        return 'QuickDev';
+    }
+    if (jt === JobType.CUSTOM_QUICK_PROD) {
+        return 'QuickProd';
+    }
+    if (jt === JobType.CUSTOM_FULL) {
+        return 'Full';
+    }
+    return '???';
+}
+
 enum BuildResult {
     SUCCESS = 'SUCCESS',
     FAILURE = 'FAILURE',
@@ -60,7 +73,6 @@ type BuildRec = {
     result: BuildResult;
     userId: string;
     userName: string;
-    isLatest: boolean;
 };
 
 type PullRequestRec = {
@@ -108,6 +120,28 @@ type PullRequestsProps = {
     config: ConfigObj | null;
 };
 
+function getLatestCustomBuilds(pr: PullRequestRec): BuildRec[] {
+    if (pr.builds.length === 0) {
+        return [];
+    }
+    const result: BuildRec[] | null = [];
+    customJobTypes.forEach((jt) => {
+        const jobBuilds = pr.builds.filter((b: BuildRec) => b.jobType === jt);
+        let latestBuildTimestamp = 0;
+        let latestBuildRec: BuildRec | null = null;
+        jobBuilds.forEach((b: BuildRec) => {
+            if (b.timestamp > latestBuildTimestamp) {
+                latestBuildTimestamp = b.timestamp;
+                latestBuildRec = b;
+            }
+        });
+        if (latestBuildRec) {
+            result.push(latestBuildRec);
+        }
+    });
+    return result;
+}
+
 export function PullRequests({ config }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
@@ -140,19 +174,6 @@ export function PullRequests({ config }: PullRequestsProps) {
                     } else if (pr.assignees.includes(username)) {
                         pr.myRole = MyRole.ASSIGNEE;
                     }
-                    if (pr.builds.length > 0) {
-                        customJobTypes.forEach((t) => {
-                            const jobBuilds = pr.builds.filter((b) => b.jobType === t);
-                            let latestBuildTimestamp = 0;
-                            jobBuilds.forEach((b) => {
-                                latestBuildTimestamp = Math.max(latestBuildTimestamp, b.timestamp);
-                            });
-                            jobBuilds.forEach((b) => {
-                                b.isLatest = b.timestamp === latestBuildTimestamp;
-                            });
-                        });
-                    }
-                    console.log(pr);
                 });
                 setPrs(prs);
             }
@@ -227,6 +248,22 @@ export function PullRequests({ config }: PullRequestsProps) {
                                         >
                                             <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
                                             <span className="pr-reviewer-name">{reviewerName}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {pr.builds.length > 0 && (
+                                <div className="pr-line">
+                                    {getLatestCustomBuilds(pr).map((b) => (
+                                        <div
+                                            key={b.url}
+                                            className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}
+                                            title={b.inProgress ? 'running' : b.result.toLowerCase()}
+                                        >
+                                            <div className="build-led"></div>
+                                            <a href={b.url} target="_blank" className="pr-link">
+                                                <span className="custom-build-title">{`${getBuildShortName(b.jobType)}#${b.number}`}</span>
+                                            </a>
                                         </div>
                                     ))}
                                 </div>
