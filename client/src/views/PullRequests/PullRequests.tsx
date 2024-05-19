@@ -1,5 +1,5 @@
 import './PullRequests.css';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { ConfigObj } from '../../services/config.ts';
 import loadingImg from './img/loading.svg';
@@ -186,6 +186,12 @@ export function PullRequests({ config }: PullRequestsProps) {
             setLoading(false);
         });
     }, [config]);
+
+    useEffect(() => {
+        if (config) {
+            handleRefresh();
+        }
+    }, [config, handleRefresh]);
 
     const handleToggleStateFilter = useCallback((e: any) => {
         switch (e.target.dataset.toggle) {
