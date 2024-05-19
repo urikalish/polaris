@@ -87,10 +87,6 @@ async function getPrRecord(pr) {
     return prRecord;
 }
 
-function isPrActive(pr) {
-    return ['open', 'draft'].includes(pr.state);
-}
-
 async function getPrs(outdatedPrs) {
     console.log('get PRs...');
     const updatedPrs = [];
@@ -108,7 +104,8 @@ async function getPrs(outdatedPrs) {
             for (let pr of prs) {
                 try {
                     const outdatedPr = outdatedPrs.find((p) => p.number === pr.number);
-                    const prRecord = outdatedPr && !isPrActive(outdatedPr) ? outdatedPr : await getPrRecord(pr);
+                    const wasPrActive = outdatedPr && ['open', 'draft'].includes(outdatedPr.state);
+                    const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(pr);
                     updatedPrs.push(prRecord);
                 } catch (error) {
                     console.error(`error on pr ${pr.number}`, error);
@@ -116,7 +113,7 @@ async function getPrs(outdatedPrs) {
                 count++;
                 const percentage = Math.trunc((count / totalCount) * 100);
                 if (percentage % 10 === 0 && percentage !== lastReportedPercentage) {
-                    console.log(`${percentage}%`);
+                    console.log(`get PRs - ${percentage}%`);
                     lastReportedPercentage = percentage;
                 }
             }
