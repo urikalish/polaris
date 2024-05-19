@@ -110,8 +110,8 @@ async function getBuilds(outdatedBuilds) {
         }
         count++;
         const percentage = Math.trunc((count / totalCount) * 100);
-        if (percentage % 10 === 0 && percentage !== lastReportedPercentage) {
-            console.log(`get builds - ${percentage}%`);
+        if (percentage !== lastReportedPercentage) {
+            //console.log(`get builds - ${percentage}%`);
             lastReportedPercentage = percentage;
         }
     }
