@@ -40,6 +40,13 @@ enum JobType {
     CUSTOM_FULL = 'custom-full',
 }
 
+enum BuildResult {
+    SUCCESS = 'SUCCESS',
+    FAILURE = 'FAILURE',
+    UNSTABLE = 'UNSTABLE',
+    ABORTED = 'ABORTED',
+}
+
 type BuildRec = {
     jobType: JobType;
     jobName: string;
@@ -48,6 +55,7 @@ type BuildRec = {
     branch: string;
     timestamp: number;
     inProgress: boolean;
+    result: BuildResult;
     userId: string;
     userName: string;
 };
@@ -193,18 +201,20 @@ export function PullRequests({ config }: PullRequestsProps) {
                                     {pr.title}
                                 </span>
                             </div>
-                            <div className="pr-line">
-                                {pr.reviewers.map((reviewerName) => (
-                                    <div
-                                        key={reviewerName}
-                                        className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
-                                        title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
-                                    >
-                                        <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
-                                        <span className="pr-reviewer-name">{reviewerName}</span>
-                                    </div>
-                                ))}
-                            </div>
+                            {pr.reviewers.length > 0 && (
+                                <div className="pr-line">
+                                    {pr.reviewers.map((reviewerName) => (
+                                        <div
+                                            key={reviewerName}
+                                            className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
+                                            title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
+                                        >
+                                            <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
+                                            <span className="pr-reviewer-name">{reviewerName}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

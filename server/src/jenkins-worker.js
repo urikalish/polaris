@@ -63,6 +63,7 @@ async function getBuildRecord(jobType, jobName, buildNumber, buildUrl) {
         branch: '',
         timestamp: 0,
         inProgress: false,
+        result: '',
         userId: '',
         userName: '',
     };
