@@ -40,6 +40,8 @@ enum JobType {
     CUSTOM_FULL = 'custom-full',
 }
 
+const customJobTypes: JobType[] = [JobType.CUSTOM_QUICK_DEV, JobType.CUSTOM_QUICK_PROD, JobType.CUSTOM_FULL];
+
 enum BuildResult {
     SUCCESS = 'SUCCESS',
     FAILURE = 'FAILURE',
@@ -58,6 +60,7 @@ type BuildRec = {
     result: BuildResult;
     userId: string;
     userName: string;
+    isLatest: boolean;
 };
 
 type PullRequestRec = {
@@ -70,8 +73,8 @@ type PullRequestRec = {
     assignees: string[];
     reviewers: string[];
     reviews: { user: string; state: ReviewState }[];
-    builds: BuildRec[];
     myRole: MyRole;
+    builds: BuildRec[];
 };
 
 const stateFilters = [PrState.OPEN, PrState.MERGED, PrState.DRAFT, PrState.CLOSED];
@@ -137,8 +140,21 @@ export function PullRequests({ config }: PullRequestsProps) {
                     } else if (pr.assignees.includes(username)) {
                         pr.myRole = MyRole.ASSIGNEE;
                     }
+                    if (pr.builds.length > 0) {
+                        customJobTypes.forEach((t) => {
+                            const jobBuilds = pr.builds.filter((b) => b.jobType === t);
+                            let latestBuildTimestamp = 0;
+                            jobBuilds.forEach((b) => {
+                                latestBuildTimestamp = Math.max(latestBuildTimestamp, b.timestamp);
+                            });
+                            jobBuilds.forEach((b) => {
+                                b.isLatest = b.timestamp === latestBuildTimestamp;
+                            });
+                        });
+                    }
+                    console.log(pr);
                 });
-                setPrs(response.data['prs']);
+                setPrs(prs);
             }
             setLoading(false);
         });
