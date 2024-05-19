@@ -90,6 +90,10 @@ async function getBuilds(outdatedBuilds) {
     console.log('get builds...');
     const updatedBuilds = [];
 
+    const totalCount = jobToUrlMap.length;
+    let count = 0;
+    let lastReportedPercentage = 0;
+
     for (let j of jobToUrlMap) {
         const url = `${JENKINS_JOB_BASE_URL}/${j.jobUrl}/api/json`;
         let res = await axios.get(url, jenkinsApiConfig);
@@ -103,6 +107,12 @@ async function getBuilds(outdatedBuilds) {
             } catch (error) {
                 console.error(`error on build ${data.name} #${build.number}`, error);
             }
+        }
+        count++;
+        const percentage = Math.trunc((count / totalCount) * 100);
+        if (percentage % 10 === 0 && percentage !== lastReportedPercentage) {
+            console.log(`get builds - ${percentage}%`);
+            lastReportedPercentage = percentage;
         }
     }
 

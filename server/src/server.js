@@ -14,9 +14,21 @@ app.use(cors());
 let allPrs = [];
 let allBuilds = [];
 
+function updatePrBuilds() {
+    allPrs.forEach((pr) => {
+        pr.builds = [];
+        allBuilds.forEach((b) => {
+            if (pr.branch === b.branch) {
+                pr.builds.push(b);
+            }
+        });
+    });
+}
+
 const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
+    updatePrBuilds();
     setTimeout(
         () => {
             updatePrs();
@@ -31,6 +43,7 @@ function updatePrs() {
 const jenkinsHubWorker = new Worker('./jenkins-worker.js');
 jenkinsHubWorker.on('message', (updatedBuilds) => {
     allBuilds = updatedBuilds;
+    updatePrBuilds();
     setTimeout(
         () => {
             updateBuilds();

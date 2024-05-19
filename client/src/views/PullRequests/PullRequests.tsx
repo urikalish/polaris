@@ -34,6 +34,24 @@ enum MyRole {
     ASSIGNEE = 'assignee',
 }
 
+enum JobType {
+    CUSTOM_QUICK_DEV = 'custom-quick-dev',
+    CUSTOM_QUICK_PROD = 'custom-quick-prod',
+    CUSTOM_FULL = 'custom-full',
+}
+
+type BuildRec = {
+    jobType: JobType;
+    jobName: string;
+    number: number;
+    url: string;
+    branch: string;
+    timestamp: number;
+    inProgress: boolean;
+    userId: string;
+    userName: string;
+};
+
 type PullRequestRec = {
     number: number;
     htmlUrl: string;
@@ -44,6 +62,7 @@ type PullRequestRec = {
     assignees: string[];
     reviewers: string[];
     reviews: { user: string; state: ReviewState }[];
+    builds: BuildRec[];
     myRole: MyRole;
 };
 

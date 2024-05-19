@@ -88,7 +88,7 @@ async function getPrRecord(pr) {
 }
 
 async function getPrs(outdatedPrs) {
-    console.log('get PRs...');
+    console.log('get prs...');
     const updatedPrs = [];
 
     const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS / 100);
@@ -113,7 +113,7 @@ async function getPrs(outdatedPrs) {
                 count++;
                 const percentage = Math.trunc((count / totalCount) * 100);
                 if (percentage % 10 === 0 && percentage !== lastReportedPercentage) {
-                    console.log(`get PRs - ${percentage}%`);
+                    console.log(`get prs - ${percentage}%`);
                     lastReportedPercentage = percentage;
                 }
             }
@@ -122,7 +122,7 @@ async function getPrs(outdatedPrs) {
         }
     }
 
-    console.log('get PRs - DONE');
+    console.log('get prs - DONE');
     return updatedPrs;
 }
 
