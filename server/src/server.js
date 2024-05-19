@@ -1,5 +1,6 @@
 require('dotenv').config();
 const GITHUB_MINUTES_BETWEEN_UPDATES = process.env.GITHUB_MINUTES_BETWEEN_UPDATES;
+const JENKINS_MINUTES_BETWEEN_UPDATES = process.env.JENKINS_MINUTES_BETWEEN_UPDATES;
 
 const { Worker } = require('worker_threads');
 const cors = require('cors');
@@ -11,6 +12,7 @@ const app = express();
 app.use(cors());
 
 let allPrs = [];
+let allBuilds = [];
 
 const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
@@ -22,9 +24,23 @@ gitHubWorker.on('message', (updatedPrs) => {
         GITHUB_MINUTES_BETWEEN_UPDATES * 60 * 1000,
     );
 });
-
 function updatePrs() {
     gitHubWorker.postMessage(null);
+}
+
+const jenkinsHubWorker = new Worker('./jenkins-worker.js');
+jenkinsHubWorker.on('message', (updatedBuilds) => {
+    allBuilds = updatedBuilds;
+    setTimeout(
+        () => {
+            updateBuilds();
+        },
+        JENKINS_MINUTES_BETWEEN_UPDATES * 60 * 1000,
+    );
+});
+
+function updateBuilds() {
+    jenkinsHubWorker.postMessage(null);
 }
 
 app.get('/pull-requests', async (req, res) => {
@@ -39,6 +55,7 @@ app.get('/pull-requests', async (req, res) => {
 
 function init() {
     console.log('Server starting...');
+    updateBuilds();
     updatePrs();
     app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`));
 }
