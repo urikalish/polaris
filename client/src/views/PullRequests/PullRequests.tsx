@@ -154,14 +154,20 @@ export function PullRequests({ config }: PullRequestsProps) {
     const handleRefresh = useCallback(() => {
         setPrs([]);
         setLoading(true);
+        const serverUrl = config?.serverUrl;
+        if (!serverUrl) {
+            alert('Server URL is undefined, please check the settings tab');
+            setLoading(false);
+            return;
+        }
         const username = config?.gitHubUserName;
         if (!username) {
-            alert('Username is undefined, please check the settings tab');
+            alert('GitHub Username is undefined, please check the settings tab');
             setLoading(false);
             return;
         }
         const params = `username=${username}`;
-        chrome.runtime.sendMessage({ type: 'pull-requests', params }, (response: any) => {
+        chrome.runtime.sendMessage({ type: 'pull-requests', params, serverUrl }, (response: any) => {
             if (response.error) {
                 alert('Error: ' + response.error);
             } else {

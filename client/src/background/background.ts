@@ -1,8 +1,6 @@
-const SERVER_URL = 'http://localhost:1948';
-
 async function getPrsFromServer(request: any) {
     try {
-        const res = await fetch(`${SERVER_URL}/${request.type}${request.params ? `?${request.params}` : ''}`);
+        const res = await fetch(`${request.serverUrl}/${request.type}${request.params ? `?${request.params}` : ''}`);
         const responseObj = await res.json();
         if (responseObj.error) {
             return { type: request.type, error: responseObj.error };
