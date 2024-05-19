@@ -58,13 +58,13 @@ async function getBuildRecord(jobType, jobName, buildNumber, buildUrl) {
     const buildRec = {
         jobType,
         jobName,
-        buildNumber,
-        buildUrl,
+        number: buildNumber,
+        url: buildUrl,
+        branch: '',
         timestamp: 0,
         inProgress: false,
         userId: '',
         userName: '',
-        branchName: '',
     };
     let res = await axios.get(`${buildUrl}/api/json`, jenkinsApiConfig);
     const data = await res.data;
@@ -80,7 +80,7 @@ async function getBuildRecord(jobType, jobName, buildNumber, buildUrl) {
     action = res.data.actions.find((a) => a.parameters);
     const branch = action.parameters.find((p) => p.name === 'SCM_BRANCH');
     if (branch) {
-        buildRec.branchName = branch.value;
+        buildRec.branch = branch.value;
     }
 
     return buildRec;
@@ -96,7 +96,7 @@ async function getBuilds(outdatedBuilds) {
         const data = await res.data;
         for (let build of data.builds) {
             try {
-                const outdatedBuild = outdatedBuilds.find((b) => b.buildUrl === build.url);
+                const outdatedBuild = outdatedBuilds.find((b) => b.url === build.url);
                 const wasBuildActive = outdatedBuild && outdatedBuild.inProgress;
                 const buildRecord = outdatedBuild && !wasBuildActive ? outdatedBuild : await getBuildRecord(j.jobType, data.name, build.number, build.url);
                 updatedBuilds.push(buildRecord);
