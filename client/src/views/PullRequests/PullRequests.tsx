@@ -182,7 +182,7 @@ export function PullRequests({ config }: PullRequestsProps) {
                                         title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
                                     >
                                         <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
-                                        <span className="pr-reviewer-name">{reviewerName.toLowerCase()}</span>
+                                        <span className="pr-reviewer-name">{reviewerName}</span>
                                     </div>
                                 ))}
                             </div>
