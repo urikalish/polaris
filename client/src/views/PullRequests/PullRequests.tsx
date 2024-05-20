@@ -218,7 +218,7 @@ export function PullRequests({ config }: PullRequestsProps) {
         <div className="pull-requests content-with-actions">
             <div className={`prs-wrapper ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${role}`}>
                 {loading && <img src={loadingImg} className="loading-spinner" alt="Loading..." />}
-                {prs.length && (
+                {prs.length > 0 && (
                     <div className="prs-filters">
                         <div>
                             {stateFilters.map((f) => (
