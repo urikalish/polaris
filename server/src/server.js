@@ -14,9 +14,6 @@ app.use(cors());
 let allPrs = [];
 let allBuilds = [];
 
-let updateBuildsStartTime = 0;
-let updatePrsStartTime = 0;
-
 function updatePrBuilds() {
     allPrs.forEach((pr) => {
         pr.builds = [];
@@ -32,7 +29,6 @@ const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
     updatePrBuilds();
-    console.log(`prs updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
     setTimeout(
         () => {
             updatePrs();
@@ -41,8 +37,6 @@ gitHubWorker.on('message', (updatedPrs) => {
     );
 });
 function updatePrs() {
-    console.log('updating prs...');
-    updatePrsStartTime = Date.now();
     gitHubWorker.postMessage(null);
 }
 
@@ -50,7 +44,6 @@ const jenkinsHubWorker = new Worker('./jenkins-worker.js');
 jenkinsHubWorker.on('message', (updatedBuilds) => {
     allBuilds = updatedBuilds;
     updatePrBuilds();
-    console.log(`builds updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
     setTimeout(
         () => {
             updateBuilds();
@@ -60,8 +53,6 @@ jenkinsHubWorker.on('message', (updatedBuilds) => {
 });
 
 function updateBuilds() {
-    console.log('updating builds...');
-    updateBuildsStartTime = Date.now();
     jenkinsHubWorker.postMessage(null);
 }
 

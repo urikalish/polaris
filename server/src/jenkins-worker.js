@@ -111,7 +111,7 @@ async function getBuilds(outdatedBuilds) {
         count++;
         const percentage = Math.trunc((count / totalCount) * 100);
         if (percentage !== lastReportedPercentage) {
-            console.log(`updating builds ${percentage}%`);
+            //console.log(`updating builds ${percentage}%`);
             lastReportedPercentage = percentage;
         }
     }
@@ -121,9 +121,12 @@ async function getBuilds(outdatedBuilds) {
 
 parentPort.on('message', async () => {
     try {
+        console.log('updating builds...');
+        const startTime = Date.now();
         const outdatedBuilds = loadBuildsFromFile();
         const updatedBuilds = await getBuilds(outdatedBuilds);
         saveBuildsToFile(updatedBuilds);
+        console.log(`builds updated in ${Math.round((Date.now() - startTime) / 1000)} seconds`);
         parentPort.postMessage(updatedBuilds);
     } catch (error) {
         console.error('error on jenkins worker', error);

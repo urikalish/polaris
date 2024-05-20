@@ -112,7 +112,7 @@ async function getPrs(outdatedPrs) {
                 count++;
                 const percentage = Math.trunc((count / totalCount) * 100);
                 if (percentage !== lastReportedPercentage) {
-                    console.log(`updating prs ${percentage}%`);
+                    //console.log(`updating prs ${percentage}%`);
                     lastReportedPercentage = percentage;
                 }
             }
@@ -126,9 +126,12 @@ async function getPrs(outdatedPrs) {
 
 parentPort.on('message', async () => {
     try {
+        console.log('updating prs...');
+        const startTime = Date.now();
         const outdatedPrs = loadPrsFromFile();
         const updatedPrs = await getPrs(outdatedPrs);
         savePrsToFile(updatedPrs);
+        console.log(`prs updated in ${Math.round((Date.now() - startTime) / 1000)} seconds`);
         parentPort.postMessage(updatedPrs);
     } catch (error) {
         console.error('error on github worker', error);
