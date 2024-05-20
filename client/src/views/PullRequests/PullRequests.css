@@ -216,6 +216,21 @@
     gap: 4px;
     flex-wrap: wrap;
 }
+.custom-build--running {
+    --led-color: rgb(68, 110, 217);
+}
+.custom-build--success {
+    --led-color: rgb(0, 204, 0);
+}
+.custom-build--failure {
+    --led-color: rgb(204, 0, 0);
+}
+.custom-build--unstable {
+    --led-color: rgb(239, 183, 42);
+}
+.custom-build--aborted {
+    --led-color: rgb(104, 104, 104);
+}
 
 @keyframes led-running-animation {
     0% {
@@ -230,32 +245,43 @@
 }
 
 .build-led {
+    position: relative;
     width: 12px;
     height: 12px;
     margin: 0 0 0 4px;
     border-radius: 50%;
+    background-color: var(--led-color);
+    box-shadow: var(--led-color) 0 0 10px;
+    transition: all 0.5s ease-in-out 0s;
+}
+.build-led::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--led-color);
+    box-shadow: var(--led-color) 0 0 4px;
+    filter: brightness(1.5);
     transition: all 0.5s ease-in-out 0s;
 }
 .custom-build--running > .build-led {
-    background-color: rgb(68, 110, 217);
-    box-shadow: rgb(68, 110, 217) 0 0 10px;
+    --led-color: #36f;
     animation: led-running-animation 2s linear infinite;
 }
 .custom-build--success > .build-led {
-    background-color: rgb(0, 204, 0);
-    box-shadow: rgb(0, 204, 0) 0 0 10px;
+    --led-color: #0c0;
 }
 .custom-build--failure > .build-led {
-    background-color: rgb(204, 0, 0);
-    box-shadow: rgb(204, 0, 0) 0 0 10px;
+    --led-color: #c00;
 }
 .custom-build--unstable > .build-led {
-    background-color: rgb(239, 183, 42);
-    box-shadow: rgb(239, 183, 42) 0 0 10px;
+    --led-color: #c90;
 }
 .custom-build--aborted > .build-led {
-    background-color: rgb(104, 104, 104);
-    box-shadow: rgb(104, 104, 104) 0 0 10px;
+    --led-color: #666;
 }
 
 .custom-build-title {
