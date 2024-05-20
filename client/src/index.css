@@ -127,6 +127,9 @@ body {
     white-space: nowrap;
 }
 
+.display--none {
+    display: none;
+}
 .display--flex {
     display: flex;
 }

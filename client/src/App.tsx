@@ -29,7 +29,7 @@ function App() {
 
     return (
         <div className="height--100 overflow--hidden">
-            <AppBackground />
+            <AppBackground config={config} />
             <div className="main-container">
                 <AppMasthead />
 

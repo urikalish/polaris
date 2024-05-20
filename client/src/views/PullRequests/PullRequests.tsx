@@ -116,10 +116,6 @@ function getImgSrcForReviewState(pr: PullRequestRec, reviewerName: string): stri
     return reviewStateToImg[reviewState];
 }
 
-type PullRequestsProps = {
-    config: ConfigObj | null;
-};
-
 function getLatestCustomBuilds(pr: PullRequestRec): BuildRec[] {
     if (pr.builds.length === 0) {
         return [];
@@ -141,6 +137,10 @@ function getLatestCustomBuilds(pr: PullRequestRec): BuildRec[] {
     });
     return result;
 }
+
+type PullRequestsProps = {
+    config: ConfigObj | null;
+};
 
 export function PullRequests({ config }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);

@@ -1,6 +1,7 @@
 export type ConfigObj = {
     serverUrl?: string;
     gitHubUserName?: string;
+    uiTheme?: string;
 };
 
 const STORAGE_MAIN_KEY = 'polaris';
@@ -11,6 +12,7 @@ export function loadConfigValues(cb: (configObj: ConfigObj) => void) {
         cb({
             serverUrl: configObj?.serverUrl || `http://localhost:1948`,
             gitHubUserName: configObj?.gitHubUserName || 'john-doe',
+            uiTheme: configObj?.uiTheme || 'bokeh',
         });
     });
 }
