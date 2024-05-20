@@ -145,7 +145,7 @@ type PullRequestsProps = {
 export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
-    const [merged, setMerged] = useState(true);
+    const [merged, setMerged] = useState(false);
     const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
     const [role, setRole] = useState<MyRole>(MyRole.CREATOR);
