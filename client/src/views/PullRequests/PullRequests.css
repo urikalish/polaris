@@ -260,7 +260,6 @@
     border-radius: 50%;
     background-color: var(--build-color);
     box-shadow: var(--build-color) 0 0 10px;
-    transition: all 0.5s ease-in-out 0s;
 }
 .build-led::before {
     content: '';
@@ -273,10 +272,26 @@
     background-color: var(--build-color);
     box-shadow: var(--build-color) 0 0 4px;
     filter: brightness(1.5);
-    transition: all 0.5s ease-in-out 0s;
 }
 .custom-build--running > .build-led {
+    transition: all 0.5s ease-in-out 0s;
     animation: led-running-animation 2s linear infinite;
+}
+.custom-build--running > .build-led::before {
+    filter: brightness(1.2);
+    transition: all 0.5s ease-in-out 0s;
+}
+.custom-build--success > .build-led::before {
+    filter: brightness(1.5);
+}
+.custom-build--failure > .build-led::before {
+    filter: brightness(1.5);
+}
+.custom-build--unstable > .build-led::before {
+    filter: brightness(1.2);
+}
+.custom-build--aborted > .build-led::before {
+    filter: brightness(1.2);
 }
 
 .custom-build-title {
