@@ -72,6 +72,7 @@ app.get('/pull-requests', async (req, res) => {
         console.log(`prs sent to ${username}`);
         res.send({ data: { prs } });
     } catch (error) {
+        console.error('error on getting pull requests', error);
         res.send({ error: error.toString() });
     }
 });
