@@ -32,7 +32,7 @@ const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
     updatePrBuilds();
-    console.log(`${allPrs.length} prs updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
+    console.log(`prs updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
     setTimeout(
         () => {
             updatePrs();
@@ -50,7 +50,7 @@ const jenkinsHubWorker = new Worker('./jenkins-worker.js');
 jenkinsHubWorker.on('message', (updatedBuilds) => {
     allBuilds = updatedBuilds;
     updatePrBuilds();
-    console.log(`${allBuilds.length} builds updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
+    console.log(`builds updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
     setTimeout(
         () => {
             updateBuilds();
@@ -69,7 +69,7 @@ app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
         const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
-        console.log(`${prs.length} prs sent to ${username}`);
+        console.log(`prs sent to ${username}`);
         res.send({ data: { prs } });
     } catch (error) {
         res.send({ error: error.toString() });
