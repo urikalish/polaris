@@ -1,7 +1,7 @@
 import './Settings.css';
 import { ConfigObj } from '../../services/config.ts';
 import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 type SettingsProps = {
     config: ConfigObj | null;
@@ -11,17 +11,23 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
     const [serverUrl, setServerUrl] = useState(config?.serverUrl || '');
     const [gitHubUserName, setGitHubUserName] = useState(config?.gitHubUserName || '');
     const [uiTheme, setUiTheme] = useState(config?.uiTheme || '');
+    const [settingsChanged, setSettingsChanged] = useState(false);
+
+    useEffect(() => {}, []);
 
     const handleChangeServerUrl = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setServerUrl(e.target.value);
+        setSettingsChanged(true);
     }, []);
 
     const handleChangeGitHubUserName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setGitHubUserName(e.target.value);
+        setSettingsChanged(true);
     }, []);
 
     const handleChangeUiTheme = useCallback((e: SelectChangeEvent<string>) => {
         setUiTheme(e.target.value);
+        setSettingsChanged(true);
     }, []);
 
     const handleSave = useCallback(() => {
@@ -53,7 +59,7 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
                 </div>
             </div>
             <div className="actions-panel">
-                <Button variant="contained" onClick={handleSave}>
+                <Button variant={settingsChanged ? 'contained' : 'outlined'} onClick={handleSave}>
                     Save
                 </Button>
             </div>
