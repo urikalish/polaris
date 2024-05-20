@@ -1,7 +1,6 @@
 import './PullRequests.css';
 import { useCallback, useEffect, useState } from 'react';
 import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import { ConfigObj } from '../../services/config.ts';
 import loadingImg from './img/loading.svg';
 import prOpenImg from './img/pr-open.svg';
 import prMergedImg from './img/pr-merged.svg';
@@ -139,10 +138,11 @@ function getLatestCustomBuilds(pr: PullRequestRec): BuildRec[] {
 }
 
 type PullRequestsProps = {
-    config: ConfigObj | null;
+    serverUrl?: string;
+    gitHubUserName?: string;
 };
 
-export function PullRequests({ config }: PullRequestsProps) {
+export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(true);
@@ -154,30 +154,28 @@ export function PullRequests({ config }: PullRequestsProps) {
     const handleRefresh = useCallback(() => {
         setPrs([]);
         setLoading(true);
-        const serverUrl = config?.serverUrl;
         if (!serverUrl) {
             alert('Server URL is undefined, please check the settings tab');
             setLoading(false);
             return;
         }
-        const username = config?.gitHubUserName;
-        if (!username) {
+        if (!gitHubUserName) {
             alert('GitHub Username is undefined, please check the settings tab');
             setLoading(false);
             return;
         }
-        const params = `username=${username}`;
+        const params = `username=${gitHubUserName}`;
         chrome.runtime.sendMessage({ type: 'pull-requests', params, serverUrl }, (response: any) => {
             if (response.error) {
                 alert('Error: ' + response.error);
             } else {
                 const prs: PullRequestRec[] = response.data['prs'];
                 prs.forEach((pr) => {
-                    if (pr.creator === username) {
+                    if (pr.creator === gitHubUserName) {
                         pr.myRole = MyRole.CREATOR;
-                    } else if (pr.reviewers.includes(username)) {
+                    } else if (pr.reviewers.includes(gitHubUserName)) {
                         pr.myRole = MyRole.REVIEWER;
-                    } else if (pr.assignees.includes(username)) {
+                    } else if (pr.assignees.includes(gitHubUserName)) {
                         pr.myRole = MyRole.ASSIGNEE;
                     }
                 });
@@ -185,13 +183,13 @@ export function PullRequests({ config }: PullRequestsProps) {
             }
             setLoading(false);
         });
-    }, [config]);
+    }, [serverUrl, gitHubUserName]);
 
     useEffect(() => {
-        if (config) {
+        if (serverUrl && gitHubUserName) {
             handleRefresh();
         }
-    }, [config, handleRefresh]);
+    }, [serverUrl, gitHubUserName, handleRefresh]);
 
     const handleToggleStateFilter = useCallback((e: any) => {
         switch (e.target.dataset.toggle) {

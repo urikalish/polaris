@@ -29,7 +29,7 @@ function App() {
 
     return (
         <div className="height--100 overflow--hidden">
-            <AppBackground config={config} />
+            <AppBackground uiTheme={config?.uiTheme} />
             <div className="main-container">
                 <AppMasthead />
 
@@ -38,7 +38,7 @@ function App() {
                     <Tab label="Settings" />
                 </Tabs>
 
-                {tabIndex === 0 && <PullRequests config={config} />}
+                {tabIndex === 0 && <PullRequests serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} />}
                 {tabIndex === 1 && <Settings config={config} onSaveConfig={handleSaveConfig} />}
             </div>
         </div>

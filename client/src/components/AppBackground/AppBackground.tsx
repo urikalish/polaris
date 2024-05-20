@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
 
 import './AppBackground.css';
-import { ConfigObj } from '../../services/config.ts';
 
 type AppBackgroundProps = {
-    config: ConfigObj | null;
+    uiTheme: string | undefined;
 };
 
-export function AppBackground({ config }: AppBackgroundProps) {
+export function AppBackground({ uiTheme }: AppBackgroundProps) {
     const bokehRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
@@ -16,7 +15,7 @@ export function AppBackground({ config }: AppBackgroundProps) {
 
     return (
         <video
-            className={`background-video position--absolute ${config?.uiTheme === 'bokeh' ? '' : 'display--none'}`}
+            className={`background-video position--absolute ${uiTheme === 'bokeh' ? '' : 'display--none'}`}
             width="1067"
             controls={false}
             autoPlay={true}
