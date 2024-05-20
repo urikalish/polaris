@@ -112,7 +112,7 @@ async function getPrs(outdatedPrs) {
                 count++;
                 const percentage = Math.trunc((count / totalCount) * 100);
                 if (percentage !== lastReportedPercentage) {
-                    //console.log(`get prs - ${percentage}%`);
+                    console.log(`updating prs ${percentage}%`);
                     lastReportedPercentage = percentage;
                 }
             }
