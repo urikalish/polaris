@@ -44,10 +44,10 @@ const customJobTypes: JobType[] = [JobType.CUSTOM_QUICK_DEV, JobType.CUSTOM_QUIC
 
 function getBuildShortName(jt: JobType) {
     if (jt === JobType.CUSTOM_QUICK_DEV) {
-        return 'QuickDev';
+        return 'QuickD';
     }
     if (jt === JobType.CUSTOM_QUICK_PROD) {
-        return 'QuickProd';
+        return 'QuickP';
     }
     if (jt === JobType.CUSTOM_FULL) {
         return 'Full';
@@ -249,9 +249,25 @@ export function PullRequests({ config }: PullRequestsProps) {
                                 <span className="pr-title ellipsis" title={pr.title}>
                                     {pr.title}
                                 </span>
+                                {pr.builds.length > 0 && (
+                                    <>
+                                        {getLatestCustomBuilds(pr).map((b) => (
+                                            <div
+                                                key={b.url}
+                                                className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}
+                                                title={b.inProgress ? 'running' : b.result.toLowerCase()}
+                                            >
+                                                <div className="build-led"></div>
+                                                <a href={b.url} target="_blank" className="pr-link">
+                                                    <span className="custom-build-title">{`${getBuildShortName(b.jobType)}#${b.number}`}</span>
+                                                </a>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
                             </div>
                             {pr.reviewers.length > 0 && (
-                                <div className="pr-line">
+                                <div className="pr-line flex-wrap--wrap">
                                     {pr.reviewers.map((reviewerName) => (
                                         <div
                                             key={reviewerName}
@@ -260,22 +276,6 @@ export function PullRequests({ config }: PullRequestsProps) {
                                         >
                                             <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
                                             <span className="pr-reviewer-name">{reviewerName}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                            {pr.builds.length > 0 && (
-                                <div className="pr-line">
-                                    {getLatestCustomBuilds(pr).map((b) => (
-                                        <div
-                                            key={b.url}
-                                            className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}
-                                            title={b.inProgress ? 'running' : b.result.toLowerCase()}
-                                        >
-                                            <div className="build-led"></div>
-                                            <a href={b.url} target="_blank" className="pr-link">
-                                                <span className="custom-build-title">{`${getBuildShortName(b.jobType)}#${b.number}`}</span>
-                                            </a>
                                         </div>
                                     ))}
                                 </div>

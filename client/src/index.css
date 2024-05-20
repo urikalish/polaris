@@ -137,3 +137,7 @@ body {
 .align-items--center {
     align-items: center;
 }
+
+.flex-wrap--wrap {
+    flex-wrap: wrap;
+}

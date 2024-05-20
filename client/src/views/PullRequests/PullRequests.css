@@ -132,7 +132,6 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    flex-wrap: wrap;
 }
 
 .pr-state {
@@ -169,6 +168,85 @@
     position: relative;
     top: 1px;
     flex: 1 1 auto;
+}
+
+.custom-build {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.custom-build--running {
+    --build-color: var(--color--build--running);
+}
+.custom-build--success {
+    --build-color: var(--color--build--success);
+}
+.custom-build--failure {
+    --build-color: var(--color--build--failure);
+}
+.custom-build--unstable {
+    --build-color: var(--color--build--unstable);
+}
+.custom-build--aborted {
+    --build-color: var(--color--build--aborted);
+}
+
+@keyframes led-running-animation {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.25;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.build-led {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    margin-left: 4px;
+    border-radius: 50%;
+    background-color: var(--build-color);
+    box-shadow: var(--build-color) 0 0 10px;
+}
+.build-led::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--build-color);
+    box-shadow: var(--build-color) 0 0 4px;
+    filter: brightness(1.5);
+}
+.custom-build--running > .build-led {
+    transition: all 0.5s ease-in-out 0s;
+    animation: led-running-animation 2s linear infinite;
+}
+.custom-build--running > .build-led::before {
+    filter: brightness(1.2);
+    transition: all 0.5s ease-in-out 0s;
+}
+.custom-build--success > .build-led::before {
+    filter: brightness(1.5);
+}
+.custom-build--failure > .build-led::before {
+    filter: brightness(1.5);
+}
+.custom-build--unstable > .build-led::before {
+    filter: brightness(1.2);
+}
+.custom-build--aborted > .build-led::before {
+    filter: brightness(1.2);
+}
+
+.custom-build-title {
+    color: var(--build-color);
 }
 
 .pr-reviewer {
@@ -216,85 +294,4 @@
 }
 .pr-review-state--dismissed > .pr-reviewer-name {
     color: var(--color--rv--dismissed);
-}
-
-.custom-build {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: wrap;
-}
-.custom-build--running {
-    --build-color: var(--color--build--running);
-}
-.custom-build--success {
-    --build-color: var(--color--build--success);
-}
-.custom-build--failure {
-    --build-color: var(--color--build--failure);
-}
-.custom-build--unstable {
-    --build-color: var(--color--build--unstable);
-}
-.custom-build--aborted {
-    --build-color: var(--color--build--aborted);
-}
-
-@keyframes led-running-animation {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.25;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-.build-led {
-    position: relative;
-    width: 12px;
-    height: 12px;
-    margin: 0 0 0 4px;
-    border-radius: 50%;
-    background-color: var(--build-color);
-    box-shadow: var(--build-color) 0 0 10px;
-}
-.build-led::before {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: var(--build-color);
-    box-shadow: var(--build-color) 0 0 4px;
-    filter: brightness(1.5);
-}
-.custom-build--running > .build-led {
-    transition: all 0.5s ease-in-out 0s;
-    animation: led-running-animation 2s linear infinite;
-}
-.custom-build--running > .build-led::before {
-    filter: brightness(1.2);
-    transition: all 0.5s ease-in-out 0s;
-}
-.custom-build--success > .build-led::before {
-    filter: brightness(1.5);
-}
-.custom-build--failure > .build-led::before {
-    filter: brightness(1.5);
-}
-.custom-build--unstable > .build-led::before {
-    filter: brightness(1.2);
-}
-.custom-build--aborted > .build-led::before {
-    filter: brightness(1.2);
-}
-
-.custom-build-title {
-    margin-right: 8px;
-    color: var(--build-color);
 }
