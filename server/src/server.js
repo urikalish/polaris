@@ -14,6 +14,9 @@ app.use(cors());
 let allPrs = [];
 let allBuilds = [];
 
+let updateBuildsStartTime = 0;
+let updatePrsStartTime = 0;
+
 function updatePrBuilds() {
     allPrs.forEach((pr) => {
         pr.builds = [];
@@ -29,6 +32,7 @@ const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
     updatePrBuilds();
+    console.log(`${allPrs.length} prs updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
     setTimeout(
         () => {
             updatePrs();
@@ -37,6 +41,8 @@ gitHubWorker.on('message', (updatedPrs) => {
     );
 });
 function updatePrs() {
+    console.log('updating prs...');
+    updatePrsStartTime = Date.now();
     gitHubWorker.postMessage(null);
 }
 
@@ -44,6 +50,7 @@ const jenkinsHubWorker = new Worker('./jenkins-worker.js');
 jenkinsHubWorker.on('message', (updatedBuilds) => {
     allBuilds = updatedBuilds;
     updatePrBuilds();
+    console.log(`${allBuilds.length} builds updated in ${Math.round((Date.now() - updatePrsStartTime) / 1000)} seconds`);
     setTimeout(
         () => {
             updateBuilds();
@@ -53,6 +60,8 @@ jenkinsHubWorker.on('message', (updatedBuilds) => {
 });
 
 function updateBuilds() {
+    console.log('updating builds...');
+    updateBuildsStartTime = Date.now();
     jenkinsHubWorker.postMessage(null);
 }
 
@@ -60,6 +69,7 @@ app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
         const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
+        console.log(`${prs.length} prs sent to ${username}`);
         res.send({ data: { prs } });
     } catch (error) {
         res.send({ error: error.toString() });
@@ -67,10 +77,12 @@ app.get('/pull-requests', async (req, res) => {
 });
 
 function init() {
-    console.log('Server starting...');
-    updateBuilds();
-    updatePrs();
-    app.listen(PORT, () => console.log(`Server listening at http://localhost:${PORT}`));
+    console.log('server starting...');
+    app.listen(PORT, () => {
+        console.log(`server listening on port ${PORT}`);
+        updateBuilds();
+        updatePrs();
+    });
 }
 
 init();

@@ -88,8 +88,6 @@ async function getPrRecord(pr) {
 }
 
 async function getPrs(outdatedPrs) {
-    console.log('get prs...');
-    const startTime = Date.now();
     const updatedPrs = [];
 
     const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS / 100);
@@ -123,8 +121,6 @@ async function getPrs(outdatedPrs) {
         }
     }
 
-    const endTime = Date.now();
-    console.log(`get prs - DONE in ${Math.trunc((endTime - startTime) / 1000)} seconds`);
     return updatedPrs;
 }
 
