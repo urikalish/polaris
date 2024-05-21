@@ -240,47 +240,53 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                 <div className="prs-container custom-scroll">
                     {prs.map((pr) => (
                         <div key={pr.number} className={`pr-container content-panel ${pr.state} ${pr.myRole}`}>
-                            <div className="pr-line">
-                                <div className={`pr-state pr-state--${pr.state}`}>
-                                    <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
+                            <div className="pr-left-side">
+                                <div className="pr-line">
+                                    <div className={`pr-state pr-state--${pr.state}`}>
+                                        <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
+                                    </div>
+                                    <a href={pr.htmlUrl} target="_blank" className="pr-link">
+                                        {pr.number}
+                                    </a>
+                                    <span className="pr-title ellipsis" title={pr.title}>
+                                        {pr.title}
+                                    </span>
                                 </div>
-                                <a href={pr.htmlUrl} target="_blank" className="pr-link">
-                                    {pr.number}
-                                </a>
-                                <span className="pr-title ellipsis" title={pr.title}>
-                                    {pr.title}
-                                </span>
+                                {pr.reviewers.length > 0 && (
+                                    <div className="pr-line flex-wrap--wrap">
+                                        {pr.reviewers.map((reviewerName) => (
+                                            <div
+                                                key={reviewerName}
+                                                className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
+                                                title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
+                                            >
+                                                <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
+                                                <span className="pr-reviewer-name">{reviewerName}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="pr-right-side">
                                 {pr.builds.length > 0 && (
                                     <>
                                         {getLatestCustomBuilds(pr).map((b) => (
-                                            <div
-                                                key={b.url}
-                                                className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}
-                                                title={b.inProgress ? 'running' : b.result.toLowerCase()}
-                                            >
-                                                <div className="build-led"></div>
-                                                <a href={b.url} target="_blank" className="pr-link">
-                                                    <span className="custom-build-title">{`${getBuildShortName(b.jobType)}#${b.number}`}</span>
-                                                </a>
+                                            <div className="pr-line flex-wrap--wrap">
+                                                <div
+                                                    key={b.url}
+                                                    className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}
+                                                    title={b.inProgress ? 'running' : b.result.toLowerCase()}
+                                                >
+                                                    <div className="build-led"></div>
+                                                    <a href={b.url} target="_blank" className="pr-link">
+                                                        <span className="custom-build-title">{`${getBuildShortName(b.jobType)}#${b.number}`}</span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         ))}
                                     </>
                                 )}
                             </div>
-                            {pr.reviewers.length > 0 && (
-                                <div className="pr-line flex-wrap--wrap">
-                                    {pr.reviewers.map((reviewerName) => (
-                                        <div
-                                            key={reviewerName}
-                                            className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
-                                            title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
-                                        >
-                                            <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
-                                            <span className="pr-reviewer-name">{reviewerName}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
                         </div>
                     ))}
                 </div>
