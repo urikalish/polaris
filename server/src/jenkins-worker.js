@@ -88,10 +88,6 @@ async function getBuildRecord(jobType, jobOrdinal, jobName, buildNumber, buildUr
 async function getBuilds(outdatedBuilds) {
     const updatedBuilds = [];
 
-    const totalCount = jobToUrlMap.length;
-    let count = 0;
-    let lastReportedPercentage = 0;
-
     for (let j of jobToUrlMap) {
         const url = `${JENKINS_JOB_BASE_URL}/${j.jobUrl}/api/json`;
         try {
@@ -106,12 +102,6 @@ async function getBuilds(outdatedBuilds) {
                 } catch (error) {
                     console.error(`error on build ${data.name} #${build.number}`, error.message);
                 }
-            }
-            count++;
-            const percentage = Math.trunc((count / totalCount) * 100);
-            if (percentage !== lastReportedPercentage) {
-                //console.log(`updating builds ${percentage}%`);
-                lastReportedPercentage = percentage;
             }
         } catch (error) {
             console.error('error on getBuilds()', error.message);

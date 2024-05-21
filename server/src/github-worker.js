@@ -91,10 +91,6 @@ async function getPrs(outdatedPrs) {
     const updatedPrs = [];
 
     const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS / 100);
-    const totalCount = GITHUB_MAX_NUM_OF_PRS;
-    let count = 0;
-    let lastReportedPercentage = 0;
-
     for (let page = 1; page <= numberOfPages; page++) {
         const url = `${gitHubRepoApiUrlBase}/pulls?state=all&per_page=100&page=${page}`;
         try {
@@ -108,12 +104,6 @@ async function getPrs(outdatedPrs) {
                     updatedPrs.push(prRecord);
                 } catch (error) {
                     console.error(`error on pr ${pr.number}`, error.message);
-                }
-                count++;
-                const percentage = Math.trunc((count / totalCount) * 100);
-                if (percentage !== lastReportedPercentage) {
-                    //console.log(`updating prs ${percentage}%`);
-                    lastReportedPercentage = percentage;
                 }
             }
         } catch (error) {
