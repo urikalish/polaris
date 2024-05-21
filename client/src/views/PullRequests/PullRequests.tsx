@@ -36,19 +36,15 @@ enum MyRole {
 }
 
 enum JobType {
-    CUSTOM_QUICK_DEV = 'custom-quick-dev',
-    CUSTOM_QUICK_PROD = 'custom-quick-prod',
+    CUSTOM_QUICK = 'custom-quick',
     CUSTOM_FULL = 'custom-full',
 }
 
-const customJobTypes: JobType[] = [JobType.CUSTOM_QUICK_DEV, JobType.CUSTOM_QUICK_PROD, JobType.CUSTOM_FULL];
+const customJobTypes: JobType[] = [JobType.CUSTOM_QUICK, JobType.CUSTOM_FULL];
 
 function getBuildShortName(jt: JobType) {
-    if (jt === JobType.CUSTOM_QUICK_DEV) {
-        return 'QuickD';
-    }
-    if (jt === JobType.CUSTOM_QUICK_PROD) {
-        return 'QuickP';
+    if (jt === JobType.CUSTOM_QUICK) {
+        return 'Quick';
     }
     if (jt === JobType.CUSTOM_FULL) {
         return 'Full';

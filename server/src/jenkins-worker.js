@@ -6,13 +6,11 @@ require('dotenv').config();
 const JENKINS_USERNAME = process.env.JENKINS_USERNAME;
 const JENKINS_API_TOKEN = process.env.JENKINS_API_TOKEN;
 const JENKINS_JOB_BASE_URL = process.env.JENKINS_JOB_BASE_URL;
-const JENKINS_CUSTOM_QUICK_DEV_URL = process.env.JENKINS_CUSTOM_QUICK_DEV_URL;
-const JENKINS_CUSTOM_QUICK_PROD_URL = process.env.JENKINS_CUSTOM_QUICK_PROD_URL;
+const JENKINS_CUSTOM_QUICK_URL = process.env.JENKINS_CUSTOM_QUICK_URL;
 const JENKINS_CUSTOM_FULL_URL = process.env.JENKINS_CUSTOM_FULL_URL;
 const BUILDS_PERSISTENT_FILE = process.env.BUILDS_PERSISTENT_FILE;
 
-const CUSTOM_QUICK_DEV = 'custom-quick-dev';
-const CUSTOM_QUICK_PROD = 'custom-quick-prod';
+const CUSTOM_QUICK = 'custom-quick';
 const CUSTOM_FULL = 'custom-full';
 
 let jobToUrlMap = [];
@@ -26,8 +24,7 @@ const jenkinsApiConfig = {
 
 function initJobToUrlMap() {
     const customJobToUrlMap = {
-        [CUSTOM_QUICK_DEV]: JENKINS_CUSTOM_QUICK_DEV_URL,
-        [CUSTOM_QUICK_PROD]: JENKINS_CUSTOM_QUICK_PROD_URL,
+        [CUSTOM_QUICK]: JENKINS_CUSTOM_QUICK_URL,
         [CUSTOM_FULL]: JENKINS_CUSTOM_FULL_URL,
     };
     for (let cj in customJobToUrlMap) {
