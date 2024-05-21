@@ -275,7 +275,7 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                                                 >
                                                     <div className="build-led"></div>
                                                     <a href={b.url} target="_blank" className="pr-link">
-                                                        <span className="custom-build-title">{`${getBuildShortName(b.jobType)}#${b.number}`}</span>
+                                                        <span className="custom-build-title">{getBuildShortName(b.jobType)}</span>
                                                     </a>
                                                 </div>
                                             </div>
