@@ -61,6 +61,7 @@ enum BuildResult {
 
 type BuildRec = {
     jobType: JobType;
+    jobOrdinal: number;
     jobName: string;
     number: number;
     url: string;

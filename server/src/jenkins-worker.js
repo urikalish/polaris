@@ -29,7 +29,7 @@ function initJobToUrlMap() {
     };
     for (let cj in customJobToUrlMap) {
         for (let i = 1; i <= 5; i++) {
-            jobToUrlMap.push({ jobType: cj, jobUrl: customJobToUrlMap[cj] + i });
+            jobToUrlMap.push({ jobType: cj, jobOrdinal: i, jobUrl: customJobToUrlMap[cj] + i });
         }
     }
 }
@@ -51,9 +51,10 @@ function saveBuildsToFile(builds) {
     });
 }
 
-async function getBuildRecord(jobType, jobName, buildNumber, buildUrl) {
+async function getBuildRecord(jobType, jobOrdinal, jobName, buildNumber, buildUrl) {
     const buildRec = {
         jobType,
+        jobOrdinal,
         jobName,
         number: buildNumber,
         url: buildUrl,
@@ -100,7 +101,7 @@ async function getBuilds(outdatedBuilds) {
                 try {
                     const outdatedBuild = outdatedBuilds.find((b) => b.url === build.url);
                     const wasBuildActive = outdatedBuild && outdatedBuild.inProgress;
-                    const buildRecord = outdatedBuild && !wasBuildActive ? outdatedBuild : await getBuildRecord(j.jobType, data.name, build.number, build.url);
+                    const buildRecord = outdatedBuild && !wasBuildActive ? outdatedBuild : await getBuildRecord(j.jobType, j.jobOrdinal, data.name, build.number, build.url);
                     updatedBuilds.push(buildRecord);
                 } catch (error) {
                     console.error(`error on build ${data.name} #${build.number}`, error.message);
