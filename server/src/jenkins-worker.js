@@ -65,49 +65,73 @@ async function getBuildRecord(jobType, jobOrdinal, jobName, buildNumber, buildUr
         userId: '',
         userName: '',
     };
-    let res = await axios.get(`${buildUrl}/api/json`, jenkinsApiConfig);
-    const data = await res.data;
-    buildRec.timestamp = data.timestamp;
-    buildRec.inProgress = data.inProgress;
-    buildRec.result = data.result;
-    let action = res.data.actions.find((a) => a.causes);
-    const causes = action.causes.find((c) => c.userId);
-    if (causes) {
-        buildRec.userId = causes.userId;
-        buildRec.userName = causes.userName;
+    try {
+        let res = await axios.get(`${buildUrl}/api/json`, jenkinsApiConfig);
+        const data = await res.data;
+        buildRec.timestamp = data.timestamp;
+        buildRec.inProgress = data.inProgress;
+        buildRec.result = data.result;
+        let action = res.data.actions.find((a) => a.causes);
+        const causes = action.causes.find((c) => c.userId);
+        if (causes) {
+            buildRec.userId = causes.userId;
+            buildRec.userName = causes.userName;
+        }
+        action = res.data.actions.find((a) => a.parameters);
+        const branch = action.parameters.find((p) => p.name === 'SCM_BRANCH');
+        if (branch) {
+            buildRec.branch = branch.value;
+        }
+    } catch (error) {
+        console.error('error on getBuildRecord()', error.message);
     }
-    action = res.data.actions.find((a) => a.parameters);
-    const branch = action.parameters.find((p) => p.name === 'SCM_BRANCH');
-    if (branch) {
-        buildRec.branch = branch.value;
-    }
-
     return buildRec;
 }
 
-async function getBuilds(outdatedBuilds) {
-    const updatedBuilds = [];
-
-    for (let j of jobToUrlMap) {
-        const url = `${JENKINS_JOB_BASE_URL}/${j.jobUrl}/api/json`;
-        try {
-            let res = await axios.get(url, jenkinsApiConfig);
-            const data = await res.data;
-            for (let build of data.builds) {
-                try {
-                    const outdatedBuild = outdatedBuilds.find((b) => b.url === build.url);
-                    const wasBuildActive = outdatedBuild && outdatedBuild.inProgress;
-                    const buildRecord = outdatedBuild && !wasBuildActive ? outdatedBuild : await getBuildRecord(j.jobType, j.jobOrdinal, data.name, build.number, build.url);
-                    updatedBuilds.push(buildRecord);
-                } catch (error) {
-                    console.error(`error on build ${data.name} #${build.number}`, error.message);
-                }
+async function getBuildsForJob(job, outdatedBuilds) {
+    const jobBuilds = [];
+    try {
+        const url = `${JENKINS_JOB_BASE_URL}/${job.jobUrl}/api/json`;
+        let res = await axios.get(url, jenkinsApiConfig);
+        const data = await res.data;
+        const activeBuildsPromises = [];
+        const inactiveBuilds = [];
+        for (let build of data.builds) {
+            const outdatedBuild = outdatedBuilds.find((b) => b.url === build.url);
+            const wasBuildActive = outdatedBuild && outdatedBuild.inProgress;
+            if (outdatedBuild && !wasBuildActive) {
+                inactiveBuilds.push(outdatedBuild);
+            } else {
+                activeBuildsPromises.push(getBuildRecord(job.jobType, job.jobOrdinal, data.name, build.number, build.url));
             }
-        } catch (error) {
-            console.error('error on getBuilds()', error.message);
         }
+        const buildRecs = await Promise.all(activeBuildsPromises);
+        buildRecs.forEach((buildRec) => {
+            jobBuilds.push(buildRec);
+        });
+        inactiveBuilds.forEach((inactiveBuild) => {
+            jobBuilds.push(inactiveBuild);
+        });
+    } catch (error) {
+        console.error('error on getBuildsForJob()', error.message);
     }
+    return jobBuilds;
+}
 
+async function getBuilds(outdatedBuilds) {
+    let updatedBuilds = [];
+    try {
+        const jobBuildsPromises = [];
+        for (let job of jobToUrlMap) {
+            jobBuildsPromises.push(getBuildsForJob(job, outdatedBuilds));
+        }
+        const results = await Promise.all(jobBuildsPromises);
+        results.forEach((result) => {
+            updatedBuilds = [...updatedBuilds, ...result];
+        });
+    } catch (error) {
+        console.error('error on getBuilds()', error.message);
+    }
     return updatedBuilds;
 }
 
