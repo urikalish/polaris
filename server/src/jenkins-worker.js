@@ -96,23 +96,27 @@ async function getBuilds(outdatedBuilds) {
 
     for (let j of jobToUrlMap) {
         const url = `${JENKINS_JOB_BASE_URL}/${j.jobUrl}/api/json`;
-        let res = await axios.get(url, jenkinsApiConfig);
-        const data = await res.data;
-        for (let build of data.builds) {
-            try {
-                const outdatedBuild = outdatedBuilds.find((b) => b.url === build.url);
-                const wasBuildActive = outdatedBuild && outdatedBuild.inProgress;
-                const buildRecord = outdatedBuild && !wasBuildActive ? outdatedBuild : await getBuildRecord(j.jobType, data.name, build.number, build.url);
-                updatedBuilds.push(buildRecord);
-            } catch (error) {
-                console.error(`error on build ${data.name} #${build.number}`, error);
+        try {
+            let res = await axios.get(url, jenkinsApiConfig);
+            const data = await res.data;
+            for (let build of data.builds) {
+                try {
+                    const outdatedBuild = outdatedBuilds.find((b) => b.url === build.url);
+                    const wasBuildActive = outdatedBuild && outdatedBuild.inProgress;
+                    const buildRecord = outdatedBuild && !wasBuildActive ? outdatedBuild : await getBuildRecord(j.jobType, data.name, build.number, build.url);
+                    updatedBuilds.push(buildRecord);
+                } catch (error) {
+                    console.error(`error on build ${data.name} #${build.number}`, error.message);
+                }
             }
-        }
-        count++;
-        const percentage = Math.trunc((count / totalCount) * 100);
-        if (percentage !== lastReportedPercentage) {
-            //console.log(`updating builds ${percentage}%`);
-            lastReportedPercentage = percentage;
+            count++;
+            const percentage = Math.trunc((count / totalCount) * 100);
+            if (percentage !== lastReportedPercentage) {
+                console.log(`updating builds ${percentage}%`);
+                lastReportedPercentage = percentage;
+            }
+        } catch (error) {
+            console.error('error on getBuilds()', error.message);
         }
     }
 

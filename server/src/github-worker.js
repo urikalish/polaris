@@ -107,17 +107,17 @@ async function getPrs(outdatedPrs) {
                     const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(pr);
                     updatedPrs.push(prRecord);
                 } catch (error) {
-                    console.error(`error on pr ${pr.number}`, error);
+                    console.error(`error on pr ${pr.number}`, error.message);
                 }
                 count++;
                 const percentage = Math.trunc((count / totalCount) * 100);
                 if (percentage !== lastReportedPercentage) {
-                    //console.log(`updating prs ${percentage}%`);
+                    console.log(`updating prs ${percentage}%`);
                     lastReportedPercentage = percentage;
                 }
             }
         } catch (error) {
-            console.error(error);
+            console.error('error on getPrs()', error.message);
         }
     }
 
