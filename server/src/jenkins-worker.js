@@ -88,7 +88,7 @@ async function getBuildRecord(jobType, jobOrdinal, jobName, buildNumber, buildUr
     return buildRec;
 }
 
-async function getBuildsForJob(job, outdatedBuilds) {
+async function getJobBuilds(job, outdatedBuilds) {
     const jobBuilds = [];
     try {
         const url = `${JENKINS_JOB_BASE_URL}/${job.jobUrl}/api/json`;
@@ -113,7 +113,7 @@ async function getBuildsForJob(job, outdatedBuilds) {
             jobBuilds.push(inactiveBuild);
         });
     } catch (error) {
-        console.error('error on getBuildsForJob()', error.message);
+        console.error('error on getJobBuilds()', error.message);
     }
     return jobBuilds;
 }
@@ -123,7 +123,7 @@ async function getBuilds(outdatedBuilds) {
     try {
         const jobBuildsPromises = [];
         for (let job of jobToUrlMap) {
-            jobBuildsPromises.push(getBuildsForJob(job, outdatedBuilds));
+            jobBuildsPromises.push(getJobBuilds(job, outdatedBuilds));
         }
         const results = await Promise.all(jobBuildsPromises);
         results.forEach((result) => {
