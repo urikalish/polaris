@@ -8,6 +8,7 @@ import prDraftImg from './img/pr-draft.svg';
 import prClosedImg from './img/pr-closed.svg';
 import rvApprovedImg from './img/rv-approved.svg';
 import rvAwaitingImg from './img/rv-awaiting.svg';
+import rvPendingImg from './img/rv-pending.svg';
 import rvCommentedImg from './img/rv-commented.svg';
 import rvChangesImg from './img/rv-changes.svg';
 import rvDismissedImg from './img/rv-dismissed.svg';
@@ -21,6 +22,7 @@ enum PrState {
 
 enum ReviewState {
     AWAITING = 'awaiting',
+    PENDING = 'pending',
     COMMENTED = 'commented',
     CHANGES_REQUESTED = 'changes_requested',
     APPROVED = 'approved',
@@ -99,6 +101,7 @@ const stateToImg = {
 
 const reviewStateToImg = {
     [ReviewState.AWAITING]: rvAwaitingImg,
+    [ReviewState.PENDING]: rvPendingImg,
     [ReviewState.COMMENTED]: rvCommentedImg,
     [ReviewState.CHANGES_REQUESTED]: rvChangesImg,
     [ReviewState.APPROVED]: rvApprovedImg,

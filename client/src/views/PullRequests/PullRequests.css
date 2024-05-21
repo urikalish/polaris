@@ -14,6 +14,7 @@
     --color--pr--closed: #cf222e;
 
     --color--rv--awaiting: #bbbbbb;
+    --color--rv--pending: #bbbbbb;
     --color--rv--commented: #cc9933;
     --color--rv--approved: #33cc33;
     --color--rv--changes-requested: #cc3333;
@@ -263,6 +264,9 @@
 .pr-review-state--awaiting > .pr-review-state-img {
     top: 1px;
 }
+.pr-review-state--pending > .pr-review-state-img {
+    margin-right: -2px;
+}
 .pr-review-state--commented > .pr-review-state-img {
     top: 1px;
     margin-right: 1px;
@@ -282,6 +286,9 @@
 }
 .pr-review-state--awaiting > .pr-reviewer-name {
     color: var(--color--rv--awaiting);
+}
+.pr-review-state--pending > .pr-reviewer-name {
+    color: var(--color--rv--pending);
 }
 .pr-review-state--commented > .pr-reviewer-name {
     color: var(--color--rv--commented);
