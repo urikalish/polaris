@@ -47,70 +47,85 @@ async function getPrRecord(pr) {
         reviewers: pr.requested_reviewers ? pr.requested_reviewers.map((rr) => rr.login) : [],
         reviews: [],
     };
-
-    //handle state
-    if (pr.draft) {
-        prRecord.state = 'draft';
-    } else if (pr.merged_at) {
-        prRecord.state = 'merged';
-    } else if (pr.closed_at) {
-        prRecord.state = 'closed';
-    } else {
-        prRecord.state = 'open';
-    }
-
-    //handle reviews
-    const url = `${gitHubRepoApiUrlBase}/pulls/${prRecord.number}/reviews`;
-    const res = await axios.get(url, gitHubApiConfig);
-    const reviews = await res.data;
-    for (let review of reviews) {
-        if (!review.user) {
-            continue;
-        }
-        const reviewerName = review.user.login;
-        if (!prRecord.reviewers.includes(reviewerName)) {
-            prRecord.reviewers.push(reviewerName);
-        }
-        const r = prRecord.reviews.find((r) => r.user === reviewerName);
-        if (r) {
-            r.state = review.state.toLowerCase();
+    try {
+        //handle state
+        if (pr.draft) {
+            prRecord.state = 'draft';
+        } else if (pr.merged_at) {
+            prRecord.state = 'merged';
+        } else if (pr.closed_at) {
+            prRecord.state = 'closed';
         } else {
-            prRecord.reviews.push({ user: reviewerName, state: review.state.toLowerCase() });
+            prRecord.state = 'open';
         }
+
+        //handle reviews
+        const url = `${gitHubRepoApiUrlBase}/pulls/${prRecord.number}/reviews`;
+        const res = await axios.get(url, gitHubApiConfig);
+        const reviews = await res.data;
+        for (let review of reviews) {
+            if (!review.user) {
+                continue;
+            }
+            const reviewerName = review.user.login;
+            if (!prRecord.reviewers.includes(reviewerName)) {
+                prRecord.reviewers.push(reviewerName);
+            }
+            const r = prRecord.reviews.find((r) => r.user === reviewerName);
+            if (r) {
+                r.state = review.state.toLowerCase();
+            } else {
+                prRecord.reviews.push({ user: reviewerName, state: review.state.toLowerCase() });
+            }
+        }
+
+        //sort
+        prRecord.assignees.sort();
+        prRecord.reviewers.sort();
+        prRecord.reviews.sort((a, b) => a.user.localeCompare(b.user));
+    } catch (error) {
+        console.error('error on getPrRecord()', error.message);
     }
-
-    //sort
-    prRecord.assignees.sort();
-    prRecord.reviewers.sort();
-    prRecord.reviews.sort((a, b) => a.user.localeCompare(b.user));
-
     return prRecord;
 }
 
-async function getPrs(outdatedPrs) {
-    const updatedPrs = [];
-
-    const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS / 100);
-    for (let page = 1; page <= numberOfPages; page++) {
-        const url = `${gitHubRepoApiUrlBase}/pulls?state=all&per_page=100&page=${page}`;
-        try {
-            let res = await axios.get(url, gitHubApiConfig);
-            const prs = await res.data;
-            for (let pr of prs) {
-                try {
-                    const outdatedPr = outdatedPrs.find((p) => p.number === pr.number);
-                    const wasPrActive = outdatedPr && ['open', 'draft'].includes(outdatedPr.state);
-                    const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(pr);
-                    updatedPrs.push(prRecord);
-                } catch (error) {
-                    console.error(`error on pr ${pr.number}`, error.message);
-                }
+async function getPagePrs(pageNumber, outdatedPrs) {
+    const pagePrs = [];
+    try {
+        const url = `${gitHubRepoApiUrlBase}/pulls?state=all&per_page=100&page=${pageNumber}`;
+        let res = await axios.get(url, gitHubApiConfig);
+        const prs = await res.data;
+        for (let pr of prs) {
+            try {
+                const outdatedPr = outdatedPrs.find((p) => p.number === pr.number);
+                const wasPrActive = outdatedPr && ['open', 'draft'].includes(outdatedPr.state);
+                const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(pr);
+                pagePrs.push(prRecord);
+            } catch (error) {
+                console.error(`error on pr ${pr.number}`, error.message);
             }
-        } catch (error) {
-            console.error('error on getPrs()', error.message);
         }
+    } catch (error) {
+        console.error('error on getPagePrs()', error.message);
     }
+    return pagePrs;
+}
 
+async function getPrs(outdatedPrs) {
+    let updatedPrs = [];
+    try {
+        const pagePrsPromises = [];
+        const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS / 100);
+        for (let pageNumber = 1; pageNumber <= numberOfPages; pageNumber++) {
+            pagePrsPromises.push(getPagePrs(pageNumber, outdatedPrs));
+        }
+        const results = await Promise.all(pagePrsPromises);
+        results.forEach((result) => {
+            updatedPrs = [...updatedPrs, ...result];
+        });
+    } catch (error) {
+        console.error('error on getPrs()', error.message);
+    }
     return updatedPrs;
 }
 
