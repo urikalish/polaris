@@ -85,6 +85,12 @@ body {
     background-color: #000;
     opacity: 0.5;
 }
+.theme--dark .content-panel::before {
+    opacity: 0.3;
+}
+.theme--bokeh .content-panel::before {
+    opacity: 0.6;
+}
 
 .content-panel > div {
     position: relative;

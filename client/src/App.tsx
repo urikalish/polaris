@@ -28,7 +28,7 @@ function App() {
     }, []);
 
     return (
-        <div className="height--100 overflow--hidden">
+        <div className={`height--100 overflow--hidden theme--${config?.uiTheme || 'bokeh'}`}>
             <AppBackground uiTheme={config?.uiTheme} />
             <div className="main-container">
                 <AppMasthead />
