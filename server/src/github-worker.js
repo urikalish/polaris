@@ -4,13 +4,18 @@ const axios = require('axios');
 require('dotenv').config();
 
 const GITHUB_BASE_URL = process.env.GITHUB_BASE_URL;
-const GITHUB_ORG_NAME = process.env.GITHUB_ORG_NAME;
-const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME;
+const GITHUB_REPO_MQM = process.env.GITHUB_REPO_MQM;
+const GITHUB_REPO_VALUE_EDGE_MENU = process.env.GITHUB_REPO_VALUE_EDGE_MENU;
+const GITHUB_REPO_DISCOVERY_SERVICE = process.env.GITHUB_REPO_DISCOVERY_SERVICE;
+const GITHUB_REPO_GEN_AI = process.env.GITHUB_REPO_GEN_AI;
+const GITHUB_REPO_PYTHON_SERVER = process.env.GITHUB_REPO_PYTHON_SERVER;
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
-const GITHUB_MAX_NUM_OF_PRS = parseInt(process.env.GITHUB_MAX_NUM_OF_PRS);
+const GITHUB_MAX_NUM_OF_PRS_PER_REPO = parseInt(process.env.GITHUB_MAX_NUM_OF_PRS_PER_REPO);
 const PRS_PERSISTENT_FILE = process.env.PRS_PERSISTENT_FILE;
 
-const gitHubRepoApiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}`;
+const repoPaths = [GITHUB_REPO_MQM, GITHUB_REPO_VALUE_EDGE_MENU, GITHUB_REPO_DISCOVERY_SERVICE, GITHUB_REPO_GEN_AI, GITHUB_REPO_PYTHON_SERVER];
+
+const gitHubApiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos`;
 const gitHubApiConfig = {
     headers: {
         Accept: 'application/vnd.github.text+json',
@@ -35,9 +40,10 @@ function savePrsToFile(prs) {
     });
 }
 
-async function getPrRecord(pr) {
+async function getPrRecord(repoPath, pr) {
     const prRecord = {
         repoName: pr.head.repo.name,
+        repoFullName: pr.head.repo.full_name,
         number: pr.number,
         htmlUrl: pr.html_url,
         state: '',
@@ -47,6 +53,11 @@ async function getPrRecord(pr) {
         assignees: pr.assignees ? pr.assignees.map((a) => a.login) : [],
         reviewers: pr.requested_reviewers ? pr.requested_reviewers.map((rr) => rr.login) : [],
         reviews: [],
+        createdAt: pr.created_at,
+        updatedAt: pr.updated_at,
+        closedAt: pr.closed_at,
+        mergedAt: pr.merged_at,
+        mergeCommitSha: pr.merge_commit_sha,
     };
     try {
         //handle state
@@ -61,7 +72,7 @@ async function getPrRecord(pr) {
         }
 
         //handle reviews
-        const url = `${gitHubRepoApiUrlBase}/pulls/${prRecord.number}/reviews`;
+        const url = `${gitHubApiUrlBase}/${repoPath}/pulls/${prRecord.number}/reviews`;
         const res = await axios.get(url, gitHubApiConfig);
         const reviews = await res.data;
         for (let review of reviews) {
@@ -90,17 +101,17 @@ async function getPrRecord(pr) {
     return prRecord;
 }
 
-async function getPagePrs(pageNumber, outdatedPrs) {
+async function getPagePrs(repoPath, pageNumber, outdatedPrs) {
     const pagePrs = [];
     try {
-        const url = `${gitHubRepoApiUrlBase}/pulls?state=all&per_page=100&page=${pageNumber}`;
+        const url = `${gitHubApiUrlBase}/${repoPath}/pulls?state=all&per_page=100&page=${pageNumber}`;
         let res = await axios.get(url, gitHubApiConfig);
         const prs = await res.data;
         for (let pr of prs) {
             try {
-                const outdatedPr = outdatedPrs.find((p) => p.number === pr.number);
+                const outdatedPr = outdatedPrs.find((p) => p.htmlUrl === pr.html_url);
                 const wasPrActive = outdatedPr && ['open', 'draft'].includes(outdatedPr.state);
-                const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(pr);
+                const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(repoPath, pr);
                 pagePrs.push(prRecord);
             } catch (error) {
                 console.error(`error on pr ${pr.number}`, error.message);
@@ -112,15 +123,32 @@ async function getPagePrs(pageNumber, outdatedPrs) {
     return pagePrs;
 }
 
+async function getRepoPrs(repoPath, outdatedPrs) {
+    let repoPrs = [];
+    try {
+        const pagePrsPromises = [];
+        const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS_PER_REPO / 100);
+        for (let pageNumber = 1; pageNumber <= numberOfPages; pageNumber++) {
+            pagePrsPromises.push(getPagePrs(repoPath, pageNumber, outdatedPrs));
+        }
+        const results = await Promise.all(pagePrsPromises);
+        results.forEach((result) => {
+            repoPrs = [...repoPrs, ...result];
+        });
+    } catch (error) {
+        console.error('error on getRepoPrs()', error.message);
+    }
+    return repoPrs;
+}
+
 async function getPrs(outdatedPrs) {
     let updatedPrs = [];
     try {
-        const pagePrsPromises = [];
-        const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS / 100);
-        for (let pageNumber = 1; pageNumber <= numberOfPages; pageNumber++) {
-            pagePrsPromises.push(getPagePrs(pageNumber, outdatedPrs));
-        }
-        const results = await Promise.all(pagePrsPromises);
+        const repoPrsPromises = [];
+        repoPaths.forEach((repoPath) => {
+            repoPrsPromises.push(getRepoPrs(repoPath, outdatedPrs));
+        });
+        const results = await Promise.all(repoPrsPromises);
         results.forEach((result) => {
             updatedPrs = [...updatedPrs, ...result];
         });

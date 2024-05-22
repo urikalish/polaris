@@ -77,6 +77,7 @@ type BuildRec = {
 
 type PullRequestRec = {
     repoName: string;
+    repoFullName: string;
     number: number;
     htmlUrl: string;
     state: PrState;
@@ -86,6 +87,11 @@ type PullRequestRec = {
     assignees: string[];
     reviewers: string[];
     reviews: { user: string; state: ReviewState }[];
+    createdAt: string;
+    updatedAt: string;
+    closedAt: string | null;
+    mergedAt: string | null;
+    mergeCommitSha: string | null;
     myRole: MyRole;
     builds: BuildRec[];
 };
@@ -183,6 +189,7 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                         pr.myRole = MyRole.ASSIGNEE;
                     }
                 });
+                prs.sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : a.updatedAt < b.updatedAt ? 1 : 0));
                 setPrs(prs);
             }
             setLoading(false);
