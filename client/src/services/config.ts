@@ -12,7 +12,7 @@ export function loadConfigValues(cb: (configObj: ConfigObj) => void) {
         cb({
             serverUrl: configObj?.serverUrl || `http://chrome-ext.octane.admlabs.aws.swinfra.net:8082`,
             gitHubUserName: configObj?.gitHubUserName || 'john-doe',
-            uiTheme: configObj?.uiTheme || 'bokeh',
+            uiTheme: configObj?.uiTheme || 'dark',
         });
     });
 }
