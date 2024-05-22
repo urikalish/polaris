@@ -37,6 +37,7 @@ function savePrsToFile(prs) {
 
 async function getPrRecord(pr) {
     const prRecord = {
+        repoName: pr.head.repo.name,
         number: pr.number,
         htmlUrl: pr.html_url,
         state: '',

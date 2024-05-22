@@ -76,6 +76,7 @@ type BuildRec = {
 };
 
 type PullRequestRec = {
+    repoName: string;
     number: number;
     htmlUrl: string;
     state: PrState;
