@@ -37,6 +37,7 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
             uiTheme: uiTheme.trim() || '',
         };
         onSaveConfig(configOj);
+        setSettingsChanged(false);
     }, [serverUrl, gitHubUserName, uiTheme, onSaveConfig]);
 
     return (

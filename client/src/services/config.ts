@@ -10,7 +10,7 @@ export function loadConfigValues(cb: (configObj: ConfigObj) => void) {
     chrome.storage.local.get(STORAGE_MAIN_KEY, (data: any) => {
         const configObj = data[STORAGE_MAIN_KEY];
         cb({
-            serverUrl: configObj?.serverUrl || `http://localhost:8082`,
+            serverUrl: configObj?.serverUrl || `http://chrome-ext.octane.admlabs.aws.swinfra.net:8082`,
             gitHubUserName: configObj?.gitHubUserName || 'john-doe',
             uiTheme: configObj?.uiTheme || 'bokeh',
         });
