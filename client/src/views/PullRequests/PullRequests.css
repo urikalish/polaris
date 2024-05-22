@@ -4,6 +4,7 @@
     --color--pr--draft: #6e7781;
     --color--pr--closed: #cf222e;
 
+    --color--rv--owner: #ffffff;
     --color--rv--awaiting: #bbbbbb;
     --color--rv--pending: #bbbbbb;
     --color--rv--commented: #cc9933;
@@ -267,6 +268,8 @@
     height: 20px;
     position: relative;
 }
+.pr-review-state--owner > .pr-review-state-img {
+}
 .pr-review-state--awaiting > .pr-review-state-img {
     top: 1px;
 }
@@ -289,6 +292,9 @@
 .pr-reviewer-name {
     color: #fff;
     white-space: nowrap;
+}
+.pr-review-state--owner > .pr-reviewer-name {
+    color: var(--color--rv--owner);
 }
 .pr-review-state--awaiting > .pr-reviewer-name {
     color: var(--color--rv--awaiting);

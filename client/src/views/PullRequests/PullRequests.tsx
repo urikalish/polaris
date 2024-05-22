@@ -8,10 +8,11 @@ import prDraftImg from './img/pr-draft.svg';
 import prClosedImg from './img/pr-closed.svg';
 import rvApprovedImg from './img/rv-approved.svg';
 import rvAwaitingImg from './img/rv-awaiting.svg';
-import rvPendingImg from './img/rv-pending.svg';
-import rvCommentedImg from './img/rv-commented.svg';
 import rvChangesImg from './img/rv-changes.svg';
+import rvCommentedImg from './img/rv-commented.svg';
 import rvDismissedImg from './img/rv-dismissed.svg';
+import rvOwnerImg from './img/rv-owner.svg';
+import rvPendingImg from './img/rv-pending.svg';
 
 enum PrState {
     OPEN = 'open',
@@ -21,6 +22,7 @@ enum PrState {
 }
 
 enum ReviewState {
+    OWNER = 'owner',
     AWAITING = 'awaiting',
     PENDING = 'pending',
     COMMENTED = 'commented',
@@ -97,6 +99,7 @@ const stateToImg = {
 };
 
 const reviewStateToImg = {
+    [ReviewState.OWNER]: rvOwnerImg,
     [ReviewState.AWAITING]: rvAwaitingImg,
     [ReviewState.PENDING]: rvPendingImg,
     [ReviewState.COMMENTED]: rvCommentedImg,
@@ -251,6 +254,10 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                                 </div>
                                 {pr.reviewers.length > 0 && (
                                     <div className="pr-line flex-wrap--wrap">
+                                        <div className="pr-reviewer pr-review-state--owner" title="owner">
+                                            <img src={reviewStateToImg[ReviewState.OWNER]} className="pr-review-state-img" alt="review state" />
+                                            <span className="pr-reviewer-name">{pr.creator}</span>
+                                        </div>
                                         {pr.reviewers.map((reviewerName) => (
                                             <div
                                                 key={reviewerName}
