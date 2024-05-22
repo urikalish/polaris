@@ -17,11 +17,13 @@ let allBuilds = [];
 function updatePrBuilds() {
     allPrs.forEach((pr) => {
         pr.builds = [];
-        allBuilds.forEach((b) => {
-            if (pr.branch === b.branch) {
-                pr.builds.push(b);
-            }
-        });
+        if (pr.state === 'open') {
+            allBuilds.forEach((b) => {
+                if (pr.branch === b.branch) {
+                    pr.builds.push(b);
+                }
+            });
+        }
     });
 }
 
