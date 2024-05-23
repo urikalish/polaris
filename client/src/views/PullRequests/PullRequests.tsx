@@ -254,11 +254,11 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                                         <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
                                     </div>
                                     <a href={pr.htmlUrl} target="_blank" className="pr-link">
-                                        {pr.number}
+                                        <span className="pr-number">{pr.number}</span>
+                                        <span className="pr-title ellipsis" title={pr.title}>
+                                            {pr.title}
+                                        </span>
                                     </a>
-                                    <span className="pr-title ellipsis" title={pr.title}>
-                                        {pr.title}
-                                    </span>
                                 </div>
                                 {pr.reviewers.length > 0 && (
                                     <div className="pr-line flex-wrap--wrap">

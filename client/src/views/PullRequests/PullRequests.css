@@ -169,13 +169,16 @@
     position: relative;
     top: 1px;
     flex: 0 0 auto;
-    color: #888 !important;
+}
+
+.pr-number {
+    color: #888;
 }
 
 .pr-title {
-    position: relative;
-    top: 1px;
     flex: 1 1 auto;
+    margin-left: 4px;
+    color: #fff;
 }
 
 .custom-build {
