@@ -20,8 +20,8 @@
 .header-image {
     width: 24px;
     height: 24px;
-    background-color: #fff;
-    border-radius: 50%;
+    background-color: #aaa;
+    border-radius: 2px;
 }
 
 .header-title {
