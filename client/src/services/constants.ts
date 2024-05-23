@@ -1,1 +1,1 @@
-export const APP_NAME = 'Polaris';
+export const APP_NAME = 'PullPatrol';

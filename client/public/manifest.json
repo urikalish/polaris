@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "version": "1.0.0",
-  "name": "Polaris",
-  "short_name": "Polaris",
-  "description": "Polaris Chrome extension",
+  "name": "PullPatrol",
+  "short_name": "PullPatrol",
+  "description": "PullPatrol Chrome extension",
   "icons": {
     "48": "img/icon48.png",
     "128": "img/icon128.png"
