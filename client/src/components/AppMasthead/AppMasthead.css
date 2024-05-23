@@ -7,7 +7,7 @@
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    padding: 8px;
+    padding: 0 4px 0 12px;
     user-select: none;
 }
 
@@ -20,13 +20,15 @@
 .header-image {
     width: 24px;
     height: 24px;
-    background-color: #999;
+    background-color: #f55;
     border-radius: 2px;
 }
 
 .header-title {
-    margin-left: 4px;
-    font-size: 32px;
+    position: relative;
+    top: -1px;
+    margin-left: 2px;
+    font-size: 36px;
     font-weight: 700;
     color: #fff;
     font-family: Play, sans-serif;
