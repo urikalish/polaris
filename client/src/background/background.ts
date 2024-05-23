@@ -8,7 +8,11 @@ async function getPrsFromServer(request: any) {
             return { type: request.type, data: responseObj.data };
         }
     } catch (error: any) {
-        return { type: request.type, error: error.toString() };
+        if (error.toString() === 'TypeError: Failed to fetch') {
+            return { type: request.type, error: 'Polaris server is unavailable' };
+        } else {
+            return { type: request.type, error: error.toString() };
+        }
     }
 }
 
