@@ -1,0 +1,2 @@
+This Chrome extension helps OpenText Octane developers with pull request management.
+It connects to a dedicated server to retrieve information about pull requests and builds from Octane's GitHub and Jenkins.
