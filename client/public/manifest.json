@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "name": "PullPatrol",
   "short_name": "PullPatrol",
-  "description": "PullPatrol Chrome extension",
+  "description": "Pull request management for OpenText Octane developers",
   "icons": {
     "48": "img/icon48.png",
     "128": "img/icon128.png"
