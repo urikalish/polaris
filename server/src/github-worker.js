@@ -23,6 +23,8 @@ const gitHubApiConfig = {
     },
 };
 
+let updateCount = 0;
+
 function loadPrsFromFile() {
     if (!fs.existsSync(PRS_PERSISTENT_FILE)) {
         return [];
@@ -160,12 +162,12 @@ async function getPrs(outdatedPrs) {
 
 parentPort.on('message', async () => {
     try {
-        console.log('updating prs...');
+        console.log('prs updating...');
         const startTime = Date.now();
-        const outdatedPrs = loadPrsFromFile();
-        const updatedPrs = await getPrs(outdatedPrs);
+        const updatedPrs = await getPrs(updateCount % 60 === 0 ? [] : loadPrsFromFile());
         savePrsToFile(updatedPrs);
-        console.log(`prs updated in ${Math.round((Date.now() - startTime) / 1000)} seconds`);
+        updateCount++;
+        console.log(`prs updated. amount:${updatedPrs.length}, time: ${Math.round((Date.now() - startTime) / 1000)}s.`);
         parentPort.postMessage(updatedPrs);
     } catch (error) {
         console.error('error on github worker', error);

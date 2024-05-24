@@ -13,6 +13,8 @@ const BUILDS_PERSISTENT_FILE = process.env.BUILDS_PERSISTENT_FILE;
 const CUSTOM_QUICK = 'custom-quick';
 const CUSTOM_FULL = 'custom-full';
 
+let updateCount = 0;
+
 let jobToUrlMap = [];
 
 const jenkinsApiConfig = {
@@ -137,12 +139,12 @@ async function getBuilds(outdatedBuilds) {
 
 parentPort.on('message', async () => {
     try {
-        console.log('updating builds...');
+        console.log('builds updating...');
         const startTime = Date.now();
-        const outdatedBuilds = loadBuildsFromFile();
-        const updatedBuilds = await getBuilds(outdatedBuilds);
+        const updatedBuilds = await getBuilds(updateCount % 60 === 0 ? [] : loadBuildsFromFile());
         saveBuildsToFile(updatedBuilds);
-        console.log(`builds updated in ${Math.round((Date.now() - startTime) / 1000)} seconds`);
+        updateCount++;
+        console.log(`builds updated. amount:${updatedBuilds.length}, time:${Math.round((Date.now() - startTime) / 1000)}s`);
         parentPort.postMessage(updatedBuilds);
     } catch (error) {
         console.error('error on jenkins worker', error);
