@@ -9,7 +9,7 @@ async function getPrsFromServer(request: any) {
         }
     } catch (error: any) {
         if (error.toString() === 'TypeError: Failed to fetch') {
-            return { type: request.type, error: 'Polaris server is unavailable' };
+            return { type: request.type, error: 'Unable to fetch data from the server' };
         } else {
             return { type: request.type, error: error.toString() };
         }
