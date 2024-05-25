@@ -11,7 +11,7 @@ export function loadConfigValues(cb: (configObj: ConfigObj) => void) {
         const configObj = data[STORAGE_MAIN_KEY];
         cb({
             serverUrl: configObj?.serverUrl || `http://chrome-ext.octane.admlabs.aws.swinfra.net:8082`,
-            gitHubUserName: configObj?.gitHubUserName || 'john-doe',
+            gitHubUserName: configObj?.gitHubUserName || '',
             uiTheme: configObj?.uiTheme || 'dark',
         });
     });

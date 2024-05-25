@@ -164,13 +164,7 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
     const handleRefresh = useCallback(() => {
         setPrs([]);
         setLoading(true);
-        if (!serverUrl) {
-            alert('Server URL is undefined, please check the settings tab');
-            setLoading(false);
-            return;
-        }
-        if (!gitHubUserName) {
-            alert('GitHub Username is undefined, please check the settings tab');
+        if (!serverUrl || !gitHubUserName) {
             setLoading(false);
             return;
         }

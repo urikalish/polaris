@@ -11,24 +11,33 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
     const [serverUrl, setServerUrl] = useState(config?.serverUrl || '');
     const [gitHubUserName, setGitHubUserName] = useState(config?.gitHubUserName || '');
     const [uiTheme, setUiTheme] = useState(config?.uiTheme || '');
-    const [settingsChanged, setSettingsChanged] = useState(false);
+    const [canSave, setCanSave] = useState(false);
 
     useEffect(() => {}, []);
 
-    const handleChangeServerUrl = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setServerUrl(e.target.value);
-        setSettingsChanged(true);
-    }, []);
+    const handleChangeServerUrl = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            setServerUrl(e.target.value);
+            setCanSave(!!e.target.value && !!gitHubUserName);
+        },
+        [gitHubUserName],
+    );
 
-    const handleChangeGitHubUserName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setGitHubUserName(e.target.value);
-        setSettingsChanged(true);
-    }, []);
+    const handleChangeGitHubUserName = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            setGitHubUserName(e.target.value);
+            setCanSave(!!e.target.value && !!serverUrl);
+        },
+        [serverUrl],
+    );
 
-    const handleChangeUiTheme = useCallback((e: SelectChangeEvent<string>) => {
-        setUiTheme(e.target.value);
-        setSettingsChanged(true);
-    }, []);
+    const handleChangeUiTheme = useCallback(
+        (e: SelectChangeEvent<string>) => {
+            setUiTheme(e.target.value);
+            setCanSave(!!serverUrl && !!gitHubUserName);
+        },
+        [serverUrl, gitHubUserName],
+    );
 
     const handleSave = useCallback(() => {
         const configOj: ConfigObj = {
@@ -37,7 +46,7 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
             uiTheme: uiTheme.trim() || '',
         };
         onSaveConfig(configOj);
-        setSettingsChanged(false);
+        setCanSave(false);
     }, [serverUrl, gitHubUserName, uiTheme, onSaveConfig]);
 
     return (
@@ -45,10 +54,17 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
             <div className="content-panel">
                 <div className="settings-form">
                     <FormControl>
-                        <TextField id="server-url" label="Server URL" variant="outlined" value={serverUrl} onChange={handleChangeServerUrl} />
+                        <TextField id="server-url" label="Server URL" variant="outlined" value={serverUrl} error={!serverUrl} onChange={handleChangeServerUrl} />
                     </FormControl>
                     <FormControl>
-                        <TextField id="github-username" label="GitHub Username" variant="outlined" value={gitHubUserName} onChange={handleChangeGitHubUserName} />
+                        <TextField
+                            id="github-username"
+                            label="GitHub Username"
+                            variant="outlined"
+                            value={gitHubUserName}
+                            error={!gitHubUserName}
+                            onChange={handleChangeGitHubUserName}
+                        />
                     </FormControl>
                     <FormControl>
                         <InputLabel id="ui-theme-label">UI Theme</InputLabel>
@@ -60,7 +76,7 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
                 </div>
             </div>
             <div className="actions-panel">
-                <Button variant={settingsChanged ? 'contained' : 'outlined'} onClick={handleSave}>
+                <Button variant="contained" disabled={!canSave} onClick={handleSave}>
                     Save
                 </Button>
             </div>
