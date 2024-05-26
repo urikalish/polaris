@@ -254,24 +254,22 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                                         </span>
                                     </a>
                                 </div>
-                                {pr.reviewers.length > 0 && (
-                                    <div className="pr-line flex-wrap--wrap">
-                                        <div className="pr-reviewer pr-review-state--owner" title="owner">
-                                            <img src={reviewStateToImg[ReviewState.OWNER]} className="pr-review-state-img" alt="review state" />
-                                            <span className="pr-reviewer-name">{pr.creator}</span>
-                                        </div>
-                                        {pr.reviewers.map((reviewerName) => (
-                                            <div
-                                                key={reviewerName}
-                                                className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
-                                                title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
-                                            >
-                                                <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
-                                                <span className="pr-reviewer-name">{reviewerName}</span>
-                                            </div>
-                                        ))}
+                                <div className="pr-line flex-wrap--wrap">
+                                    <div className="pr-reviewer pr-review-state--owner" title="owner">
+                                        <img src={reviewStateToImg[ReviewState.OWNER]} className="pr-review-state-img" alt="review state" />
+                                        <span className="pr-reviewer-name">{pr.creator}</span>
                                     </div>
-                                )}
+                                    {pr.reviewers.map((reviewerName) => (
+                                        <div
+                                            key={reviewerName}
+                                            className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
+                                            title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
+                                        >
+                                            <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
+                                            <span className="pr-reviewer-name">{reviewerName}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                             <div className="pr-right-side">
                                 {pr.builds.length > 0 && (
