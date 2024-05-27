@@ -7,6 +7,7 @@ import './App.css';
 import { Settings } from './views/Settings/Settings.tsx';
 import { ConfigObj, loadConfigValues, saveConfigValues } from './services/config.ts';
 import { PullRequests } from './views/PullRequests/PullRequests.tsx';
+import { About } from './views/About/About.tsx';
 
 function App() {
     const [config, setConfig] = useState<ConfigObj | null>(null);
@@ -36,10 +37,12 @@ function App() {
                 <Tabs value={tabIndex} onChange={handleChangeTab} aria-label="basic tabs example">
                     <Tab label="Pull Requests" />
                     <Tab label="Settings" />
+                    <Tab label="About" />
                 </Tabs>
 
                 {tabIndex === 0 && <PullRequests serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} />}
                 {tabIndex === 1 && <Settings config={config} onSaveConfig={handleSaveConfig} />}
+                {tabIndex === 2 && <About />}
             </div>
         </div>
     );

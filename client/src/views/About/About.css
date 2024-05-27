@@ -1,0 +1,17 @@
+.about-form {
+    padding: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+}
+
+.about-label {
+    color: #aaa;
+}
+.about-label::after {
+    content: ':';
+}
+
+.about-value {
+    color: #fff;
+}
