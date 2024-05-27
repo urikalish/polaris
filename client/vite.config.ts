@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [react()],
     build: {
         outDir: 'chrome-ext',
-        minify: true,
+        minify: false,
         rollupOptions: {
             input: {
                 popup: 'index.html',
