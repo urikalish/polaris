@@ -6,7 +6,7 @@
 }
 
 .about-label {
-    color: #aaa;
+    color: #bbb;
 }
 .about-label::after {
     content: ':';
