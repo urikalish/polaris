@@ -76,20 +76,13 @@ body {
 .content-panel {
     position: relative;
     overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
 }
-
-.content-panel::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: #000;
-    opacity: 0.5;
+.theme--dark .content-panel {
+    background-color: rgba(0, 0, 0, 0.3);
 }
-.theme--dark .content-panel::before {
-    opacity: 0.3;
-}
-.theme--bokeh .content-panel::before {
-    opacity: 0.6;
+.theme--bokeh .content-panel {
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
 .content-panel > div {
