@@ -219,7 +219,7 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
 
     return (
         <div className="pull-requests content-with-actions">
-            <div className={`prs-wrapper ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${role}`}>
+            <div className={`prs-wrapper content-panel border ${open ? 'open' : ''} ${merged ? 'merged' : ''} ${draft ? 'draft' : ''} ${closed ? 'closed' : ''} ${role}`}>
                 {loading && <img src={loadingImg} className="loading-spinner" alt="Loading..." />}
                 {prs.length > 0 && (
                     <div className="prs-filters">
@@ -240,7 +240,7 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                     </div>
                 )}
                 {prs.length > 0 && (
-                    <div className="prs-container content-panel border custom-scroll">
+                    <div className="prs-container content-panel custom-scroll">
                         {prs.map((pr) => (
                             <div key={pr.number} className={`pr-container ${pr.state} ${pr.myRole}`}>
                                 <div className="pr-left-side">

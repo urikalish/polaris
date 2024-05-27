@@ -29,8 +29,7 @@
     height: 100%;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 32px 1fr;
-    gap: 4px;
+    grid-template-rows: 38px 1fr;
     overflow: hidden;
 }
 
@@ -58,7 +57,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 6px;
+    border-bottom: 1px solid var(--color--border);
 }
 
 .filter-btn {
@@ -98,6 +97,8 @@
 }
 
 .prs-filters .MuiFormControlLabel-label {
+    position: relative;
+    top: 1px;
     font-size: 15px;
 }
 
@@ -109,7 +110,7 @@
 
 .pr-container {
     display: none;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid var(--color--border);
     padding: 4px;
     grid-template-columns: 1fr 60px;
     grid-template-rows: auto;
