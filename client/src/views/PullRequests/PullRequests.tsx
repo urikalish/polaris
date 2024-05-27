@@ -240,7 +240,7 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                     </div>
                 )}
                 {prs.length > 0 && (
-                    <div className="prs-container content-panel custom-scroll">
+                    <div className="prs-container custom-scroll">
                         {prs.map((pr) => (
                             <div key={pr.number} className={`pr-container ${pr.state} ${pr.myRole}`}>
                                 <div className="pr-left-side">
