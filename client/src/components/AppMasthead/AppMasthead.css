@@ -20,7 +20,7 @@
 .header-image {
     width: 24px;
     height: 24px;
-    background-color: #f55;
+    background-color: #ccc;
     border-radius: 2px;
 }
 
@@ -30,6 +30,6 @@
     margin-left: 2px;
     font-size: 36px;
     font-weight: 700;
-    color: #fff;
+    color: #ccc;
     font-family: Play, sans-serif;
 }
