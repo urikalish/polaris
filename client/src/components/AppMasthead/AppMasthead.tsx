@@ -11,7 +11,7 @@ export function AppMasthead() {
     }, []);
 
     return (
-        <div className="content-panel masthead">
+        <div className="content-panel border masthead">
             <div className="header">
                 <div>
                     <img src={prImg} className="header-image" alt="icon" />

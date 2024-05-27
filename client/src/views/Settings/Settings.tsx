@@ -51,7 +51,7 @@ export function Settings({ config, onSaveConfig }: SettingsProps) {
 
     return (
         <div className="settings content-with-actions">
-            <div className="content-panel">
+            <div className="content-panel border">
                 <div className="settings-form">
                     <FormControl>
                         <TextField id="server-url" label="Server URL" variant="outlined" value={serverUrl} error={!serverUrl} onChange={handleChangeServerUrl} />

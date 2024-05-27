@@ -239,61 +239,63 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                         </FormControl>
                     </div>
                 )}
-                <div className="prs-container custom-scroll">
-                    {prs.map((pr) => (
-                        <div key={pr.number} className={`pr-container content-panel ${pr.state} ${pr.myRole}`}>
-                            <div className="pr-left-side">
-                                <div className="pr-line">
-                                    <div className={`pr-state pr-state--${pr.state}`}>
-                                        <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
-                                    </div>
-                                    <a href={pr.htmlUrl} target="_blank" className="pr-link">
-                                        <span className="pr-number">{pr.number}</span>
-                                        <span className="pr-title ellipsis" title={pr.title}>
-                                            {pr.title}
-                                        </span>
-                                    </a>
-                                </div>
-                                <div className="pr-line flex-wrap--wrap">
-                                    <div className="pr-reviewer pr-review-state--owner" title="owner">
-                                        <img src={reviewStateToImg[ReviewState.OWNER]} className="pr-review-state-img" alt="review state" />
-                                        <span className="pr-reviewer-name">{pr.creator}</span>
-                                    </div>
-                                    {pr.reviewers.map((reviewerName) => (
-                                        <div
-                                            key={reviewerName}
-                                            className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
-                                            title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
-                                        >
-                                            <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
-                                            <span className="pr-reviewer-name">{reviewerName}</span>
+                {prs.length > 0 && (
+                    <div className="prs-container content-panel border custom-scroll">
+                        {prs.map((pr) => (
+                            <div key={pr.number} className={`pr-container ${pr.state} ${pr.myRole}`}>
+                                <div className="pr-left-side">
+                                    <div className="pr-line">
+                                        <div className={`pr-state pr-state--${pr.state}`}>
+                                            <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="pr-right-side">
-                                {pr.builds.length > 0 && (
-                                    <>
-                                        {getLatestCustomBuilds(pr).map((b) => (
-                                            <div className="pr-line flex-wrap--wrap">
-                                                <div
-                                                    key={b.url}
-                                                    className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}
-                                                    title={b.inProgress ? 'running' : b.result.toLowerCase()}
-                                                >
-                                                    <div className="build-led"></div>
-                                                    <a href={b.url} target="_blank" className="pr-link">
-                                                        <span className="custom-build-title">{getBuildShortName(b.jobType)}</span>
-                                                    </a>
-                                                </div>
+                                        <a href={pr.htmlUrl} target="_blank" className="pr-link">
+                                            <span className="pr-number">{pr.number}</span>
+                                            <span className="pr-title ellipsis" title={pr.title}>
+                                                {pr.title}
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div className="pr-line flex-wrap--wrap">
+                                        <div className="pr-reviewer pr-review-state--owner" title="owner">
+                                            <img src={reviewStateToImg[ReviewState.OWNER]} className="pr-review-state-img" alt="review state" />
+                                            <span className="pr-reviewer-name">{pr.creator}</span>
+                                        </div>
+                                        {pr.reviewers.map((reviewerName) => (
+                                            <div
+                                                key={reviewerName}
+                                                className={`pr-reviewer pr-review-state--${getReviewStateForReviewer(pr, reviewerName)}`}
+                                                title={getReviewStateForReviewer(pr, reviewerName).replace('_', ' ')}
+                                            >
+                                                <img src={getImgSrcForReviewState(pr, reviewerName)} className="pr-review-state-img" alt="review state" />
+                                                <span className="pr-reviewer-name">{reviewerName}</span>
                                             </div>
                                         ))}
-                                    </>
-                                )}
+                                    </div>
+                                </div>
+                                <div className="pr-right-side">
+                                    {pr.builds.length > 0 && (
+                                        <>
+                                            {getLatestCustomBuilds(pr).map((b) => (
+                                                <div className="pr-line flex-wrap--wrap">
+                                                    <div
+                                                        key={b.url}
+                                                        className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}
+                                                        title={b.inProgress ? 'running' : b.result.toLowerCase()}
+                                                    >
+                                                        <div className="build-led"></div>
+                                                        <a href={b.url} target="_blank" className="pr-link">
+                                                            <span className="custom-build-title">{getBuildShortName(b.jobType)}</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="actions-panel">
                 <Button variant="contained" onClick={handleRefresh} disabled={loading}>

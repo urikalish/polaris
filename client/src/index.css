@@ -75,7 +75,6 @@ body {
 
 .content-panel {
     position: relative;
-    overflow: hidden;
     background-color: rgba(0, 0, 0, 0.5);
 }
 .theme--dark .content-panel {
@@ -83,10 +82,6 @@ body {
 }
 .theme--bokeh .content-panel {
     background-color: rgba(0, 0, 0, 0.6);
-}
-
-.content-panel > div {
-    position: relative;
 }
 
 .actions-panel {
@@ -139,4 +134,8 @@ body {
 
 .flex-wrap--wrap {
     flex-wrap: wrap;
+}
+
+.border {
+    border: 1px solid #444;
 }
