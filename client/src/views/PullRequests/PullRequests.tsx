@@ -244,18 +244,18 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                         {prs.map((pr) => (
                             <div key={pr.number} className={`pr-container ${pr.state} ${pr.myRole}`}>
                                 <div className="pr-left-side">
-                                    <div className="pr-line">
+                                    <div className="pr-line--grid">
                                         <div className={`pr-state pr-state--${pr.state}`}>
                                             <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
                                         </div>
                                         <a href={pr.htmlUrl} target="_blank" className="pr-link">
                                             <span className="pr-number">{pr.number}</span>
-                                            <span className="pr-title ellipsis" title={pr.title}>
-                                                {pr.title}
-                                            </span>
                                         </a>
+                                        <span className="pr-title ellipsis" title={pr.title}>
+                                            {pr.title}
+                                        </span>
                                     </div>
-                                    <div className="pr-line flex-wrap--wrap">
+                                    <div className="pr-line--flex">
                                         <div className="pr-reviewer pr-review-state--owner" title="owner">
                                             <img src={reviewStateToImg[ReviewState.OWNER]} className="pr-review-state-img" alt="review state" />
                                             <span className="pr-reviewer-name">{pr.creator}</span>
@@ -276,7 +276,7 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
                                     {pr.builds.length > 0 && (
                                         <>
                                             {getLatestCustomBuilds(pr).map((b) => (
-                                                <div className="pr-line flex-wrap--wrap">
+                                                <div className="pr-line--flex">
                                                     <div
                                                         key={b.url}
                                                         className={`custom-build custom-build--${b.inProgress ? 'running' : b.result.toLowerCase()}`}

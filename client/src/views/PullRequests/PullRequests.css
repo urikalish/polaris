@@ -137,10 +137,17 @@
 .pr-right-side {
 }
 
-.pr-line {
+.pr-line--grid {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 4px;
+}
+
+.pr-line--flex {
     display: flex;
     align-items: center;
     gap: 4px;
+    flex-wrap: wrap;
 }
 
 .pr-state {
@@ -167,9 +174,6 @@
 }
 
 .pr-link {
-    position: relative;
-    top: 1px;
-    flex: 0 0 auto;
 }
 
 .pr-number {
@@ -178,7 +182,6 @@
 
 .pr-title {
     flex: 1 1 auto;
-    margin-left: 4px;
     color: #fff;
 }
 
