@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "PullPatrol",
   "short_name": "PullPatrol",
   "description": "Pull request management for OpenText Octane developers",
