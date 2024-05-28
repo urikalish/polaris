@@ -139,12 +139,12 @@ async function getBuilds(outdatedBuilds) {
 
 parentPort.on('message', async () => {
     try {
-        console.log('builds updating...');
+        console.log('> builds');
         const startTime = Date.now();
         const updatedBuilds = await getBuilds(updateCount % 60 === 0 ? [] : loadBuildsFromFile());
         saveBuildsToFile(updatedBuilds);
         updateCount++;
-        console.log(`builds updated. amount:${updatedBuilds.length}, time:${Math.round((Date.now() - startTime) / 1000)}s`);
+        console.log(`< builds ${Math.round((Date.now() - startTime) / 1000)}s`);
         parentPort.postMessage(updatedBuilds);
     } catch (error) {
         console.error('error on jenkins worker', error);

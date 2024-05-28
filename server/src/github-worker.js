@@ -162,12 +162,12 @@ async function getPrs(outdatedPrs) {
 
 parentPort.on('message', async () => {
     try {
-        console.log('prs updating...');
+        console.log('> prs');
         const startTime = Date.now();
         const updatedPrs = await getPrs(updateCount % 60 === 0 ? [] : loadPrsFromFile());
         savePrsToFile(updatedPrs);
         updateCount++;
-        console.log(`prs updated. amount:${updatedPrs.length}, time: ${Math.round((Date.now() - startTime) / 1000)}s.`);
+        console.log(`< prs ${Math.round((Date.now() - startTime) / 1000)}s`);
         parentPort.postMessage(updatedPrs);
     } catch (error) {
         console.error('error on github worker', error);

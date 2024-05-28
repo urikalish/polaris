@@ -62,7 +62,7 @@ app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
         const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
-        console.log(`prs sent. user:${username}, amount:${prs.length}`);
+        console.log(`${prs.length} prs --> ${username}`);
         res.send({ data: { prs } });
     } catch (error) {
         console.error('error on getting pull requests', error);
