@@ -14,6 +14,9 @@ app.use(cors());
 let allPrs = [];
 let allBuilds = [];
 
+let buildsUpdateCount = 0;
+let prsUpdateCount = 0;
+
 function updatePrBuilds() {
     allPrs.forEach((pr) => {
         pr.builds = [];
@@ -31,6 +34,10 @@ const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
     updatePrBuilds();
+    prsUpdateCount++;
+    if (prsUpdateCount === 1) {
+        console.log('prs ready');
+    }
     setTimeout(
         () => {
             updatePrs();
@@ -46,6 +53,10 @@ const jenkinsHubWorker = new Worker('./jenkins-worker.js');
 jenkinsHubWorker.on('message', (updatedBuilds) => {
     allBuilds = updatedBuilds;
     updatePrBuilds();
+    buildsUpdateCount++;
+    if (buildsUpdateCount === 1) {
+        console.log('builds ready');
+    }
     setTimeout(
         () => {
             updateBuilds();
@@ -62,7 +73,7 @@ app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
         const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
-        console.log(`${prs.length} prs --> ${username}`);
+        console.log(`${prs.length} prs sent to ${username}`);
         res.send({ data: { prs } });
     } catch (error) {
         console.error('error on getting pull requests', error);

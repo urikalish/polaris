@@ -4,16 +4,13 @@ const axios = require('axios');
 require('dotenv').config();
 
 const GITHUB_BASE_URL = process.env.GITHUB_BASE_URL;
-const GITHUB_REPO_MQM = process.env.GITHUB_REPO_MQM;
-const GITHUB_REPO_VALUE_EDGE_MENU = process.env.GITHUB_REPO_VALUE_EDGE_MENU;
-const GITHUB_REPO_DISCOVERY_SERVICE = process.env.GITHUB_REPO_DISCOVERY_SERVICE;
-const GITHUB_REPO_GEN_AI = process.env.GITHUB_REPO_GEN_AI;
-const GITHUB_REPO_PYTHON_SERVER = process.env.GITHUB_REPO_PYTHON_SERVER;
+const GITHUB_REPOS = process.env.GITHUB_REPOS;
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
 const GITHUB_MAX_NUM_OF_PRS_PER_REPO = parseInt(process.env.GITHUB_MAX_NUM_OF_PRS_PER_REPO);
 const PRS_PERSISTENT_FILE = process.env.PRS_PERSISTENT_FILE;
 
-const repoPaths = [GITHUB_REPO_MQM, GITHUB_REPO_VALUE_EDGE_MENU, GITHUB_REPO_DISCOVERY_SERVICE, GITHUB_REPO_GEN_AI, GITHUB_REPO_PYTHON_SERVER];
+const repoPaths = GITHUB_REPOS.split(',');
+const logging = process.env.LOGGING === 'true';
 
 const gitHubApiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos`;
 const gitHubApiConfig = {
@@ -162,12 +159,13 @@ async function getPrs(outdatedPrs) {
 
 parentPort.on('message', async () => {
     try {
-        console.log('> prs');
         const startTime = Date.now();
         const updatedPrs = await getPrs(updateCount % 60 === 0 ? [] : loadPrsFromFile());
         savePrsToFile(updatedPrs);
         updateCount++;
-        console.log(`< prs ${Math.round((Date.now() - startTime) / 1000)}s`);
+        if (logging) {
+            console.log(`< prs ${Math.round((Date.now() - startTime) / 1000)}s`);
+        }
         parentPort.postMessage(updatedPrs);
     } catch (error) {
         console.error('error on github worker', error);

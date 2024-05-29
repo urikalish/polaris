@@ -10,6 +10,8 @@ const JENKINS_CUSTOM_QUICK_URL = process.env.JENKINS_CUSTOM_QUICK_URL;
 const JENKINS_CUSTOM_FULL_URL = process.env.JENKINS_CUSTOM_FULL_URL;
 const BUILDS_PERSISTENT_FILE = process.env.BUILDS_PERSISTENT_FILE;
 
+const logging = process.env.LOGGING === 'true';
+
 const CUSTOM_QUICK = 'custom-quick';
 const CUSTOM_FULL = 'custom-full';
 
@@ -139,12 +141,13 @@ async function getBuilds(outdatedBuilds) {
 
 parentPort.on('message', async () => {
     try {
-        console.log('> builds');
         const startTime = Date.now();
         const updatedBuilds = await getBuilds(updateCount % 60 === 0 ? [] : loadBuildsFromFile());
         saveBuildsToFile(updatedBuilds);
         updateCount++;
-        console.log(`< builds ${Math.round((Date.now() - startTime) / 1000)}s`);
+        if (logging) {
+            console.log(`< builds ${Math.round((Date.now() - startTime) / 1000)}s`);
+        }
         parentPort.postMessage(updatedBuilds);
     } catch (error) {
         console.error('error on jenkins worker', error);
