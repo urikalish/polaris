@@ -19,27 +19,18 @@ function App() {
         });
     }, []);
 
-    const handleSaveConfig = useCallback(
-        (serverUrl: string, gitHubUserName: string, uiTheme: string) => {
-            const newConfig = { ...config, ...{ serverUrl, gitHubUserName, uiTheme } };
-            saveConfigValues(newConfig);
-            setConfig(newConfig);
-        },
-        [config],
-    );
-
-    const handleChangePrsFilterRole = useCallback(
-        (prsFilterRole: string) => {
-            const newConfig = { ...config, ...{ prsFilterRole } };
-            saveConfigValues(newConfig);
-            setConfig(newConfig);
-        },
-        [config],
-    );
-
     const handleChangeTab = useCallback((_e: SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
     }, []);
+
+    const handleUpdateConfig = useCallback(
+        (configChangesObj: object) => {
+            const newConfig = { ...config, ...configChangesObj };
+            saveConfigValues(newConfig);
+            setConfig(newConfig);
+        },
+        [config],
+    );
 
     return (
         <div className={`height--100 overflow--hidden theme--${config?.uiTheme || 'dark'}`}>
@@ -54,14 +45,9 @@ function App() {
                 </Tabs>
 
                 {tabIndex === 0 && (
-                    <PullRequests
-                        serverUrl={config?.serverUrl}
-                        gitHubUserName={config?.gitHubUserName}
-                        prsFilterRole={config?.prsFilterRole}
-                        onChangePrsFilterRole={handleChangePrsFilterRole}
-                    />
+                    <PullRequests serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} prsFilterRole={config?.prsFilterRole} onUpdateConfig={handleUpdateConfig} />
                 )}
-                {tabIndex === 1 && <Settings serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} uiTheme={config?.uiTheme} onSaveConfig={handleSaveConfig} />}
+                {tabIndex === 1 && <Settings serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} uiTheme={config?.uiTheme} onUpdateConfig={handleUpdateConfig} />}
                 {tabIndex === 2 && <About />}
             </div>
         </div>

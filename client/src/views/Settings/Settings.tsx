@@ -6,9 +6,9 @@ type SettingsProps = {
     serverUrl?: string;
     gitHubUserName?: string;
     uiTheme?: string;
-    onSaveConfig: (serverUrl: string, gitHubUserName: string, uiTheme: string) => void;
+    onUpdateConfig: (configChangesObj: object) => void;
 };
-export function Settings({ serverUrl, gitHubUserName, uiTheme, onSaveConfig }: SettingsProps) {
+export function Settings({ serverUrl, gitHubUserName, uiTheme, onUpdateConfig }: SettingsProps) {
     const [newServerUrl, setNewServerUrl] = useState(serverUrl || '');
     const [newGitHubUserName, setNewGitHubUserName] = useState(gitHubUserName || '');
     const [newUiTheme, setNewUiTheme] = useState(uiTheme || '');
@@ -41,9 +41,9 @@ export function Settings({ serverUrl, gitHubUserName, uiTheme, onSaveConfig }: S
     );
 
     const handleSave = useCallback(() => {
-        onSaveConfig(newServerUrl.trim() || '', newGitHubUserName.trim() || '', newUiTheme.trim() || '');
+        onUpdateConfig({ serverUrl: newServerUrl.trim() || '', gitHubUserName: newGitHubUserName.trim() || '', uiTheme: newUiTheme.trim() || '' });
         setCanSave(false);
-    }, [newServerUrl, newGitHubUserName, newUiTheme, onSaveConfig]);
+    }, [newServerUrl, newGitHubUserName, newUiTheme, onUpdateConfig]);
 
     return (
         <div className="settings content-with-actions">

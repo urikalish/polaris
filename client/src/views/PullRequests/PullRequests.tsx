@@ -140,10 +140,10 @@ type PullRequestsProps = {
     gitHubUserName?: string;
     prsFilterStates?: string;
     prsFilterRole?: string;
-    onChangePrsFilterRole: (prsFilterRole: string) => void;
+    onUpdateConfig: (configChangesObj: object) => void;
 };
 
-export function PullRequests({ serverUrl, gitHubUserName, prsFilterStates, prsFilterRole, onChangePrsFilterRole }: PullRequestsProps) {
+export function PullRequests({ serverUrl, gitHubUserName, prsFilterStates, prsFilterRole, onUpdateConfig }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(false);
@@ -223,9 +223,9 @@ export function PullRequests({ serverUrl, gitHubUserName, prsFilterStates, prsFi
     const handleChangeRoleFilter = useCallback(
         (_event: any, value: any) => {
             setRole(value);
-            onChangePrsFilterRole(value);
+            onUpdateConfig({ prsFilterRole: value });
         },
-        [onChangePrsFilterRole],
+        [onUpdateConfig],
     );
 
     return (
