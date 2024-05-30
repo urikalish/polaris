@@ -13,6 +13,7 @@ import rvCommentedImg from './img/rv-commented.svg';
 import rvDismissedImg from './img/rv-dismissed.svg';
 import rvOwnerImg from './img/rv-owner.svg';
 import rvPendingImg from './img/rv-pending.svg';
+import { ConfigObj } from '../../services/config.ts';
 
 enum PrState {
     OPEN = 'open',
@@ -148,11 +149,10 @@ function getLatestCustomBuilds(pr: PullRequestRec): BuildRec[] {
 }
 
 type PullRequestsProps = {
-    serverUrl?: string;
-    gitHubUserName?: string;
+    config: ConfigObj | null;
 };
 
-export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
+export function PullRequests({ config }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(false);
@@ -164,22 +164,22 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
     const handleRefresh = useCallback(() => {
         setPrs([]);
         setLoading(true);
-        if (!serverUrl || !gitHubUserName) {
+        if (!config?.serverUrl || !config?.gitHubUserName) {
             setLoading(false);
             return;
         }
-        const params = `username=${gitHubUserName}`;
-        chrome.runtime.sendMessage({ type: 'pull-requests', params, serverUrl }, (response: any) => {
+        const params = `username=${config?.gitHubUserName}`;
+        chrome.runtime.sendMessage({ type: 'pull-requests', params, serverUrl: config?.serverUrl || '' }, (response: any) => {
             if (response.error) {
                 alert('Error: ' + response.error);
             } else {
                 const prs: PullRequestRec[] = response.data['prs'];
                 prs.forEach((pr) => {
-                    if (pr.creator === gitHubUserName) {
+                    if (pr.creator === config?.gitHubUserName) {
                         pr.myRole = MyRole.CREATOR;
-                    } else if (pr.reviewers.includes(gitHubUserName)) {
+                    } else if (pr.reviewers.includes(config?.gitHubUserName || '')) {
                         pr.myRole = MyRole.REVIEWER;
-                    } else if (pr.assignees.includes(gitHubUserName)) {
+                    } else if (pr.assignees.includes(config?.gitHubUserName || '')) {
                         pr.myRole = MyRole.ASSIGNEE;
                     }
                 });
@@ -188,13 +188,13 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
             }
             setLoading(false);
         });
-    }, [serverUrl, gitHubUserName]);
+    }, [config]);
 
     useEffect(() => {
-        if (serverUrl && gitHubUserName) {
+        if (config?.serverUrl && config?.gitHubUserName) {
             handleRefresh();
         }
-    }, [serverUrl, gitHubUserName, handleRefresh]);
+    }, [config, handleRefresh]);
 
     const handleToggleStateFilter = useCallback((e: any) => {
         switch (e.target.dataset.toggle) {
