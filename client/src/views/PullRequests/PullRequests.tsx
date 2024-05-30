@@ -14,13 +14,7 @@ import rvDismissedImg from './img/rv-dismissed.svg';
 import rvOwnerImg from './img/rv-owner.svg';
 import rvPendingImg from './img/rv-pending.svg';
 import { ConfigObj } from '../../services/config.ts';
-
-enum PrState {
-    OPEN = 'open',
-    MERGED = 'merged',
-    DRAFT = 'draft',
-    CLOSED = 'closed',
-}
+import { PrUserRole, PrState } from '../../services/enums.ts';
 
 enum ReviewState {
     OWNER = 'owner',
@@ -30,12 +24,6 @@ enum ReviewState {
     CHANGES_REQUESTED = 'changes_requested',
     APPROVED = 'approved',
     DISMISSED = 'dismissed',
-}
-
-enum MyRole {
-    CREATOR = 'creator',
-    REVIEWER = 'reviewer',
-    ASSIGNEE = 'assignee',
 }
 
 enum JobType {
@@ -93,7 +81,7 @@ type PullRequestRec = {
     closedAt: string | null;
     mergedAt: string | null;
     mergeCommitSha: string | null;
-    myRole: MyRole;
+    myRole: PrUserRole;
     builds: BuildRec[];
 };
 
@@ -158,7 +146,7 @@ export function PullRequests({ config }: PullRequestsProps) {
     const [merged, setMerged] = useState(false);
     const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
-    const [role, setRole] = useState<MyRole>(MyRole.CREATOR);
+    const [role, setRole] = useState<PrUserRole>(PrUserRole.CREATOR);
     const [prs, setPrs] = useState<PullRequestRec[]>([]);
 
     const handleRefresh = useCallback(() => {
@@ -176,11 +164,11 @@ export function PullRequests({ config }: PullRequestsProps) {
                 const prs: PullRequestRec[] = response.data['prs'];
                 prs.forEach((pr) => {
                     if (pr.creator === config?.gitHubUserName) {
-                        pr.myRole = MyRole.CREATOR;
+                        pr.myRole = PrUserRole.CREATOR;
                     } else if (pr.reviewers.includes(config?.gitHubUserName || '')) {
-                        pr.myRole = MyRole.REVIEWER;
+                        pr.myRole = PrUserRole.REVIEWER;
                     } else if (pr.assignees.includes(config?.gitHubUserName || '')) {
-                        pr.myRole = MyRole.ASSIGNEE;
+                        pr.myRole = PrUserRole.ASSIGNEE;
                     }
                 });
                 prs.sort((a, b) => (a.updatedAt > b.updatedAt ? -1 : a.updatedAt < b.updatedAt ? 1 : 0));
@@ -232,9 +220,9 @@ export function PullRequests({ config }: PullRequestsProps) {
                         </div>
                         <FormControl>
                             <RadioGroup row value={role} onChange={handleChangeRoleFilter}>
-                                <FormControlLabel value={MyRole.CREATOR} control={<Radio size="small" />} label={MyRole.CREATOR} />
-                                <FormControlLabel value={MyRole.REVIEWER} control={<Radio size="small" />} label={MyRole.REVIEWER} />
-                                <FormControlLabel value={MyRole.ASSIGNEE} control={<Radio size="small" />} label={MyRole.ASSIGNEE} />
+                                <FormControlLabel value={PrUserRole.CREATOR} control={<Radio size="small" />} label={PrUserRole.CREATOR} />
+                                <FormControlLabel value={PrUserRole.REVIEWER} control={<Radio size="small" />} label={PrUserRole.REVIEWER} />
+                                <FormControlLabel value={PrUserRole.ASSIGNEE} control={<Radio size="small" />} label={PrUserRole.ASSIGNEE} />
                             </RadioGroup>
                         </FormControl>
                     </div>
