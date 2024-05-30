@@ -40,7 +40,7 @@ function App() {
                     <Tab label="About" />
                 </Tabs>
 
-                {tabIndex === 0 && <PullRequests config={config} />}
+                {tabIndex === 0 && <PullRequests serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} />}
                 {tabIndex === 1 && <Settings config={config} onSaveConfig={handleSaveConfig} />}
                 {tabIndex === 2 && <About />}
             </div>
