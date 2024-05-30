@@ -138,9 +138,12 @@ function getLatestCustomBuilds(pr: PullRequestRec): BuildRec[] {
 type PullRequestsProps = {
     serverUrl?: string;
     gitHubUserName?: string;
+    prsFilterStates?: string;
+    prsFilterRole?: string;
+    onChangePrsFilterRole: (prsFilterRole: string) => void;
 };
 
-export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
+export function PullRequests({ serverUrl, gitHubUserName, prsFilterStates, prsFilterRole, onChangePrsFilterRole }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(false);
@@ -184,6 +187,16 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
         }
     }, [serverUrl, gitHubUserName, handleRefresh]);
 
+    useEffect(() => {
+        if (prsFilterStates) {
+            const states = prsFilterStates.split(',');
+            setOpen(states.includes(PrState.OPEN));
+            setMerged(states.includes(PrState.MERGED));
+            setDraft(states.includes(PrState.DRAFT));
+            setClosed(states.includes(PrState.CLOSED));
+        }
+    }, [prsFilterStates]);
+
     const handleToggleStateFilter = useCallback((e: any) => {
         switch (e.target.dataset.toggle) {
             case PrState.OPEN:
@@ -201,9 +214,19 @@ export function PullRequests({ serverUrl, gitHubUserName }: PullRequestsProps) {
         }
     }, []);
 
-    const handleChangeRoleFilter = useCallback((_event: any, value: any) => {
-        setRole(value);
-    }, []);
+    useEffect(() => {
+        if (prsFilterRole) {
+            setRole(prsFilterRole as PrUserRole);
+        }
+    }, [prsFilterRole]);
+
+    const handleChangeRoleFilter = useCallback(
+        (_event: any, value: any) => {
+            setRole(value);
+            onChangePrsFilterRole(value);
+        },
+        [onChangePrsFilterRole],
+    );
 
     return (
         <div className="pull-requests content-with-actions">

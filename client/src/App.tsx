@@ -19,10 +19,23 @@ function App() {
         });
     }, []);
 
-    const handleSaveConfig = useCallback((newConfig: ConfigObj) => {
-        saveConfigValues(newConfig);
-        setConfig(newConfig);
-    }, []);
+    const handleSaveConfig = useCallback(
+        (serverUrl: string, gitHubUserName: string, uiTheme: string) => {
+            const newConfig = { ...config, ...{ serverUrl, gitHubUserName, uiTheme } };
+            saveConfigValues(newConfig);
+            setConfig(newConfig);
+        },
+        [config],
+    );
+
+    const handleChangePrsFilterRole = useCallback(
+        (prsFilterRole: string) => {
+            const newConfig = { ...config, ...{ prsFilterRole } };
+            saveConfigValues(newConfig);
+            setConfig(newConfig);
+        },
+        [config],
+    );
 
     const handleChangeTab = useCallback((_e: SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -40,8 +53,15 @@ function App() {
                     <Tab label="About" />
                 </Tabs>
 
-                {tabIndex === 0 && <PullRequests serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} />}
-                {tabIndex === 1 && <Settings config={config} onSaveConfig={handleSaveConfig} />}
+                {tabIndex === 0 && (
+                    <PullRequests
+                        serverUrl={config?.serverUrl}
+                        gitHubUserName={config?.gitHubUserName}
+                        prsFilterRole={config?.prsFilterRole}
+                        onChangePrsFilterRole={handleChangePrsFilterRole}
+                    />
+                )}
+                {tabIndex === 1 && <Settings serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} uiTheme={config?.uiTheme} onSaveConfig={handleSaveConfig} />}
                 {tabIndex === 2 && <About />}
             </div>
         </div>

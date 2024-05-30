@@ -1,74 +1,70 @@
 import './Settings.css';
-import { ConfigObj } from '../../services/config.ts';
 import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 type SettingsProps = {
-    config: ConfigObj | null;
-    onSaveConfig: (configObj: ConfigObj) => void;
+    serverUrl?: string;
+    gitHubUserName?: string;
+    uiTheme?: string;
+    onSaveConfig: (serverUrl: string, gitHubUserName: string, uiTheme: string) => void;
 };
-export function Settings({ config, onSaveConfig }: SettingsProps) {
-    const [serverUrl, setServerUrl] = useState(config?.serverUrl || '');
-    const [gitHubUserName, setGitHubUserName] = useState(config?.gitHubUserName || '');
-    const [uiTheme, setUiTheme] = useState(config?.uiTheme || '');
+export function Settings({ serverUrl, gitHubUserName, uiTheme, onSaveConfig }: SettingsProps) {
+    const [newServerUrl, setNewServerUrl] = useState(serverUrl || '');
+    const [newGitHubUserName, setNewGitHubUserName] = useState(gitHubUserName || '');
+    const [newUiTheme, setNewUiTheme] = useState(uiTheme || '');
     const [canSave, setCanSave] = useState(false);
 
     useEffect(() => {}, []);
 
     const handleChangeServerUrl = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
-            setServerUrl(e.target.value);
-            setCanSave(!!e.target.value && !!gitHubUserName);
+            setNewServerUrl(e.target.value);
+            setCanSave(!!e.target.value && !!newGitHubUserName);
         },
-        [gitHubUserName],
+        [newGitHubUserName],
     );
 
     const handleChangeGitHubUserName = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
-            setGitHubUserName(e.target.value);
-            setCanSave(!!e.target.value && !!serverUrl);
+            setNewGitHubUserName(e.target.value);
+            setCanSave(!!e.target.value && !!newServerUrl);
         },
-        [serverUrl],
+        [newServerUrl],
     );
 
     const handleChangeUiTheme = useCallback(
         (e: SelectChangeEvent<string>) => {
-            setUiTheme(e.target.value);
-            setCanSave(!!serverUrl && !!gitHubUserName);
+            setNewUiTheme(e.target.value);
+            setCanSave(!!newServerUrl && !!newGitHubUserName);
         },
-        [serverUrl, gitHubUserName],
+        [newServerUrl, newGitHubUserName],
     );
 
     const handleSave = useCallback(() => {
-        const configOj: ConfigObj = {
-            serverUrl: serverUrl.trim() || '',
-            gitHubUserName: gitHubUserName.trim() || '',
-            uiTheme: uiTheme.trim() || '',
-        };
-        onSaveConfig(configOj);
+        onSaveConfig(newServerUrl.trim() || '', newGitHubUserName.trim() || '', newUiTheme.trim() || '');
         setCanSave(false);
-    }, [serverUrl, gitHubUserName, uiTheme, onSaveConfig]);
+    }, [newServerUrl, newGitHubUserName, newUiTheme, onSaveConfig]);
 
     return (
         <div className="settings content-with-actions">
             <div className="content-panel border">
                 <div className="settings-form">
                     <FormControl>
-                        <TextField id="server-url" label="Server URL" variant="outlined" value={serverUrl} error={!serverUrl} onChange={handleChangeServerUrl} />
+                        <TextField id="server-url" label="Server URL" variant="outlined" value={newServerUrl} error={!newServerUrl} onChange={handleChangeServerUrl} />
                     </FormControl>
                     <FormControl>
                         <TextField
                             id="github-username"
                             label="GitHub Username"
                             variant="outlined"
-                            value={gitHubUserName}
-                            error={!gitHubUserName}
+                            value={newGitHubUserName}
+                            error={!newGitHubUserName}
                             onChange={handleChangeGitHubUserName}
                         />
                     </FormControl>
                     <FormControl>
                         <InputLabel id="ui-theme-label">UI Theme</InputLabel>
-                        <Select labelId="ui-theme-label" id="ui-theme-select" value={uiTheme} label="Ui Theme" onChange={handleChangeUiTheme}>
+                        <Select labelId="ui-theme-label" id="ui-theme-select" value={newUiTheme} label="Ui Theme" onChange={handleChangeUiTheme}>
                             <MenuItem value="dark">Dark</MenuItem>
                             <MenuItem value="bokeh">Bokeh (animated)</MenuItem>
                         </Select>

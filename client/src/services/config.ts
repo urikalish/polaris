@@ -1,7 +1,10 @@
+import { PrUserRole } from './enums.ts';
+
 export type ConfigObj = {
     serverUrl?: string;
     gitHubUserName?: string;
     uiTheme?: string;
+    prsFilterRole?: string;
 };
 
 const STORAGE_MAIN_KEY = 'polaris';
@@ -13,6 +16,7 @@ export function loadConfigValues(cb: (configObj: ConfigObj) => void) {
             serverUrl: configObj?.serverUrl || `http://chrome-ext.octane.admlabs.aws.swinfra.net:8082`,
             gitHubUserName: configObj?.gitHubUserName || '',
             uiTheme: configObj?.uiTheme || 'dark',
+            prsFilterRole: configObj?.prsFilterRole || PrUserRole.CREATOR,
         });
     });
 }
