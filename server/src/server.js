@@ -2,7 +2,7 @@ require('dotenv').config();
 const GITHUB_MINUTES_BETWEEN_UPDATES = process.env.GITHUB_MINUTES_BETWEEN_UPDATES;
 const JENKINS_MINUTES_BETWEEN_UPDATES = process.env.JENKINS_MINUTES_BETWEEN_UPDATES;
 
-const { log } = require('./common.js');
+const { log, error } = require('./common.js');
 const { Worker } = require('worker_threads');
 const cors = require('cors');
 const express = require('express');
@@ -77,7 +77,7 @@ app.get('/pull-requests', async (req, res) => {
         if (prs.length > 0) {
             log(`${prs.length} prs --> ${username}`);
         } else {
-            log(`no prs found for user ${username}`);
+            error(`no prs found for user ${username}`);
         }
         res.send({ data: { prs } });
     } catch (error) {
