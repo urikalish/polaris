@@ -2,6 +2,7 @@ require('dotenv').config();
 const GITHUB_MINUTES_BETWEEN_UPDATES = process.env.GITHUB_MINUTES_BETWEEN_UPDATES;
 const JENKINS_MINUTES_BETWEEN_UPDATES = process.env.JENKINS_MINUTES_BETWEEN_UPDATES;
 
+const { log } = require('./common.js');
 const { Worker } = require('worker_threads');
 const cors = require('cors');
 const express = require('express');
@@ -36,7 +37,7 @@ gitHubWorker.on('message', (updatedPrs) => {
     updatePrBuilds();
     prsUpdateCount++;
     if (prsUpdateCount === 1) {
-        console.log('prs ready');
+        log('prs ready');
     }
     setTimeout(
         () => {
@@ -55,7 +56,7 @@ jenkinsHubWorker.on('message', (updatedBuilds) => {
     updatePrBuilds();
     buildsUpdateCount++;
     if (buildsUpdateCount === 1) {
-        console.log('builds ready');
+        log('builds ready');
     }
     setTimeout(
         () => {
@@ -73,18 +74,22 @@ app.get('/pull-requests', async (req, res) => {
     try {
         const username = req.query.username;
         const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
-        console.log(`${prs.length} prs sent to ${username}`);
+        if (prs.length > 0) {
+            log(`${prs.length} prs --> ${username}`);
+        } else {
+            log(`no prs found for user ${username}`);
+        }
         res.send({ data: { prs } });
     } catch (error) {
-        console.error('error on getting pull requests', error);
+        error('error on getting pull requests', error);
         res.send({ error: error.toString() });
     }
 });
 
 function init() {
-    console.log('server starting...');
+    log('server starting...');
     app.listen(PORT, () => {
-        console.log(`server listening on port ${PORT}`);
+        log(`server listening on port ${PORT}`);
         updateBuilds();
         updatePrs();
     });

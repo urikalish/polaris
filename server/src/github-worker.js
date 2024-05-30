@@ -1,24 +1,43 @@
-const fs = require('fs');
-const { parentPort } = require('worker_threads');
-const axios = require('axios');
 require('dotenv').config();
-
-const GITHUB_BASE_URL = process.env.GITHUB_BASE_URL;
-const GITHUB_REPOS = process.env.GITHUB_REPOS;
-const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
+const GITHUB_INTERNAL_URL = process.env.GITHUB_INTERNAL_URL;
+const GITHUB_INTERNAL_REPOS = process.env.GITHUB_INTERNAL_REPOS;
+const GITHUB_INTERNAL_AUTH_TOKEN = process.env.GITHUB_INTERNAL_AUTH_TOKEN;
+// const GITHUB_PUBLIC_URL = process.env.GITHUB_PUBLIC_URL;
+// const GITHUB_PUBLIC_REPOS = process.env.GITHUB_PUBLIC_REPOS;
 const GITHUB_MAX_NUM_OF_PRS_PER_REPO = parseInt(process.env.GITHUB_MAX_NUM_OF_PRS_PER_REPO);
 const PRS_PERSISTENT_FILE = process.env.PRS_PERSISTENT_FILE;
 
-const repoPaths = GITHUB_REPOS.split(',');
+const { log, error } = require('./common.js');
+const fs = require('fs');
+const { parentPort } = require('worker_threads');
+const axios = require('axios');
+
 const logging = process.env.LOGGING === 'true';
 
-const gitHubApiUrlBase = `${GITHUB_BASE_URL}/api/v3/repos`;
-const gitHubApiConfig = {
-    headers: {
-        Accept: 'application/vnd.github.text+json',
-        Authorization: `token ${GITHUB_AUTH_TOKEN}`,
-    },
-};
+const repos = [];
+GITHUB_INTERNAL_REPOS.split(',').forEach((repoOrgAndName) => {
+    repos.push({
+        repoOrgAndName: repoOrgAndName,
+        apiUrl: `${GITHUB_INTERNAL_URL}/api/v3/repos/${repoOrgAndName}`,
+        apiConfig: {
+            headers: {
+                Accept: 'application/vnd.github.text+json',
+                Authorization: `token ${GITHUB_INTERNAL_AUTH_TOKEN}`,
+            },
+        },
+    });
+});
+// GITHUB_PUBLIC_REPOS.split(',').forEach((repoOrgAndName) => {
+//     repos.push({
+//         repoOrgAndName: repoOrgAndName,
+//         apiUrl: `${GITHUB_PUBLIC_URL}/${repoOrgAndName}`,
+//         apiConfig: {
+//             headers: {
+//                 Accept: 'application/vnd.github.text+json',
+//             },
+//         },
+//     });
+// });
 
 let updateCount = 0;
 
@@ -34,12 +53,12 @@ function savePrsToFile(prs) {
     const prsJsonStr = JSON.stringify(prs, null, 2);
     fs.writeFile(PRS_PERSISTENT_FILE, prsJsonStr, (err) => {
         if (err) {
-            console.error(`Error writing to ${PRS_PERSISTENT_FILE}`, err);
+            error(`Error writing to ${PRS_PERSISTENT_FILE}`, err);
         }
     });
 }
 
-async function getPrRecord(repoPath, pr) {
+async function getPrRecord(repo, pr) {
     const prRecord = {
         repoName: pr.head.repo.name,
         repoFullName: pr.head.repo.full_name,
@@ -71,8 +90,8 @@ async function getPrRecord(repoPath, pr) {
         }
 
         //handle reviews
-        const url = `${gitHubApiUrlBase}/${repoPath}/pulls/${prRecord.number}/reviews`;
-        const res = await axios.get(url, gitHubApiConfig);
+        const url = `${repo.apiUrl}/pulls/${prRecord.number}/reviews`;
+        const res = await axios.get(url, repo.apiConfig);
         const reviews = await res.data;
         for (let review of reviews) {
             if (!review.user) {
@@ -95,47 +114,47 @@ async function getPrRecord(repoPath, pr) {
         prRecord.reviewers.sort();
         prRecord.reviews.sort((a, b) => a.user.localeCompare(b.user));
     } catch (error) {
-        console.error('error on getPrRecord()', error.message);
+        error('error on getPrRecord()', error.message);
     }
     return prRecord;
 }
 
-async function getPagePrs(repoPath, pageNumber, outdatedPrs) {
+async function getPagePrs(repo, pageNumber, outdatedPrs) {
     const pagePrs = [];
     try {
-        const url = `${gitHubApiUrlBase}/${repoPath}/pulls?state=all&per_page=100&page=${pageNumber}`;
-        let res = await axios.get(url, gitHubApiConfig);
+        const url = `${repo.apiUrl}/pulls?state=all&per_page=100&page=${pageNumber}`;
+        let res = await axios.get(url, repo.apiConfig);
         const prs = await res.data;
         for (let pr of prs) {
             try {
                 const outdatedPr = outdatedPrs.find((p) => p.htmlUrl === pr.html_url);
                 const wasPrActive = outdatedPr && ['open', 'draft'].includes(outdatedPr.state);
-                const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(repoPath, pr);
+                const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(repo, pr);
                 pagePrs.push(prRecord);
             } catch (error) {
-                console.error(`error on pr ${pr.number}`, error.message);
+                error(`error on pr ${pr.number}`, error.message);
             }
         }
     } catch (error) {
-        console.error('error on getPagePrs()', error.message);
+        error('error on getPagePrs()', repo.repoOrgAndName, error.message);
     }
     return pagePrs;
 }
 
-async function getRepoPrs(repoPath, outdatedPrs) {
+async function getRepoPrs(repo, outdatedPrs) {
     let repoPrs = [];
     try {
         const pagePrsPromises = [];
         const numberOfPages = Math.trunc(GITHUB_MAX_NUM_OF_PRS_PER_REPO / 100);
         for (let pageNumber = 1; pageNumber <= numberOfPages; pageNumber++) {
-            pagePrsPromises.push(getPagePrs(repoPath, pageNumber, outdatedPrs));
+            pagePrsPromises.push(getPagePrs(repo, pageNumber, outdatedPrs));
         }
         const results = await Promise.all(pagePrsPromises);
         results.forEach((result) => {
             repoPrs = [...repoPrs, ...result];
         });
     } catch (error) {
-        console.error('error on getRepoPrs()', error.message);
+        error('error on getRepoPrs()', error.message);
     }
     return repoPrs;
 }
@@ -144,15 +163,15 @@ async function getPrs(outdatedPrs) {
     let updatedPrs = [];
     try {
         const repoPrsPromises = [];
-        repoPaths.forEach((repoPath) => {
-            repoPrsPromises.push(getRepoPrs(repoPath, outdatedPrs));
+        repos.forEach((repo) => {
+            repoPrsPromises.push(getRepoPrs(repo, outdatedPrs));
         });
         const results = await Promise.all(repoPrsPromises);
         results.forEach((result) => {
             updatedPrs = [...updatedPrs, ...result];
         });
     } catch (error) {
-        console.error('error on getPrs()', error.message);
+        error('error on getPrs()', error.message);
     }
     return updatedPrs;
 }
@@ -164,10 +183,10 @@ parentPort.on('message', async () => {
         savePrsToFile(updatedPrs);
         updateCount++;
         if (logging) {
-            console.log(`< prs ${Math.round((Date.now() - startTime) / 1000)}s`);
+            log(`< prs ${Math.round((Date.now() - startTime) / 1000)}s`);
         }
         parentPort.postMessage(updatedPrs);
     } catch (error) {
-        console.error('error on github worker', error);
+        error('error on github worker', error);
     }
 });

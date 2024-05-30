@@ -1,14 +1,15 @@
-const fs = require('fs');
-const { parentPort } = require('worker_threads');
-const axios = require('axios');
 require('dotenv').config();
-
 const JENKINS_USERNAME = process.env.JENKINS_USERNAME;
 const JENKINS_API_TOKEN = process.env.JENKINS_API_TOKEN;
 const JENKINS_JOB_BASE_URL = process.env.JENKINS_JOB_BASE_URL;
 const JENKINS_CUSTOM_QUICK_URL = process.env.JENKINS_CUSTOM_QUICK_URL;
 const JENKINS_CUSTOM_FULL_URL = process.env.JENKINS_CUSTOM_FULL_URL;
 const BUILDS_PERSISTENT_FILE = process.env.BUILDS_PERSISTENT_FILE;
+
+const { log, error } = require('./common.js');
+const fs = require('fs');
+const { parentPort } = require('worker_threads');
+const axios = require('axios');
 
 const logging = process.env.LOGGING === 'true';
 
@@ -50,7 +51,7 @@ function saveBuildsToFile(builds) {
     const buildsJsonStr = JSON.stringify(builds, null, 2);
     fs.writeFile(BUILDS_PERSISTENT_FILE, buildsJsonStr, (err) => {
         if (err) {
-            console.error(`Error writing to ${BUILDS_PERSISTENT_FILE}`, err);
+            error(`Error writing to ${BUILDS_PERSISTENT_FILE}`, err);
         }
     });
 }
@@ -87,7 +88,7 @@ async function getBuildRecord(jobType, jobOrdinal, jobName, buildNumber, buildUr
             buildRec.branch = branch.value;
         }
     } catch (error) {
-        console.error('error on getBuildRecord()', error.message);
+        error('error on getBuildRecord()', error.message);
     }
     return buildRec;
 }
@@ -117,7 +118,7 @@ async function getJobBuilds(job, outdatedBuilds) {
             jobBuilds.push(inactiveBuild);
         });
     } catch (error) {
-        console.error('error on getJobBuilds()', error.message);
+        error('error on getJobBuilds()', job.jobUrl, error.message);
     }
     return jobBuilds;
 }
@@ -134,7 +135,7 @@ async function getBuilds(outdatedBuilds) {
             updatedBuilds = [...updatedBuilds, ...result];
         });
     } catch (error) {
-        console.error('error on getBuilds()', error.message);
+        error('error on getBuilds()', error.message);
     }
     return updatedBuilds;
 }
@@ -146,11 +147,11 @@ parentPort.on('message', async () => {
         saveBuildsToFile(updatedBuilds);
         updateCount++;
         if (logging) {
-            console.log(`< builds ${Math.round((Date.now() - startTime) / 1000)}s`);
+            log(`< builds ${Math.round((Date.now() - startTime) / 1000)}s`);
         }
         parentPort.postMessage(updatedBuilds);
     } catch (error) {
-        console.error('error on jenkins worker', error);
+        error('error on jenkins worker', error);
     }
 });
 
