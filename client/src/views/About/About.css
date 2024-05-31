@@ -6,12 +6,12 @@
 }
 
 .about-label {
-    color: #bbb;
+    color: var(--color--label);
 }
 .about-label::after {
     content: ':';
 }
 
 .about-value {
-    color: #fff;
+    color: var(--color--text);
 }

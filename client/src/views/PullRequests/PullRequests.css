@@ -4,7 +4,7 @@
     --color--pr--draft: #6e7781;
     --color--pr--closed: #cf222e;
 
-    --color--rv--owner: #ffffff;
+    --color--rv--owner: var(--color--text);
     --color--rv--awaiting: #bbbbbb;
     --color--rv--pending: #bbbbbb;
     --color--rv--commented: #cc9933;
@@ -64,9 +64,9 @@
     width: 80px;
     height: 22px;
     margin-left: 4px !important;
-    border: 1px solid #fff !important;
     background-color: transparent !important;
-    color: #fff !important;
+    border: 1px solid var(--color--text) !important;
+    color: var(--color--text) !important;
     font-size: 15px !important;
     text-transform: none !important;
 }
@@ -77,23 +77,22 @@
 .prs-wrapper.open .filter-btn--open {
     background-color: var(--color--pr--open) !important;
     border: none !important;
+    color: #fff !important;
 }
 .prs-wrapper.merged .filter-btn--merged {
     background-color: var(--color--pr--merged) !important;
     border: none !important;
+    color: #fff !important;
 }
 .prs-wrapper.draft .filter-btn--draft {
     background-color: var(--color--pr--draft) !important;
     border: none !important;
+    color: #fff !important;
 }
 .prs-wrapper.closed .filter-btn--closed {
     background-color: var(--color--pr--closed) !important;
     border: none !important;
-}
-.prs-wrapper.creator .filter-btn--creator,
-.prs-wrapper.reviewer .filter-btn--reviewer,
-.prs-wrapper.assignee .filter-btn--assignee {
-    background-color: #888 !important;
+    color: #fff !important;
 }
 
 .prs-filters .MuiFormControlLabel-label {
@@ -178,12 +177,12 @@
 }
 
 .pr-number {
-    color: #888;
+    color: var(--color--link);
 }
 
 .pr-title {
     flex: 1 1 auto;
-    color: #fff;
+    color: var(--color--text);
 }
 
 .custom-build {
@@ -270,6 +269,9 @@
     align-items: center;
     margin-right: 4px;
 }
+.theme--light .pr-reviewer {
+    filter: brightness(0.8);
+}
 
 .pr-review-state-img {
     width: 20px;
@@ -298,7 +300,7 @@
 }
 
 .pr-reviewer-name {
-    color: #fff;
+    color: var(--color--text);
     white-space: nowrap;
 }
 .pr-review-state--owner > .pr-reviewer-name {

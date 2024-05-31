@@ -65,6 +65,7 @@ export function Settings({ serverUrl, gitHubUserName, uiTheme, onUpdateConfig }:
                     <FormControl>
                         <InputLabel id="ui-theme-label">UI Theme</InputLabel>
                         <Select labelId="ui-theme-label" id="ui-theme-select" value={newUiTheme} label="Ui Theme" onChange={handleChangeUiTheme}>
+                            <MenuItem value="light">Light</MenuItem>
                             <MenuItem value="dark">Dark</MenuItem>
                             <MenuItem value="bokeh">Bokeh (animated)</MenuItem>
                         </Select>

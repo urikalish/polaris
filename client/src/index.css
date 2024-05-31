@@ -13,6 +13,29 @@
     src: url('../font/play-bold.ttf') format('truetype');
 }
 
+.theme--dark,
+.theme--bokeh {
+    --color--app-bg: #333;
+    --color--border: #444;
+    --color--app-header: #ccc;
+    --color--content-panel-bg: rgba(0, 0, 0, 0.3);
+    --color--text: #fff;
+    --color--label: #999;
+    --color--link: #999;
+}
+.theme--bokeh {
+    --color--content-panel-bg: rgba(0, 0, 0, 0.6);
+}
+.theme--light {
+    --color--app-bg: #fdfdfd;
+    --color--border: #ccc;
+    --color--app-header: #999;
+    --color--content-panel-bg: rgba(0, 0, 0, 0);
+    --color--text: #000;
+    --color--label: #888;
+    --color--link: #888;
+}
+
 *,
 ::before,
 ::after {
@@ -40,8 +63,6 @@ a:visited {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    --color--border: #444;
 }
 
 body {
@@ -66,6 +87,12 @@ body {
 .custom-scroll::-webkit-scrollbar-track {
     background: #444;
 }
+.theme--light .custom-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+}
+.theme--light .custom-scroll::-webkit-scrollbar-track {
+    background: #ccc;
+}
 
 .content-with-actions {
     height: 100%;
@@ -77,13 +104,7 @@ body {
 
 .content-panel {
     position: relative;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-.theme--dark .content-panel {
-    background-color: rgba(0, 0, 0, 0.3);
-}
-.theme--bokeh .content-panel {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: var(--color--content-panel-bg);
 }
 
 .actions-panel {

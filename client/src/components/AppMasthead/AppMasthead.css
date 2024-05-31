@@ -20,7 +20,7 @@
 .header-image {
     width: 24px;
     height: 24px;
-    background-color: #ccc;
+    background-color: var(--color--app-header);
     border-radius: 2px;
 }
 
@@ -30,6 +30,11 @@
     margin-left: 2px;
     font-size: 36px;
     font-weight: 700;
-    color: #ccc;
+    color: var(--color--app-header);
     font-family: Play, sans-serif;
+}
+
+.theme--light .header-image,
+.theme--light .header-title {
+    filter: invert(1);
 }
