@@ -45,7 +45,7 @@ function App() {
                 </Tabs>
 
                 {tabIndex === 0 && (
-                    <PullRequests serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} prsFilterRole={config?.prsFilterRole} onUpdateConfig={handleUpdateConfig} />
+                    <PullRequests serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} prsRoleFilter={config?.prsRoleFilter} onUpdateConfig={handleUpdateConfig} />
                 )}
                 {tabIndex === 1 && <Settings serverUrl={config?.serverUrl} gitHubUserName={config?.gitHubUserName} uiTheme={config?.uiTheme} onUpdateConfig={handleUpdateConfig} />}
                 {tabIndex === 2 && <About />}
