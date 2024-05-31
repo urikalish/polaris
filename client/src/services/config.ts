@@ -1,9 +1,10 @@
-import { PrUserRole } from './enums.ts';
+import { PrState, PrUserRole } from './enums.ts';
 
 export type ConfigObj = {
     serverUrl?: string;
     gitHubUserName?: string;
     uiTheme?: string;
+    prsStatesFilter?: string;
     prsRoleFilter?: string;
 };
 
@@ -16,6 +17,7 @@ export function loadConfigValues(cb: (configObj: ConfigObj) => void) {
             serverUrl: configObj?.serverUrl || `http://chrome-ext.octane.admlabs.aws.swinfra.net:8082`,
             gitHubUserName: configObj?.gitHubUserName || '',
             uiTheme: configObj?.uiTheme || 'dark',
+            prsStatesFilter: configObj?.prsStatesFilter || PrState.OPEN,
             prsRoleFilter: configObj?.prsRoleFilter || PrUserRole.CREATOR,
         });
     });

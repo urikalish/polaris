@@ -139,11 +139,12 @@ type PullRequestsProps = {
     serverUrl?: string;
     gitHubUserName?: string;
     prsFilterStates?: string;
+    prsStatesFilter?: string;
     prsRoleFilter?: string;
     onUpdateConfig: (configChangesObj: object) => void;
 };
 
-export function PullRequests({ serverUrl, gitHubUserName, prsFilterStates, prsRoleFilter, onUpdateConfig }: PullRequestsProps) {
+export function PullRequests({ serverUrl, gitHubUserName, prsStatesFilter, prsRoleFilter, onUpdateConfig }: PullRequestsProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(true);
     const [merged, setMerged] = useState(false);
@@ -188,31 +189,56 @@ export function PullRequests({ serverUrl, gitHubUserName, prsFilterStates, prsRo
     }, [serverUrl, gitHubUserName, handleRefresh]);
 
     useEffect(() => {
-        if (prsFilterStates) {
-            const states = prsFilterStates.split(',');
+        if (prsStatesFilter) {
+            const states = prsStatesFilter.split(',');
             setOpen(states.includes(PrState.OPEN));
             setMerged(states.includes(PrState.MERGED));
             setDraft(states.includes(PrState.DRAFT));
             setClosed(states.includes(PrState.CLOSED));
         }
-    }, [prsFilterStates]);
+    }, [prsStatesFilter]);
 
-    const handleToggleStateFilter = useCallback((e: any) => {
-        switch (e.target.dataset.toggle) {
-            case PrState.OPEN:
-                setOpen((val) => !val);
-                break;
-            case PrState.MERGED:
-                setMerged((val) => !val);
-                break;
-            case PrState.DRAFT:
-                setDraft((val) => !val);
-                break;
-            case PrState.CLOSED:
-                setClosed((val) => !val);
-                break;
-        }
-    }, []);
+    const handleToggleStateFilter = useCallback(
+        (e: any) => {
+            let o = open;
+            let m = merged;
+            let d = draft;
+            let c = closed;
+            switch (e.target.dataset.toggle) {
+                case PrState.OPEN:
+                    o = !o;
+                    setOpen((val) => !val);
+                    break;
+                case PrState.MERGED:
+                    m = !m;
+                    setMerged((val) => !val);
+                    break;
+                case PrState.DRAFT:
+                    d = !d;
+                    setDraft((val) => !val);
+                    break;
+                case PrState.CLOSED:
+                    c = !c;
+                    setClosed((val) => !val);
+                    break;
+            }
+            const newStates = [];
+            if (o) {
+                newStates.push(PrState.OPEN);
+            }
+            if (m) {
+                newStates.push(PrState.MERGED);
+            }
+            if (d) {
+                newStates.push(PrState.DRAFT);
+            }
+            if (c) {
+                newStates.push(PrState.CLOSED);
+            }
+            onUpdateConfig({ prsStatesFilter: newStates.join(',') });
+        },
+        [open, merged, draft, closed, onUpdateConfig],
+    );
 
     useEffect(() => {
         if (prsRoleFilter) {
