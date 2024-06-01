@@ -7,7 +7,7 @@ const GITHUB_INTERNAL_AUTH_TOKEN = process.env.GITHUB_INTERNAL_AUTH_TOKEN;
 const GITHUB_MAX_NUM_OF_PRS_PER_REPO = parseInt(process.env.GITHUB_MAX_NUM_OF_PRS_PER_REPO);
 const PRS_PERSISTENT_FILE = process.env.PRS_PERSISTENT_FILE;
 
-const { log, error } = require('./common.js');
+const { logMsg, logError } = require('./common.js');
 const fs = require('fs');
 const { parentPort } = require('worker_threads');
 const axios = require('axios');
@@ -53,7 +53,7 @@ function savePrsToFile(prs) {
     const prsJsonStr = JSON.stringify(prs, null, 2);
     fs.writeFile(PRS_PERSISTENT_FILE, prsJsonStr, (err) => {
         if (err) {
-            error(`Error writing to ${PRS_PERSISTENT_FILE}`, err);
+            logError(`Error writing to ${PRS_PERSISTENT_FILE}`, err.message);
         }
     });
 }
@@ -113,8 +113,8 @@ async function getPrRecord(repo, pr) {
         prRecord.assignees.sort();
         prRecord.reviewers.sort();
         prRecord.reviews.sort((a, b) => a.user.localeCompare(b.user));
-    } catch (error) {
-        error('error on getPrRecord()', error.message);
+    } catch (err) {
+        logError('error on getPrRecord()', err.message);
     }
     return prRecord;
 }
@@ -131,12 +131,12 @@ async function getPagePrs(repo, pageNumber, outdatedPrs) {
                 const wasPrActive = outdatedPr && ['open', 'draft'].includes(outdatedPr.state);
                 const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(repo, pr);
                 pagePrs.push(prRecord);
-            } catch (error) {
-                error(`error on pr ${pr.number}`, error.message);
+            } catch (err) {
+                logError(`error on pr ${pr.number}`, err.message);
             }
         }
-    } catch (error) {
-        error('error on getPagePrs()', repo.repoOrgAndName, error.message);
+    } catch (err) {
+        logError('error on getPagePrs()', repo.repoOrgAndName, err.message);
     }
     return pagePrs;
 }
@@ -153,8 +153,8 @@ async function getRepoPrs(repo, outdatedPrs) {
         results.forEach((result) => {
             repoPrs = [...repoPrs, ...result];
         });
-    } catch (error) {
-        error('error on getRepoPrs()', error.message);
+    } catch (err) {
+        logError('error on getRepoPrs()', err.message);
     }
     return repoPrs;
 }
@@ -170,8 +170,8 @@ async function getPrs(outdatedPrs) {
         results.forEach((result) => {
             updatedPrs = [...updatedPrs, ...result];
         });
-    } catch (error) {
-        error('error on getPrs()', error.message);
+    } catch (err) {
+        logError('error on getPrs()', err.message);
     }
     return updatedPrs;
 }
@@ -183,10 +183,10 @@ parentPort.on('message', async () => {
         savePrsToFile(updatedPrs);
         updateCount++;
         if (logging) {
-            log(`< prs ${Math.round((Date.now() - startTime) / 1000)}s`);
+            logMsg(`< prs ${Math.round((Date.now() - startTime) / 1000)}s`);
         }
         parentPort.postMessage(updatedPrs);
-    } catch (error) {
-        error('error on github worker', error);
+    } catch (err) {
+        logError('error on github worker', err.message);
     }
 });

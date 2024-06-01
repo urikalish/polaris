@@ -9,14 +9,14 @@ function getTimeStr() {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
-function log(...msg) {
+function logMsg(...msg) {
     console.log(`[${getTimeStr()}] ${msg.join(' ')}`);
 }
-function error(...msg) {
+function logError(...msg) {
     console.error(`[${getTimeStr()}] ########## ERROR ########## ${msg.join(' ')}`);
 }
 
 module.exports = {
-    log,
-    error,
+    logMsg,
+    logError,
 };

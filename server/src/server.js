@@ -2,7 +2,7 @@ require('dotenv').config();
 const GITHUB_MINUTES_BETWEEN_UPDATES = process.env.GITHUB_MINUTES_BETWEEN_UPDATES;
 const JENKINS_MINUTES_BETWEEN_UPDATES = process.env.JENKINS_MINUTES_BETWEEN_UPDATES;
 
-const { log, error } = require('./common.js');
+const { logMsg, logError } = require('./common.js');
 const { Worker } = require('worker_threads');
 const cors = require('cors');
 const express = require('express');
@@ -37,7 +37,7 @@ gitHubWorker.on('message', (updatedPrs) => {
     updatePrBuilds();
     prsUpdateCount++;
     if (prsUpdateCount === 1) {
-        log('prs ready');
+        logMsg('prs ready');
     }
     setTimeout(
         () => {
@@ -56,7 +56,7 @@ jenkinsHubWorker.on('message', (updatedBuilds) => {
     updatePrBuilds();
     buildsUpdateCount++;
     if (buildsUpdateCount === 1) {
-        log('builds ready');
+        logMsg('builds ready');
     }
     setTimeout(
         () => {
@@ -75,21 +75,21 @@ app.get('/pull-requests', async (req, res) => {
         const username = req.query.username;
         const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
         if (prs.length > 0) {
-            log(`${prs.length} prs --> ${username}`);
+            logMsg(`${prs.length} prs --> ${username}`);
         } else {
-            error(`no prs found for user ${username}`);
+            logError(`no prs found for user ${username}`);
         }
         res.send({ data: { prs } });
-    } catch (error) {
-        error('error on getting pull requests', error);
-        res.send({ error: error.toString() });
+    } catch (err) {
+        logError('error on getting pull requests', err.message);
+        res.send({ error: err.toString() });
     }
 });
 
 function init() {
-    log('server starting...');
+    logMsg('server starting...');
     app.listen(PORT, () => {
-        log(`server listening on port ${PORT}`);
+        logMsg(`server listening on port ${PORT}`);
         updateBuilds();
         updatePrs();
     });

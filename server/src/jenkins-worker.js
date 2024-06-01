@@ -6,7 +6,7 @@ const JENKINS_CUSTOM_QUICK_URL = process.env.JENKINS_CUSTOM_QUICK_URL;
 const JENKINS_CUSTOM_FULL_URL = process.env.JENKINS_CUSTOM_FULL_URL;
 const BUILDS_PERSISTENT_FILE = process.env.BUILDS_PERSISTENT_FILE;
 
-const { log, error } = require('./common.js');
+const { logMsg, logError } = require('./common.js');
 const fs = require('fs');
 const { parentPort } = require('worker_threads');
 const axios = require('axios');
@@ -51,7 +51,7 @@ function saveBuildsToFile(builds) {
     const buildsJsonStr = JSON.stringify(builds, null, 2);
     fs.writeFile(BUILDS_PERSISTENT_FILE, buildsJsonStr, (err) => {
         if (err) {
-            error(`Error writing to ${BUILDS_PERSISTENT_FILE}`, err);
+            logError(`Error writing to ${BUILDS_PERSISTENT_FILE}`, err.message);
         }
     });
 }
@@ -87,8 +87,8 @@ async function getBuildRecord(jobType, jobOrdinal, jobName, buildNumber, buildUr
         if (branch) {
             buildRec.branch = branch.value;
         }
-    } catch (error) {
-        error('error on getBuildRecord()', error.message);
+    } catch (err) {
+        logError('error on getBuildRecord()', err.message);
     }
     return buildRec;
 }
@@ -117,8 +117,8 @@ async function getJobBuilds(job, outdatedBuilds) {
         inactiveBuilds.forEach((inactiveBuild) => {
             jobBuilds.push(inactiveBuild);
         });
-    } catch (error) {
-        error('error on getJobBuilds()', job.jobUrl, error.message);
+    } catch (err) {
+        logError('error on getJobBuilds()', job.jobUrl, err.message);
     }
     return jobBuilds;
 }
@@ -134,8 +134,8 @@ async function getBuilds(outdatedBuilds) {
         results.forEach((result) => {
             updatedBuilds = [...updatedBuilds, ...result];
         });
-    } catch (error) {
-        error('error on getBuilds()', error.message);
+    } catch (err) {
+        logError('error on getBuilds()', err.message);
     }
     return updatedBuilds;
 }
@@ -147,11 +147,11 @@ parentPort.on('message', async () => {
         saveBuildsToFile(updatedBuilds);
         updateCount++;
         if (logging) {
-            log(`< builds ${Math.round((Date.now() - startTime) / 1000)}s`);
+            logMsg(`< builds ${Math.round((Date.now() - startTime) / 1000)}s`);
         }
         parentPort.postMessage(updatedBuilds);
-    } catch (error) {
-        error('error on jenkins worker', error);
+    } catch (err) {
+        logError('error on jenkins worker', err.message);
     }
 });
 
