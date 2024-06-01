@@ -99,6 +99,7 @@
     position: relative;
     top: 1px;
     font-size: 15px;
+    color: var(--color--text);
     user-select: none;
 }
 
@@ -190,6 +191,7 @@
     align-items: center;
     margin-right: 4px;
 }
+.theme--dark .pr-reviewer,
 .theme--light .pr-reviewer {
     filter: brightness(0.8);
 }
@@ -251,6 +253,7 @@
     align-items: center;
     gap: 4px;
 }
+.theme--dark .custom-build,
 .theme--light .custom-build {
     filter: brightness(0.8);
 }

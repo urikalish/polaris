@@ -286,7 +286,7 @@ export function PullRequests({ serverUrl, gitHubUserName, prsStatesFilter, prsRo
                                             <img src={stateToImg[pr.state]} className="pr-state-img" title={pr.state} alt="state image" />
                                         </div>
                                         <a href={pr.htmlUrl} target="_blank" className="pr-link">
-                                            <span className="pr-number">{pr.number}</span>
+                                            <span className="pr-number">[{pr.number}]</span>
                                         </a>
                                         <span className="pr-title ellipsis" title={pr.title}>
                                             {pr.title}

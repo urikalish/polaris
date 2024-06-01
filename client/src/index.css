@@ -13,18 +13,23 @@
     src: url('../font/play-bold.ttf') format('truetype');
 }
 
-.theme--dark,
-.theme--bokeh {
-    --color--app-bg: #333;
+.theme--dark {
+    --color--app-bg: #222;
+    --color--content-panel-bg: rgba(255, 255, 255, 0.05);
     --color--border: #444;
     --color--app-header: #ccc;
-    --color--content-panel-bg: rgba(0, 0, 0, 0.3);
+    --color--text: #ddd;
+    --color--label: #999;
+    --color--link: #888;
+}
+.theme--bokeh {
+    --color--app-bg: #333;
+    --color--content-panel-bg: rgba(0, 0, 0, 0.6);
+    --color--border: #444;
+    --color--app-header: #ccc;
     --color--text: #fff;
     --color--label: #999;
     --color--link: #999;
-}
-.theme--bokeh {
-    --color--content-panel-bg: rgba(0, 0, 0, 0.6);
 }
 .theme--light {
     --color--app-bg: #fdfdfd;
