@@ -13,7 +13,7 @@ function logMsg(...msg) {
     console.log(`[${getTimeStr()}] ${msg.join(' ')}`);
 }
 function logError(...msg) {
-    console.error(`[${getTimeStr()}] ########## ERROR ########## ${msg.join(' ')}`);
+    console.error(`[${getTimeStr()}] ### ERROR ### ${msg.join(' ')}`);
 }
 
 module.exports = {
