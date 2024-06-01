@@ -13,6 +13,10 @@
     src: url('../font/play-bold.ttf') format('truetype');
 }
 
+:root {
+    --accent-color: #f55;
+}
+
 .theme--dark {
     --color--app-bg: #222;
     --color--content-panel-bg: rgba(255, 255, 255, 0.05);
@@ -20,7 +24,7 @@
     --color--app-header: #ccc;
     --color--text: #ddd;
     --color--link: #888;
-    --color--label: #f55;
+    --color--label: var(--accent-color);
 }
 .theme--bokeh {
     --color--app-bg: #333;
@@ -29,7 +33,7 @@
     --color--app-header: #ccc;
     --color--text: #fff;
     --color--link: #999;
-    --color--label: #f55;
+    --color--label: var(--accent-color);
 }
 .theme--light {
     --color--app-bg: #fdfdfd;
@@ -38,7 +42,7 @@
     --color--content-panel-bg: rgba(0, 0, 0, 0);
     --color--text: #000;
     --color--link: #888;
-    --color--label: #f55;
+    --color--label: var(--accent-color);
 }
 
 *,
@@ -51,7 +55,7 @@ a,
 a:focus,
 a:active,
 a:visited {
-    color: #f55;
+    color: var(--accent-color);
     text-decoration: none;
 }
 
