@@ -19,8 +19,8 @@
     --color--border: #444;
     --color--app-header: #ccc;
     --color--text: #ddd;
-    --color--label: #999;
     --color--link: #888;
+    --color--label: #f55;
 }
 .theme--bokeh {
     --color--app-bg: #333;
@@ -28,8 +28,8 @@
     --color--border: #444;
     --color--app-header: #ccc;
     --color--text: #fff;
-    --color--label: #999;
     --color--link: #999;
+    --color--label: #f55;
 }
 .theme--light {
     --color--app-bg: #fdfdfd;
@@ -37,8 +37,8 @@
     --color--app-header: #999;
     --color--content-panel-bg: rgba(0, 0, 0, 0);
     --color--text: #000;
-    --color--label: #888;
     --color--link: #888;
+    --color--label: #f55;
 }
 
 *,
