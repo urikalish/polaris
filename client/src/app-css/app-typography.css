@@ -1,0 +1,14 @@
+@font-face {
+    font-family: Play;
+    font-style: normal;
+    font-weight: 400;
+    /*noinspection CssUnknownTarget*/
+    src: url('../font/play-regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: Play;
+    font-style: normal;
+    font-weight: 700;
+    /*noinspection CssUnknownTarget*/
+    src: url('../font/play-bold.ttf') format('truetype');
+}

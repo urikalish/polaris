@@ -1,0 +1,82 @@
+.custom-scroll::-webkit-scrollbar {
+    width: 10px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: #444;
+}
+.theme--light .custom-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+}
+.theme--light .custom-scroll::-webkit-scrollbar-track {
+    background: #ccc;
+}
+
+.content-with-actions {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 32px;
+    gap: 8px;
+}
+.content-panel {
+    position: relative;
+    background-color: var(--color--content-panel-bg);
+}
+.actions-panel {
+    display: flex;
+    justify-content: end;
+}
+.actions-panel button {
+    width: 100px;
+    height: 32px;
+}
+
+.height--100 {
+    height: 100%;
+}
+
+.overflow--hidden {
+    overflow: hidden;
+}
+.overflow--auto {
+    overflow: auto;
+}
+
+.position--relative {
+    position: relative;
+}
+.position--absolute {
+    position: absolute;
+}
+
+.inset--0 {
+    inset: 0;
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.display--none {
+    display: none;
+}
+.display--flex {
+    display: flex;
+}
+
+.align-items--center {
+    align-items: center;
+}
+
+.flex-wrap--wrap {
+    flex-wrap: wrap;
+}
+
+.border {
+    border: 1px solid var(--color--border);
+}
