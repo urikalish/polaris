@@ -185,10 +185,74 @@
     color: var(--color--text);
 }
 
+.pr-reviewer {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+.theme--light .pr-reviewer {
+    filter: brightness(0.8);
+}
+
+.pr-review-state-img {
+    width: 20px;
+    height: 20px;
+    position: relative;
+}
+.pr-review-state--owner > .pr-review-state-img {
+}
+.pr-review-state--awaiting > .pr-review-state-img {
+    top: 1px;
+}
+.pr-review-state--pending > .pr-review-state-img {
+    margin-right: -2px;
+}
+.pr-review-state--commented > .pr-review-state-img {
+    top: 1px;
+    margin-right: 1px;
+}
+.pr-review-state--changes_requested > .pr-review-state-img {
+    margin-right: 1px;
+}
+.pr-review-state--approved > .pr-review-state-img {
+    top: -1px;
+}
+.pr-review-state--dismissed > .pr-review-state-img {
+}
+
+.pr-reviewer-name {
+    color: var(--color--text);
+    white-space: nowrap;
+}
+.pr-review-state--owner > .pr-reviewer-name {
+    color: var(--color--rv--owner);
+}
+.pr-review-state--awaiting > .pr-reviewer-name {
+    color: var(--color--rv--awaiting);
+}
+.pr-review-state--pending > .pr-reviewer-name {
+    color: var(--color--rv--pending);
+}
+.pr-review-state--commented > .pr-reviewer-name {
+    color: var(--color--rv--commented);
+}
+.pr-review-state--approved > .pr-reviewer-name {
+    color: var(--color--rv--approved);
+}
+.pr-review-state--changes_requested > .pr-reviewer-name {
+    color: var(--color--rv--changes-requested);
+}
+.pr-review-state--dismissed > .pr-reviewer-name {
+    color: var(--color--rv--dismissed);
+}
+
 .custom-build {
     display: flex;
     align-items: center;
     gap: 4px;
+}
+.theme--light .custom-build {
+    filter: brightness(0.8);
 }
 .custom-build--running {
     --build-color: var(--color--build--running);
@@ -262,65 +326,4 @@
 
 .custom-build-title {
     color: var(--build-color);
-}
-
-.pr-reviewer {
-    display: flex;
-    align-items: center;
-    margin-right: 4px;
-}
-.theme--light .pr-reviewer {
-    filter: brightness(0.8);
-}
-
-.pr-review-state-img {
-    width: 20px;
-    height: 20px;
-    position: relative;
-}
-.pr-review-state--owner > .pr-review-state-img {
-}
-.pr-review-state--awaiting > .pr-review-state-img {
-    top: 1px;
-}
-.pr-review-state--pending > .pr-review-state-img {
-    margin-right: -2px;
-}
-.pr-review-state--commented > .pr-review-state-img {
-    top: 1px;
-    margin-right: 1px;
-}
-.pr-review-state--changes_requested > .pr-review-state-img {
-    margin-right: 1px;
-}
-.pr-review-state--approved > .pr-review-state-img {
-    top: -1px;
-}
-.pr-review-state--dismissed > .pr-review-state-img {
-}
-
-.pr-reviewer-name {
-    color: var(--color--text);
-    white-space: nowrap;
-}
-.pr-review-state--owner > .pr-reviewer-name {
-    color: var(--color--rv--owner);
-}
-.pr-review-state--awaiting > .pr-reviewer-name {
-    color: var(--color--rv--awaiting);
-}
-.pr-review-state--pending > .pr-reviewer-name {
-    color: var(--color--rv--pending);
-}
-.pr-review-state--commented > .pr-reviewer-name {
-    color: var(--color--rv--commented);
-}
-.pr-review-state--approved > .pr-reviewer-name {
-    color: var(--color--rv--approved);
-}
-.pr-review-state--changes_requested > .pr-reviewer-name {
-    color: var(--color--rv--changes-requested);
-}
-.pr-review-state--dismissed > .pr-reviewer-name {
-    color: var(--color--rv--dismissed);
 }
