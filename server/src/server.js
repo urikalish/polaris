@@ -1,6 +1,7 @@
 require('dotenv').config();
 const GITHUB_MINUTES_BETWEEN_UPDATES = process.env.GITHUB_MINUTES_BETWEEN_UPDATES;
 const JENKINS_MINUTES_BETWEEN_UPDATES = process.env.JENKINS_MINUTES_BETWEEN_UPDATES;
+const JENKINS_ENABLED = process.env.JENKINS_ENABLED;
 
 const { logMsg, logError } = require('./common.js');
 const { Worker } = require('worker_threads');
@@ -90,7 +91,9 @@ function init() {
     logMsg('server starting...');
     app.listen(PORT, () => {
         logMsg(`server listening on port ${PORT}`);
-        updateBuilds();
+        if (JENKINS_ENABLED === 'true') {
+            updateBuilds();
+        }
         updatePrs();
     });
 }
