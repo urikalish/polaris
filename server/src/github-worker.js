@@ -59,25 +59,26 @@ function savePrsToFile(prs) {
 }
 
 async function getPrRecord(repo, pr) {
-    const prRecord = {
-        repoName: pr.head.repo.name,
-        repoFullName: pr.head.repo.full_name,
-        number: pr.number,
-        htmlUrl: pr.html_url,
-        state: '',
-        title: pr.title,
-        branch: pr.head.ref,
-        creator: pr.user.login,
-        assignees: pr.assignees ? pr.assignees.map((a) => a.login) : [],
-        reviewers: pr.requested_reviewers ? pr.requested_reviewers.map((rr) => rr.login) : [],
-        reviews: [],
-        createdAt: pr.created_at,
-        updatedAt: pr.updated_at,
-        closedAt: pr.closed_at,
-        mergedAt: pr.merged_at,
-        mergeCommitSha: pr.merge_commit_sha,
-    };
+    let prRecord = null;
     try {
+        prRecord = {
+            repoName: pr.head.repo?.name,
+            repoFullName: pr.head.repo?.full_name,
+            number: pr.number,
+            htmlUrl: pr.html_url,
+            state: '',
+            title: pr.title,
+            branch: pr.head?.ref,
+            creator: pr.user?.login,
+            assignees: pr.assignees ? pr.assignees.map((a) => a.login) : [],
+            reviewers: pr.requested_reviewers ? pr.requested_reviewers.map((rr) => rr.login) : [],
+            reviews: [],
+            createdAt: pr.created_at,
+            updatedAt: pr.updated_at,
+            closedAt: pr.closed_at,
+            mergedAt: pr.merged_at,
+            mergeCommitSha: pr.merge_commit_sha,
+        };
         //handle state
         if (pr.draft) {
             prRecord.state = 'draft';
@@ -114,7 +115,7 @@ async function getPrRecord(repo, pr) {
         prRecord.reviewers.sort();
         prRecord.reviews.sort((a, b) => a.user.localeCompare(b.user));
     } catch (err) {
-        logError('error on getPrRecord()', err.message);
+        logError('error on getPrRecord()', err.message, repo.repoOrgAndName);
     }
     return prRecord;
 }
@@ -130,7 +131,9 @@ async function getPagePrs(repo, pageNumber, outdatedPrs) {
                 const outdatedPr = outdatedPrs.find((p) => p.htmlUrl === pr.html_url);
                 const wasPrActive = outdatedPr && ['open', 'draft'].includes(outdatedPr.state);
                 const prRecord = outdatedPr && !wasPrActive ? outdatedPr : await getPrRecord(repo, pr);
-                pagePrs.push(prRecord);
+                if (prRecord) {
+                    pagePrs.push(prRecord);
+                }
             } catch (err) {
                 logError(`error on pr ${pr.number}`, err.message);
             }
