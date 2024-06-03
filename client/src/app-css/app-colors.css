@@ -23,10 +23,10 @@
 }
 
 .theme--light {
-    --color--app-bg: #fdfdfd;
+    --color--app-bg: #f9f9f9;
     --color--border: #ccc;
     --color--app-header: #999;
-    --color--content-panel-bg: rgba(0, 0, 0, 0);
+    --color--content-panel-bg: #fdfdfd;
     --color--text: #000;
     --color--link: #888;
     --color--label: var(--accent-color);
