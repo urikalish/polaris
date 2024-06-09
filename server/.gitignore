@@ -24,4 +24,5 @@ dist-ssr
 *.sw?
 
 src/.env
+src/.env_dd
 src/persistence
