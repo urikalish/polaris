@@ -15,6 +15,7 @@ app.use(cors());
 
 let allPrs = [];
 let allBuilds = [];
+let awaitedReviewers = {};
 
 let buildsUpdateCount = 0;
 let prsUpdateCount = 0;
@@ -32,10 +33,30 @@ function updatePrBuilds() {
     });
 }
 
+function updateAwaitedReviewers() {
+    awaitedReviewers = {};
+    for (let pr of allPrs) {
+        if (pr.state !== 'open') {
+            continue;
+        }
+        for (let r of pr.reviews) {
+            if (r.state !== 'awaiting') {
+                continue;
+            }
+            if (awaitedReviewers[r.user]) {
+                awaitedReviewers[r.user]++;
+            } else {
+                awaitedReviewers[r.user] = 1;
+            }
+        }
+    }
+}
+
 const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
     updatePrBuilds();
+    updateAwaitedReviewers();
     prsUpdateCount++;
     if (prsUpdateCount === 1) {
         logMsg('prs ready');
