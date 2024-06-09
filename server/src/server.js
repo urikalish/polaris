@@ -15,7 +15,7 @@ app.use(cors());
 
 let allPrs = [];
 let allBuilds = [];
-let awaitedReviewers = {};
+let awaitedReviews = {};
 
 let buildsUpdateCount = 0;
 let prsUpdateCount = 0;
@@ -33,8 +33,8 @@ function updatePrBuilds() {
     });
 }
 
-function updateAwaitedReviewers() {
-    awaitedReviewers = {};
+function updateAwaitedReviews() {
+    awaitedReviews = {};
     for (let pr of allPrs) {
         if (pr.state !== 'open') {
             continue;
@@ -43,10 +43,10 @@ function updateAwaitedReviewers() {
             if (r.state !== 'awaiting') {
                 continue;
             }
-            if (awaitedReviewers[r.user]) {
-                awaitedReviewers[r.user]++;
+            if (awaitedReviews[r.user]) {
+                awaitedReviews[r.user]++;
             } else {
-                awaitedReviewers[r.user] = 1;
+                awaitedReviews[r.user] = 1;
             }
         }
     }
@@ -56,7 +56,7 @@ const gitHubWorker = new Worker('./github-worker.js');
 gitHubWorker.on('message', (updatedPrs) => {
     allPrs = updatedPrs;
     updatePrBuilds();
-    updateAwaitedReviewers();
+    updateAwaitedReviews();
     prsUpdateCount++;
     if (prsUpdateCount === 1) {
         logMsg('prs ready');
@@ -94,16 +94,27 @@ function updateBuilds() {
 
 app.get('/pull-requests', async (req, res) => {
     try {
-        const username = req.query.username;
-        const prs = allPrs.filter((pr) => pr.creator === username || pr.reviewers.includes(username) || pr.assignees.includes(username));
+        const userName = req.query.username;
+        const prs = allPrs.filter((pr) => pr.creator === userName || pr.reviewers.includes(userName) || pr.assignees.includes(userName));
         if (prs.length > 0) {
-            logMsg(`${prs.length} prs --> ${username}`);
+            logMsg(`${prs.length} prs --> ${userName}`);
         } else {
-            logError(`no prs found for user ${username}`);
+            logError(`no prs found for user ${userName}`);
         }
         res.send({ data: { prs } });
     } catch (err) {
         logError('error on getting pull requests', err.message);
+        res.send({ error: err.toString() });
+    }
+});
+
+app.get('/awaited-reviews', async (req, res) => {
+    try {
+        const userName = req.query.username;
+        const numberOfAwaitedReviews = awaitedReviews[userName] || 0;
+        res.send({ data: { userName, numberOfAwaitedReviews } });
+    } catch (err) {
+        logError('error on getting awaited reviews', err.message);
         res.send({ error: err.toString() });
     }
 });
