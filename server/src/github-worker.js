@@ -71,7 +71,7 @@ async function getPrRecord(repo, pr) {
             branch: pr.head?.ref,
             creator: pr.user?.login,
             assignees: pr.assignees ? pr.assignees.map((a) => a.login) : [],
-            reviewers: pr.requested_reviewers ? pr.requested_reviewers.map((rr) => rr.login) : [],
+            reviewers: [],
             reviews: [],
             createdAt: pr.created_at,
             updatedAt: pr.updated_at,
@@ -91,6 +91,9 @@ async function getPrRecord(repo, pr) {
         }
 
         //handle reviews
+        const awaitingReviewerNames = pr.requested_reviewers ? pr.requested_reviewers.map((r) => r.login) : [];
+        prRecord.reviewers = [...awaitingReviewerNames];
+        prRecord.reviews = awaitingReviewerNames.map((rn) => ({ user: rn, state: 'awaiting' }));
         const url = `${repo.apiUrl}/pulls/${prRecord.number}/reviews`;
         const res = await axios.get(url, repo.apiConfig);
         const reviews = await res.data;
@@ -99,6 +102,9 @@ async function getPrRecord(repo, pr) {
                 continue;
             }
             const reviewerName = review.user.login;
+            if (reviewerName === prRecord.creator || awaitingReviewerNames.includes(reviewerName)) {
+                continue;
+            }
             if (!prRecord.reviewers.includes(reviewerName)) {
                 prRecord.reviewers.push(reviewerName);
             }
