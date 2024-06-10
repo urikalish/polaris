@@ -25,39 +25,45 @@ chrome.runtime.onMessage.addListener((request: any, _sender: any, sendResponse: 
     }
 });
 
-// function updateAwaitedReviews() {
-//     const STORAGE_MAIN_KEY = 'polaris';
-//     chrome.storage.local.get(STORAGE_MAIN_KEY, (data: any) => {
-//         const { serverUrl, gitHubUserName } = data[STORAGE_MAIN_KEY];
-//         if (!serverUrl || !gitHubUserName) {
-//             return;
-//         }
-//         const request = {
-//             type: 'awaited-reviews',
-//             serverUrl,
-//             params: `username=${gitHubUserName}`,
-//         };
-//         getDataFromServer(request).then((response) => {
-//             if (response.error) {
-//                 console.log(response.error);
-//                 chrome.action.setBadgeText({ text: '' });
-//                 return;
-//             }
-//             chrome.action.setBadgeBackgroundColor({ color: '#444' });
-//             chrome.action.setBadgeText({ text: response.data?.numberOfAwaitedReviews.toString() || '' });
-//         });
-//     });
-// }
+function updateAwaitedReviews() {
+    const STORAGE_MAIN_KEY = 'polaris';
+    chrome.storage.local.get(STORAGE_MAIN_KEY, (data: any) => {
+        const { serverUrl, gitHubUserName } = data[STORAGE_MAIN_KEY];
+        if (!serverUrl || !gitHubUserName) {
+            return;
+        }
+        const request = {
+            type: 'awaited-reviews',
+            serverUrl,
+            params: `username=${gitHubUserName}`,
+        };
+        getDataFromServer(request).then((response) => {
+            if (response.error) {
+                console.log(response.error);
+                chrome.action.setBadgeText({ text: '' });
+                return;
+            }
+            chrome.action.setBadgeBackgroundColor({ color: '#444' });
+            chrome.action.setBadgeText({ text: response.data?.numberOfAwaitedReviews.toString() || '' });
+        });
+    });
+}
 
-// const SECONDS_BEFORE_FIRST_UPDATE_AWAITED_REVIEWS = 10;
-// const SECONDS_BETWEEN_AWAITED_REVIEWS_UPDATES = 60;
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === 'updateAwaitedReviews') {
+        updateAwaitedReviews();
+    }
+});
 
-// function init() {
-// chrome.action.setBadgeText({ text: '' });
-// setTimeout(() => {
-//     updateAwaitedReviews();
-// }, SECONDS_BEFORE_FIRST_UPDATE_AWAITED_REVIEWS * 1000);
-// setInterval(updateAwaitedReviews, SECONDS_BETWEEN_AWAITED_REVIEWS_UPDATES * 1000);
-// }
+const MINUTES_BEFORE_FIRST_UPDATE_AWAITED_REVIEWS = 1 / 6;
+const MINUTES_BETWEEN_AWAITED_REVIEWS_UPDATES = 5;
 
-// init();
+function init() {
+    chrome.action.setBadgeText({ text: '' });
+    chrome.alarms.create('updateAwaitedReviews', {
+        delayInMinutes: MINUTES_BEFORE_FIRST_UPDATE_AWAITED_REVIEWS,
+        periodInMinutes: MINUTES_BETWEEN_AWAITED_REVIEWS_UPDATES,
+    });
+}
+
+init();

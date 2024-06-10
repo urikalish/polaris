@@ -15,6 +15,7 @@
     "service_worker": "assets/background.js"
   },
   "permissions": [
+    "alarms",
     "background",
     "storage"
   ]
