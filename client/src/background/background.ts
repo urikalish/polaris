@@ -26,7 +26,7 @@ chrome.runtime.onMessage.addListener((request: any, _sender: any, sendResponse: 
 });
 
 const SECONDS_BEFORE_FIRST_UPDATE_AWAITED_REVIEWS = 10;
-const MINUTES_BETWEEN_UPDATE_AWAITED_REVIEWS = 1;
+const SECONDS_BETWEEN_AWAITED_REVIEWS_UPDATES = 60;
 
 function updateAwaitedReviews() {
     const STORAGE_MAIN_KEY = 'polaris';
@@ -43,20 +43,21 @@ function updateAwaitedReviews() {
         getDataFromServer(request).then((response) => {
             if (response.error) {
                 console.log(response.error);
-                chrome.browserAction.setBadgeText({ text: '' });
+                chrome.action.setBadgeText({ text: '' });
                 return;
             }
             chrome.action.setBadgeBackgroundColor({ color: '#444' });
-            chrome.action.setBadgeText({ text: response.data.numberOfAwaitedReviews.toString() });
-            setTimeout(updateAwaitedReviews, MINUTES_BETWEEN_UPDATE_AWAITED_REVIEWS * 60 * 1000);
+            chrome.action.setBadgeText({ text: response.data?.numberOfAwaitedReviews.toString() || '' });
         });
     });
 }
 
 function init() {
+    chrome.action.setBadgeText({ text: '' });
     setTimeout(() => {
         updateAwaitedReviews();
     }, SECONDS_BEFORE_FIRST_UPDATE_AWAITED_REVIEWS * 1000);
+    setInterval(updateAwaitedReviews, SECONDS_BETWEEN_AWAITED_REVIEWS_UPDATES * 1000);
 }
 
 init();
