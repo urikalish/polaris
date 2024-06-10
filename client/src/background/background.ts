@@ -20,6 +20,7 @@ chrome.runtime.onMessage.addListener((request: any, _sender: any, sendResponse: 
     if (request.type === 'pull-requests') {
         getDataFromServer(request).then((response) => {
             sendResponse(response);
+            updateAwaitedReviews();
         });
         return true;
     }
