@@ -97,7 +97,7 @@ app.get('/pull-requests', async (req, res) => {
         const userName = req.query.username;
         const prs = allPrs.filter((pr) => pr.creator === userName || pr.reviewers.includes(userName) || pr.assignees.includes(userName));
         if (prs.length > 0) {
-            logMsg(`${prs.length} prs --> ${userName}`);
+            logMsg(userName);
         } else {
             logError(`no prs found for user ${userName}`);
         }
